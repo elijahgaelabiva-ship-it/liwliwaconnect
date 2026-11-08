@@ -1,0 +1,623 @@
+/* Liwliwa Connect — custom styles
+   Tailwind (CDN) handles layout/color utilities.
+   This file covers what utilities can't: the pebble cards and a couple
+   of small text-balance / focus refinements. */
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.pebble {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.1rem;
+  border-radius: 1.25rem;
+  font-size: 0.95rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pebble:hover,
+.pebble:focus-visible {
+  transform: translateY(-3px);
+}
+
+.pebble:focus-visible {
+  outline: 2px solid #E7B15C;
+  outline-offset: 2px;
+}
+
+/* Subtle hairline once you've scrolled a bit — index.html only (see js/main.js) */
+#siteHeader.solid {
+  box-shadow: 0 1px 0 rgba(27, 43, 46, 0.08);
+}
+
+.filter-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: rgba(246, 239, 227, 0.1);
+  color: #F6EFE3;
+  border: 1px solid rgba(246, 239, 227, 0.2);
+  transition: background 0.15s ease;
+}
+
+.filter-btn:hover {
+  background: rgba(246, 239, 227, 0.18);
+}
+
+.filter-btn.active-filter {
+  background: #E7B15C;
+  color: #1B2B2E;
+  border-color: #E7B15C;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pebble {
+    transition: none;
+  }
+}
+
+/* ============================================
+   PREMIUM DESIGN SYSTEM — added for UI/UX redesign
+   Additive only: nothing above this line is removed,
+   so pages not yet redesigned keep working unchanged.
+   ============================================ */
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.glass-card-light {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.card-premium {
+  border-radius: 1.75rem;
+  overflow: hidden;
+  background: #FFFFFF;
+  box-shadow: 0 1px 2px rgba(20, 37, 34, 0.04), 0 12px 28px -12px rgba(20, 37, 34, 0.18);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card-premium:hover,
+.card-premium:focus-within {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px rgba(20, 37, 34, 0.06), 0 20px 40px -14px rgba(20, 37, 34, 0.24);
+}
+
+.price-pill {
+  background: rgba(20, 37, 34, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #F6EFE3;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+}
+
+.icon-chip {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #EAF6F1;
+}
+
+.btn-pill-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #FF6B4D;
+  color: #FBF7F1;
+  font-weight: 600;
+  padding: 0.9rem 1.75rem;
+  border-radius: 999px;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.btn-pill-primary:hover {
+  background: #142524;
+  transform: translateY(-1px);
+}
+
+.btn-pill-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: #F6EFE3;
+  font-weight: 600;
+  padding: 0.9rem 1.75rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(246, 239, 227, 0.45);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-pill-outline:hover {
+  background: rgba(246, 239, 227, 0.12);
+  border-color: rgba(246, 239, 227, 0.8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-premium {
+    transition: none;
+  }
+}
+
+/* ============================================
+   APP SHELL — bottom tab bar + simplified header,
+   used on guest-facing pages so the site feels like
+   a mobile app rather than a scrolling website.
+   ============================================ */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3.5rem;
+  background: #0A2528;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 900;
+  display: flex;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(27, 43, 46, 0.08);
+  padding: 0.4rem 0.5rem calc(0.4rem + env(safe-area-inset-bottom));
+  box-shadow: 0 -6px 20px rgba(20, 37, 34, 0.08);
+}
+
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  padding: 0.4rem 0.25rem;
+  border-radius: 1rem;
+  color: rgba(27, 43, 46, 0.4);
+  font-size: 0.68rem;
+  font-weight: 600;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.bottom-nav-item i {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.bottom-nav-item.active {
+  color: #0B4F53;
+  background: rgba(23, 163, 152, 0.12);
+}
+
+.bottom-nav-item:active {
+  transform: scale(0.95);
+}
+
+/* Keeps page content from being hidden behind the fixed bottom nav */
+.app-bottom-spacer {
+  height: 5.25rem;
+}
+
+/* ============================================
+   LOADING STATES — shimmer skeletons + top progress bar,
+   so a slow connection reads as "loading" not "frozen".
+   ============================================ */
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+/* Slow-drifting gold gradient used to frame paid-placement content
+   (Featured Today, Premium Partners) so they read as visually distinct
+   from the rest of the feed, not just another card in the scroll. */
+@keyframes goldDrift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Homepage promo ticker — the track is rendered with its content
+   duplicated once in the DOM (see guest-home.html), so translating by
+   exactly -50% loops seamlessly with no visible jump/reset. Duration is
+   set inline per-page based on actual content width (~60px/sec) so it
+   never feels too fast/slow regardless of how many promos are active. */
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.promo-ticker-track {
+  animation-name: tickerScroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.promo-ticker-track:hover,
+.promo-ticker-track:focus-within {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .promo-ticker-track { animation: none; }
+}
+.featured-glow-frame {
+  background: linear-gradient(135deg, #FFD166, #FF7A45, #7A1F3D, #FF7A45, #FFD166);
+  background-size: 300% 300%;
+  animation: goldDrift 6s ease infinite;
+  box-shadow: 0 8px 28px -8px rgba(255, 122, 69, 0.55);
+}
+@media (prefers-reduced-motion: reduce) {
+  .featured-glow-frame { animation: none; background-position: 50% 50%; }
+}
+
+/* Gold panel behind the Premium Partners section — same idea as the
+   gradient CTA bands elsewhere on this page, punched up so it reads
+   clearly as a distinct, paid tier rather than blending into the feed. */
+.premium-partners-panel {
+  background: linear-gradient(180deg, rgba(255, 209, 102, 0.36) 0%, rgba(184, 134, 11, 0.14) 55%, rgba(184, 134, 11, 0) 100%);
+}
+.premium-partner-card.card-app {
+  border: 2px solid rgba(212, 160, 23, 0.65);
+  box-shadow: 0 12px 28px -10px rgba(184, 134, 11, 0.5);
+}
+
+.skel {
+  background: linear-gradient(90deg, rgba(27,43,46,0.07) 25%, rgba(27,43,46,0.14) 37%, rgba(27,43,46,0.07) 63%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 0.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skel { animation: none; background: rgba(27,43,46,0.09); }
+}
+
+.skel-card {
+  border-radius: 1.25rem;
+  overflow: hidden;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1rem;
+  gap: 0.5rem;
+}
+
+.skel-line {
+  height: 0.85rem;
+  border-radius: 0.5rem;
+}
+
+.skel-circle {
+  border-radius: 999px;
+}
+
+/* Slim indeterminate bar pinned to the very top of the viewport during
+   any network fetch — same idea as YouTube/GitHub's top loading bar. */
+#appProgressBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, #E7B15C, #17A398);
+  z-index: 2000;
+  transition: width 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#appProgressBar.active {
+  opacity: 1;
+}
+
+/* ============================================
+   MOBILE APP V2 — new design system for the Android-app-style redesign.
+   Additive only, same rule as above: nothing already defined is touched,
+   so pages not yet converted to this system keep looking exactly as they
+   did. Pages using this system declare their OWN new color tokens
+   (ocean/turquoise/sunset/mist) in their own tailwind.config block — see
+   index.html / guest-home.html.
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* Fade-in used on first paint of a screen — replaces "Framer Motion page
+   transitions" in a plain-CSS stack (see PROJECT_STATUS.md for why). */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in {
+  animation: fadeInUp 0.5s ease both;
+}
+.animate-in-delay-1 { animation-delay: 0.08s; }
+.animate-in-delay-2 { animation-delay: 0.16s; }
+.animate-in-delay-3 { animation-delay: 0.24s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-in { animation: none; }
+}
+
+/* Floating bottom nav — detached from the screen edges with its own
+   rounded pill container and a filled active-state indicator, vs. the
+   older edge-to-edge .bottom-nav used on pages not yet converted. */
+.floating-nav-wrap {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 900;
+  display: flex;
+  justify-content: center;
+  padding: 0 1rem calc(0.9rem + env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+
+.floating-nav {
+  pointer-events: auto;
+  display: flex;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 999px;
+  padding: 0.5rem;
+  box-shadow: 0 12px 32px -8px rgba(20, 28, 36, 0.22);
+  max-width: 420px;
+  width: 100%;
+}
+
+.floating-nav-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  border-radius: 999px;
+  color: rgba(20, 28, 36, 0.45);
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+/* Icon-only nav: label text stays in the markup for screen readers and is
+   visually hidden rather than removed, so every page sharing this class
+   updates from one place and loses nothing for accessibility. */
+.floating-nav-item span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.floating-nav-item i {
+  width: 1.35rem;
+  height: 1.35rem;
+  flex-shrink: 0;
+}
+
+.floating-nav-item.active {
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #1668E3, #17B8A6);
+}
+
+.floating-nav-item:active {
+  transform: scale(0.94);
+}
+
+.app-bottom-spacer-v2 {
+  height: 6rem;
+}
+
+/* Gradient primary button — "Blue Gradient" per the redesign brief, with a
+   ripple-like press effect standing in for Framer Motion's ripple. */
+.btn-gradient {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #1668E3, #17B8A6);
+  color: #FFFFFF;
+  font-weight: 600;
+  min-height: 52px;
+  padding: 0.9rem 2rem;
+  border-radius: 999px;
+  box-shadow: 0 10px 24px -8px rgba(22, 104, 227, 0.5);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-gradient:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 12px -4px rgba(22, 104, 227, 0.5);
+}
+
+/* Horizontal-scrolling chip row and card carousels, with native momentum
+   scroll and no visible scrollbar — the "Discover" screen pattern. */
+.hscroll {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.hscroll::-webkit-scrollbar { display: none; }
+.hscroll > * { scroll-snap-align: start; }
+
+/* Auto-scrolling marquee helper — no longer used on guest-home.html (that
+   page now shows live conditions as a scrollable card row instead), kept
+   here in case another page wants a ticker later. Pausing on tap/hover lets
+   someone actually read a number instead of chasing it across the screen. */
+@keyframes tickerScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.ticker-track {
+  animation: tickerScroll 22s linear infinite;
+}
+.ticker-track:hover,
+.ticker-track:active {
+  animation-play-state: paused;
+}
+
+.chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: #FFFFFF;
+  color: #4B5563;
+  border: 1px solid rgba(20, 28, 36, 0.08);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.chip.chip-active {
+  background: linear-gradient(135deg, #1668E3, #17B8A6);
+  color: #FFFFFF;
+  border-color: transparent;
+}
+
+/* App-style business/place card — large cover image, generous rounding,
+   soft elevation. Distinct name from the older .card-premium so pages using
+   that one are unaffected. */
+.card-app {
+  background: #FFFFFF;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px -2px rgba(20, 28, 36, 0.06), 0 12px 24px -12px rgba(20, 28, 36, 0.16);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-app:active {
+  transform: scale(0.98);
+}
+
+/* Square directory category card — Resorts, Restaurants, Cafés, etc.
+   Sits 2-per-row on mobile via the parent's `grid grid-cols-2 gap-3`.
+   aspect-ratio:1 keeps it a true square at any screen width. */
+.category-card {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 0.9rem;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  color: #FFFFFF;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 4px 14px -2px rgba(20, 28, 36, 0.12), 0 16px 32px -12px rgba(20, 28, 36, 0.24);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+/* Scrim so the label stays readable over any photo — darkest at the
+   bottom where the text sits, fading out toward the top of the tile.
+   Slightly deeper than before so white text/icons pop more. */
+.category-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(11, 42, 74, 0.92) 0%, rgba(11, 42, 74, 0.2) 55%, rgba(11, 42, 74, 0) 100%);
+  pointer-events: none;
+}
+.category-card-icon {
+  position: relative;
+  z-index: 1;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.6rem;
+}
+.category-card span {
+  position: relative;
+  z-index: 1;
+  font-weight: 800;
+  font-size: 1.05rem;
+  text-align: left;
+  line-height: 1.15;
+}
+.category-card:active {
+  transform: scale(0.97);
+}
+
+/* Loading state — before renderCategoryCardPhotos() (guest-home.html)
+   resolves either a real photo or the gradient fallback, show a plain
+   shimmer instead of a solid-color block, and hide the icon/label so
+   nothing renders unreadable against it. border-radius/aspect-ratio still
+   come from .category-card above; only background + scrim are overridden. */
+.category-card.skel {
+  background-image: none !important;
+  border-radius: 1.25rem;
+}
+.category-card.skel::before {
+  background: none;
+}
+.category-card.skel .category-card-icon,
+.category-card.skel span {
+  visibility: hidden;
+}
+
+.favorite-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(6px);
+  color: #141C24;
+  transition: transform 0.15s ease;
+}
+
+.favorite-btn:active {
+  transform: scale(0.88);
+}
+
+/* Lucide swaps the placeholder <i data-lucide="heart"> for a real <svg> as
+   soon as lucide.createIcons() runs, so by the time a card is on screen
+   there is no <i> left to style — only "i" here matched nothing, which is
+   why the heart never visibly reacted to a tap. Target the svg instead
+   (and keep "i" as a harmless fallback for anywhere icons aren't swapped). */
+.favorite-btn.is-favorited i,
+.favorite-btn.is-favorited svg {
+  fill: #FF7A45;
+  color: #FF7A45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-app, .btn-gradient, .favorite-btn, .floating-nav-item { transition: none; }
+}
