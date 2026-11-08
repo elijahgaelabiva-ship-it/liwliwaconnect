@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Liwliwa Connect — Your Gateway to Liwliwa, Zambales">
+<meta property="og:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta property="og:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<meta property="og:url" content="https://liwliwaconnect.netlify.app/index.html">
+<meta property="og:site_name" content="Liwliwa Connect">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Liwliwa Connect — Your Gateway to Liwliwa, Zambales">
+<meta name="twitter:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta name="twitter:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<title>Liwliwa Connect — Your Gateway to Liwliwa, Zambales</title>
+<meta name="description" content="Find resorts, restaurants, cafés, surf schools, and things to do in Liwliwa, San Felipe, Zambales — all in one place." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://wsrv.nl"> <!-- image optimization proxy, see js/main.js AppImage -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css" />
+
+<!-- Makes the site installable to the home screen, opening full-view with no
+     browser address bar or nav bar, like a native app. -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B2A4A">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Liwliwa">
+<meta name="mobile-web-app-capable" content="yes">
+
+<script>
+  // New "Mobile App V2" palette for the Android-app-style redesign — see
+  // css/style.css "MOBILE APP V2" section. Pages not yet converted keep
+  // their own separate tailwind.config with the older sand/tide/gold names.
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ocean: '#1668E3',
+          oceanDeep: '#0B2A4A',
+          turquoise: '#17B8A6',
+          sunset: '#FF7A45',
+          mist: '#F5F7FA',
+          ink: '#141C24',
+          success: '#2FB380',
+          danger: '#F0605F',
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+</head>
+<body class="bg-mist text-ink font-sans antialiased">
+
+  <!-- WELCOME / HERO SCREEN — full-bleed, edge-to-edge, immersive.
+       No nav chrome here on purpose: this is the pre-app entry screen,
+       matching the reference's first "Discover The World With Us" screen. -->
+  <section class="relative min-h-[100svh] flex flex-col overflow-hidden"
+           style="background-image:url('images/hero-beach.webp'); background-size:cover; background-position:center;">
+
+    <!-- gradient overlays: a light one up top so the status bar/logo stay
+         legible, a strong one at the bottom for the headline/CTA -->
+    <div class="absolute inset-0 bg-gradient-to-b from-oceanDeep/50 via-transparent to-oceanDeep/85"></div>
+
+    <div class="relative z-10 flex-1 flex items-center justify-center">
+    <img
+        src="images/liwliwa-logo.png"
+        alt="Liwliwa Connect"
+        class="w-[85vw] max-w-[380px] object-contain drop-shadow-2xl"
+    >
+</div>
+    
+    <!-- bottom content block -->
+    <div class="relative z-10 mt-auto px-6 pb-[max(2.5rem,env(safe-area-inset-bottom))] w-full">
+      </p>
+
+      <a href="guest-home.html"
+         class="animate-in animate-in-delay-3 btn-gradient w-full mt-7 text-base">
+        Explore Liwliwa
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </a>
+
+      <a href="for-business-owners.html"
+         class="animate-in animate-in-delay-3 block text-center text-white/70 text-sm font-medium mt-4">
+        I run a business here
+      </a>
+    </div>
+  </section>
+
+  <script src="js/main.js"></script>
+  <script>
+    if (window.lucide) lucide.createIcons();
+  </script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Beach Etiquette — Liwliwa Connect">
+<meta property="og:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta property="og:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<meta property="og:url" content="https://liwliwaconnect.netlify.app/beach-etiquette.html">
+<meta property="og:site_name" content="Liwliwa Connect">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Beach Etiquette — Liwliwa Connect">
+<meta name="twitter:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta name="twitter:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<title>Beach Etiquette — Liwliwa Connect</title>
+<meta name="description" content="Local rules and environmental reminders for visiting Liwliwa Beach, San Felipe, Zambales." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css" />
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#17B8A6">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Liwliwa">
+<meta name="mobile-web-app-capable" content="yes">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ocean: '#1668E3',
+          oceanDeep: '#0B2A4A',
+          turquoise: '#17B8A6',
+          sunset: '#FF7A45',
+          mist: '#F5F7FA',
+          ink: '#141C24',
+          success: '#2FB380',
+          danger: '#F0605F',
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+<style>
+  .rule-card { display: flex; gap: 0.9rem; align-items: flex-start; }
+  .rule-icon {
+    width: 2.75rem; height: 2.75rem; border-radius: 999px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+</style>
+</head>
+<body class="bg-mist text-ink font-sans antialiased">
+
+  <!-- HEADER -->
+  <section class="px-6 pt-[max(1.75rem,env(safe-area-inset-top))] pb-6 text-white"
+            style="background: linear-gradient(135deg, #17B8A6, #0B2A4A);">
+    <a href="guest-home.html" class="inline-flex items-center gap-1.5 text-white/70 text-sm mb-4">
+      <i data-lucide="chevron-left" class="w-4 h-4"></i> Back
+    </a>
+    <p class="uppercase tracking-[0.2em] text-xs font-semibold text-sunset mb-1">Be a good guest</p>
+    <h1 class="font-extrabold text-2xl sm:text-3xl mb-3">Beach Etiquette</h1>
+    <p class="text-white/80 text-sm leading-relaxed">Liwliwa's coastline stays beautiful because locals and
+      visitors both take care of it. A few reminders before you head to the sand.</p>
+  </section>
+
+  <!-- ENVIRONMENT -->
+  <section class="px-6 pt-6 pb-2">
+    <h2 class="font-bold text-lg mb-4">Protect the coast</h2>
+    <div class="space-y-3">
+
+      <div class="rule-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+        <span class="rule-icon bg-turquoise/10 text-turquoise"><i data-lucide="trash-2" class="w-5 h-5"></i></span>
+        <div>
+          <p class="font-semibold text-sm">Pack out your trash</p>
+          <p class="text-ink/60 text-xs mt-1">Bins are limited along the shore. Bring a small bag for your own
+            wrappers, bottles, and cigarette butts, and use the trash points near your resort.</p>
+        </div>
+      </div>
+
+      <div class="rule-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+        <span class="rule-icon bg-ocean/10 text-ocean"><i data-lucide="waves" class="w-5 h-5"></i></span>
+        <div>
+          <p class="font-semibold text-sm">Leave corals, shells, and sand where they are</p>
+          <p class="text-ink/60 text-xs mt-1">Taking shells, coral pieces, or sand as souvenirs disrupts the beach
+            ecosystem and is discouraged under local coastal protection rules — photos only.</p>
+        </div>
+      </div>
+
+      <div class="rule-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+        <span class="rule-icon bg-success/10 text-success"><i data-lucide="sun" class="w-5 h-5"></i></span>
+        <div>
+          <p class="font-semibold text-sm">Choose reef-safe sunscreen when you can</p>
+          <p class="text-ink/60 text-xs mt-1">Regular sunscreen washes off in the water. Mineral or "reef-safe"
+            sunscreen is gentler on the marine life just offshore.</p>
+        </div>
+      </div>
+
+      <div class="rule-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+        <span class="rule-icon bg-sunset/10 text-sunset"><i data-lucide="flame" class="w-5 h-5"></i></span>
+        <div>
+          <p class="font-semibold text-sm">Ask before lighting a bonfire</p>
+          <p class="text-ink/60 text-xs mt-1">Many resorts allow beach bonfires but want them contained and away
+            from dry grass or tents — check with your host first, and always put fires out fully.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- COMMUNITY & SAFETY -->
+  <section class="px-6 pt-6 pb-2">
+    <h2 class="font-bold text-lg mb-4">Respect the community</h2>
+    <div class="space-y-3">
+
+      <div class="rule-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+        <span class="rule-icon bg-ocean/10 text-ocean"><i data-lucide="volume-2" class="w-5 h-5"></i></span>
+        <div>
+          <p class="font-semibold text-sm">Keep noise down late at night</p>
+          <p class="text-ink/60 text-xs mt-1">Liwliwa is a residential barangay as well as a tourist spot —
+            music and gatherings are welcome earlier, but keep it considerate after quiet hours.</p>
+        </div>
+      </div>
+
+      <div class="rule-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+        <span class="rule-icon bg-turquoise/10 text-turquoise"><i data-lucide="shirt" class="w-5 h-5"></i></span>
+        <div>
+          <p class="font-semibold text-sm">Swimwear is for the beach, not the town</p>
+          <p class="text-ink/60 text-xs mt-1">Throw on a cover-up or shirt when walking through the barangay,
+            visiting the market, or stopping at eateries away from the shore.</p>
+        </div>
+      </div>
+
+      <div class="rule-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+        <span class="rule-icon bg-danger/10 text-danger"><i data-lucide="flag" class="w-5 h-5"></i></span>
+        <div>
+          <p class="font-semibold text-sm">Follow posted flags and swim advisories</p>
+          <p class="text-ink/60 text-xs mt-1">Currents can get strong, especially during surf season and bad
+            weather. Swim near lifeguarded or resort-monitored areas, and don't swim alone after dark.</p>
+        </div>
+      </div>
+
+      <div class="rule-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+        <span class="rule-icon bg-oceanDeep/10 text-oceanDeep"><i data-lucide="banknote" class="w-5 h-5"></i></span>
+        <div>
+          <p class="font-semibold text-sm">Eco-tourism fee</p>
+          <p class="text-ink/60 text-xs mt-1">Entering Liwliwa, you'll pass an LGU outpost collecting a small
+            coastal preservation fee — it goes toward keeping the beach clean and protected. Keep some cash ready.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="px-6 pt-4">
+    <a href="emergency-help.html" class="flex items-center justify-between bg-oceanDeep text-white rounded-2xl p-4">
+      <span class="flex items-center gap-3 text-sm font-semibold">
+        <i data-lucide="shield-alert" class="w-4 h-4"></i> Emergency contacts, just in case
+      </span>
+      <i data-lucide="chevron-right" class="w-4 h-4 text-white/60"></i>
+    </a>
+  </div>
+
+  <div class="app-bottom-spacer-v2"></div>
+
+  <script src="js/main.js"></script>
+  <script>
+    if (window.lucide) lucide.createIcons();
+  </script>
+
+  <div class="floating-nav-wrap">
+    <nav class="floating-nav">
+      <a href="guest-home.html" class="floating-nav-item">
+        <i data-lucide="home"></i>
+        <span>Home</span>
+      </a>
+      <a href="map.html" class="floating-nav-item">
+        <i data-lucide="compass"></i>
+        <span>Explore</span>
+      </a>
+      <a href="events.html" class="floating-nav-item">
+        <i data-lucide="calendar"></i>
+        <span>Events</span>
+      </a>
+      <a href="favorites.html" class="floating-nav-item">
+        <i data-lucide="heart"></i>
+        <span>Saved</span>
+      </a>
+      <a href="more.html" class="floating-nav-item active">
+        <i data-lucide="menu"></i>
+        <span>More</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

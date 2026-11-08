@@ -1,0 +1,16 @@
+{
+  "name": "Liwliwa Connect",
+  "short_name": "Liwliwa",
+  "description": "Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, San Felipe, Zambales.",
+  "start_url": "guest-home.html",
+  "scope": ".",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "portrait",
+  "background_color": "#F6EFE3",
+  "theme_color": "#0A2528",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

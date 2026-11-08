@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Nearby Essentials — Liwliwa Connect">
+<meta property="og:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta property="og:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<meta property="og:url" content="https://liwliwaconnect.netlify.app/nearby-essentials.html">
+<meta property="og:site_name" content="Liwliwa Connect">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Nearby Essentials — Liwliwa Connect">
+<meta name="twitter:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta name="twitter:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<title>Nearby Essentials — Liwliwa Connect</title>
+<meta name="description" content="Find the nearest ATM, pharmacy, gas station, or convenience store near Liwliwa, San Felipe, Zambales." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css" />
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1668E3">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Liwliwa">
+<meta name="mobile-web-app-capable" content="yes">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ocean: '#1668E3',
+          oceanDeep: '#0B2A4A',
+          turquoise: '#17B8A6',
+          sunset: '#FF7A45',
+          mist: '#F5F7FA',
+          ink: '#141C24',
+          success: '#2FB380',
+          danger: '#F0605F',
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+<style>
+  .contact-card { display: flex; align-items: center; gap: 0.9rem; }
+  .contact-icon {
+    width: 3rem; height: 3rem; border-radius: 999px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .go-btn {
+    display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+    padding: 0.6rem 1rem; border-radius: 999px; font-weight: 700; font-size: 0.85rem;
+    background: rgba(22,104,227,0.1); color: #1668E3; white-space: nowrap;
+  }
+  .section-jump { scroll-margin-top: 1rem; }
+</style>
+</head>
+<body class="bg-mist text-ink font-sans antialiased">
+
+  <!-- HEADER -->
+  <section class="relative overflow-hidden px-6 pt-[max(1.75rem,env(safe-area-inset-top))] pb-6 text-white"
+            style="background-image:url('images/hero-category.webp'); background-size:cover; background-position:center;">
+    <div class="absolute inset-0 bg-gradient-to-b from-oceanDeep/55 via-oceanDeep/45 to-oceanDeep/90"></div>
+    <div class="relative z-10">
+    <a href="guest-home.html" class="inline-flex items-center gap-1.5 text-white/70 text-sm mb-4">
+      <i data-lucide="chevron-left" class="w-4 h-4"></i> Back
+    </a>
+    <p class="uppercase tracking-[0.2em] text-xs font-semibold text-white/70 mb-1">Where's the nearest…</p>
+    <h1 class="font-extrabold text-2xl sm:text-3xl mb-3">Nearby Essentials</h1>
+    <p class="text-white/80 text-sm leading-relaxed">ATMs, pharmacies, gas stations, and convenience stores around
+      Liwliwa — jump to a category or open live directions on Google Maps.</p>
+
+    <!-- Jump chips -->
+    <div class="hscroll gap-2 mt-4">
+      <a href="#cat-atm" class="chip">🏧 ATM</a>
+      <a href="#cat-pharmacy" class="chip">💊 Pharmacy</a>
+      <a href="#cat-gas" class="chip">⛽ Gas Station</a>
+      <a href="#cat-store" class="chip">🛒 Convenience Store</a>
+    </div>
+    </div>
+  </section>
+
+  <section class="px-6 pt-6 pb-2">
+    <div class="bg-ocean/10 rounded-2xl p-4 text-sm text-ink/70 flex gap-3">
+      <i data-lucide="lightbulb" class="w-4 h-4 text-ocean shrink-0 mt-0.5"></i>
+      <p>The "Open in Maps" button on each category always shows the closest live results to wherever you are
+        standing right now — use it first. Confirmed spots below are added as the local team verifies them.</p>
+    </div>
+  </section>
+
+  <!-- ATM -->
+  <section id="cat-atm" class="section-jump px-6 pt-4 pb-2">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-bold text-lg">ATM</h2>
+      <a href="https://www.google.com/maps/search/?api=1&query=ATM+near+San+Felipe+Zambales" target="_blank" rel="noopener" class="go-btn">
+        <i data-lucide="navigation" class="w-3.5 h-3.5"></i> Open in Maps
+      </a>
+    </div>
+    <div class="space-y-3">
+      <!-- EDIT ME: replace with confirmed ATM locations (bank name, barangay, walking distance from the beach). -->
+      <div class="contact-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)] opacity-70">
+        <span class="contact-icon bg-ocean/10 text-ocean"><i data-lucide="landmark" class="w-5 h-5"></i></span>
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-sm">No confirmed ATM listed yet</p>
+          <p class="text-ink/50 text-xs mt-0.5">Many resorts recommend withdrawing cash before arriving in Liwliwa — ATMs can be sparse near the beach.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pharmacy -->
+  <section id="cat-pharmacy" class="section-jump px-6 pt-6 pb-2">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-bold text-lg">Pharmacy</h2>
+      <a href="https://www.google.com/maps/search/?api=1&query=Pharmacy+near+San+Felipe+Zambales" target="_blank" rel="noopener" class="go-btn">
+        <i data-lucide="navigation" class="w-3.5 h-3.5"></i> Open in Maps
+      </a>
+    </div>
+    <div class="space-y-3">
+      <!-- EDIT ME: replace with confirmed pharmacy/drugstore locations once verified. -->
+      <div class="contact-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)] opacity-70">
+        <span class="contact-icon bg-turquoise/10 text-turquoise"><i data-lucide="pill" class="w-5 h-5"></i></span>
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-sm">No confirmed pharmacy listed yet</p>
+          <p class="text-ink/50 text-xs mt-0.5">For basic first aid, most resorts keep a small stock — ask your host first.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gas Station -->
+  <section id="cat-gas" class="section-jump px-6 pt-6 pb-2">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-bold text-lg">Gas Station</h2>
+      <a href="https://www.google.com/maps/search/?api=1&query=Gas+Station+near+San+Felipe+Zambales" target="_blank" rel="noopener" class="go-btn">
+        <i data-lucide="navigation" class="w-3.5 h-3.5"></i> Open in Maps
+      </a>
+    </div>
+    <div class="space-y-3">
+      <!-- EDIT ME: replace with confirmed gas stations along the highway into Liwliwa. -->
+      <div class="contact-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)] opacity-70">
+        <span class="contact-icon bg-sunset/10 text-sunset"><i data-lucide="fuel" class="w-5 h-5"></i></span>
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-sm">No confirmed gas station listed yet</p>
+          <p class="text-ink/50 text-xs mt-0.5">Fill up along the national highway before turning off toward the beach.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Convenience Store -->
+  <section id="cat-store" class="section-jump px-6 pt-6 pb-6">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-bold text-lg">Convenience Store</h2>
+      <a href="https://www.google.com/maps/search/?api=1&query=Convenience+Store+near+San+Felipe+Zambales" target="_blank" rel="noopener" class="go-btn">
+        <i data-lucide="navigation" class="w-3.5 h-3.5"></i> Open in Maps
+      </a>
+    </div>
+    <div class="space-y-3">
+      <!-- EDIT ME: replace with confirmed convenience stores/sari-sari stores near the beach. -->
+      <div class="contact-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)] opacity-70">
+        <span class="contact-icon bg-oceanDeep/10 text-oceanDeep"><i data-lucide="shopping-basket" class="w-5 h-5"></i></span>
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-sm">No confirmed store listed yet</p>
+          <p class="text-ink/50 text-xs mt-0.5">Small sari-sari stores line the road along the beachfront for snacks, sunscreen, and water.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="app-bottom-spacer-v2"></div>
+
+  <script src="js/main.js"></script>
+  <script>
+    if (window.lucide) lucide.createIcons();
+  </script>
+
+  <div class="floating-nav-wrap">
+    <nav class="floating-nav">
+      <a href="guest-home.html" class="floating-nav-item">
+        <i data-lucide="home"></i>
+        <span>Home</span>
+      </a>
+      <a href="map.html" class="floating-nav-item">
+        <i data-lucide="compass"></i>
+        <span>Explore</span>
+      </a>
+      <a href="events.html" class="floating-nav-item">
+        <i data-lucide="calendar"></i>
+        <span>Events</span>
+      </a>
+      <a href="favorites.html" class="floating-nav-item">
+        <i data-lucide="heart"></i>
+        <span>Saved</span>
+      </a>
+      <a href="more.html" class="floating-nav-item active">
+        <i data-lucide="menu"></i>
+        <span>More</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

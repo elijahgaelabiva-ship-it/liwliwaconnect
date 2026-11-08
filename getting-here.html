@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Getting Here — Liwliwa Connect">
+<meta property="og:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta property="og:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<meta property="og:url" content="https://liwliwaconnect.netlify.app/getting-here.html">
+<meta property="og:site_name" content="Liwliwa Connect">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Getting Here — Liwliwa Connect">
+<meta name="twitter:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta name="twitter:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<title>Getting Here — Liwliwa Connect</title>
+<meta name="description" content="How to reach Liwliwa, San Felipe, Zambales by bus or private vehicle." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css" />
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1668E3">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Liwliwa">
+<meta name="mobile-web-app-capable" content="yes">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ocean: '#1668E3',
+          oceanDeep: '#0B2A4A',
+          turquoise: '#17B8A6',
+          sunset: '#FF7A45',
+          mist: '#F5F7FA',
+          ink: '#141C24',
+          success: '#2FB380',
+          danger: '#F0605F',
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+<style>
+  .route-step { position: relative; padding-left: 2rem; }
+  .route-step::before {
+    content: '';
+    position: absolute; left: 0.4rem; top: 0.35rem;
+    width: 0.6rem; height: 0.6rem; border-radius: 50%;
+    background: #1668E3;
+  }
+  .route-step::after {
+    content: '';
+    position: absolute; left: 0.65rem; top: 1rem; bottom: -1.25rem;
+    width: 1px; background: rgba(20,28,36,0.12);
+  }
+  .route-step:last-child::after { display: none; }
+  .mode-tab {
+    flex: 1; text-align: center; padding: 0.75rem 0.5rem; border-radius: 0.9rem;
+    font-weight: 600; font-size: 0.9rem; color: rgba(20,28,36,0.5);
+    display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+  }
+  .mode-tab.mode-active { background: #fff; color: #1668E3; box-shadow: 0 2px 8px -2px rgba(20,28,36,0.15); }
+</style>
+</head>
+<body class="bg-mist text-ink font-sans antialiased">
+
+  <!-- HEADER -->
+  <section class="px-6 pt-[max(1.75rem,env(safe-area-inset-top))] pb-6 text-white"
+            style="background: linear-gradient(135deg, #1668E3, #0B2A4A);">
+    <a href="guest-home.html" class="inline-flex items-center gap-1.5 text-white/70 text-sm mb-4">
+      <i data-lucide="chevron-left" class="w-4 h-4"></i> Back
+    </a>
+    <p class="uppercase tracking-[0.2em] text-xs font-semibold text-sunset mb-1">Plan your trip</p>
+    <h1 class="font-extrabold text-2xl sm:text-3xl mb-3">Getting to Liwliwa</h1>
+    <p class="text-white/75 text-sm leading-relaxed">Liwliwa is in Barangay Sto. Niño, San Felipe, Zambales —
+      about 166 km from Metro Manila. Choose how you're traveling below.</p>
+    <div class="flex gap-4 mt-4 text-xs text-white/85">
+      <span class="flex items-center gap-1.5"><i data-lucide="car" class="w-3.5 h-3.5"></i>~3.5 hrs by car</span>
+      <span class="flex items-center gap-1.5"><i data-lucide="bus" class="w-3.5 h-3.5"></i>~4–5 hrs by bus</span>
+    </div>
+  </section>
+
+  <!-- MODE TOGGLE -->
+  <div class="px-6 -mt-1 pt-5">
+    <div class="flex gap-1 bg-ink/5 rounded-[1rem] p-1">
+      <button type="button" id="tabBusBtn" class="mode-tab mode-active" onclick="setMode('bus')">
+        <i data-lucide="bus" class="w-4 h-4"></i> By Bus
+      </button>
+      <button type="button" id="tabCarBtn" class="mode-tab" onclick="setMode('car')">
+        <i data-lucide="car" class="w-4 h-4"></i> By Private Vehicle
+      </button>
+    </div>
+  </div>
+
+  <!-- BY BUS -->
+  <section id="panelBus" class="px-6 pt-6 pb-4">
+    <div class="bg-white rounded-[1.5rem] p-5 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+      <h2 class="font-bold text-lg mb-4">Manila → Liwliwa by bus</h2>
+
+      <div class="route-step pb-6">
+        <p class="font-semibold text-sm">1. Head to a Victory Liner terminal</p>
+        <p class="text-ink/60 text-sm mt-1">Cubao, Pasay, or Caloocan terminals all work. Ride a bus bound for
+          <b>Iba</b> or <b>Sta. Cruz, Zambales</b> — both routes pass San Felipe.</p>
+      </div>
+
+      <div class="route-step pb-6">
+        <p class="font-semibold text-sm">2. Tell the conductor your stop</p>
+        <p class="text-ink/60 text-sm mt-1">Say you're getting off at <b>"San Felipe Public Market"</b>. If booking
+          at the counter, mention San Felipe so you're not charged the full Iba/Sta. Cruz fare.</p>
+      </div>
+
+      <div class="route-step pb-6">
+        <p class="font-semibold text-sm">3. Ride time & fare</p>
+        <p class="text-ink/60 text-sm mt-1">Around 3.5–5 hours depending on traffic. Aircon bus fare to San Felipe
+          is roughly ₱300–₱480. Fares and schedules change, so double-check on the Victory Liner site or app
+          before you leave.</p>
+      </div>
+
+      <div class="route-step">
+        <p class="font-semibold text-sm">4. Last leg: tricycle</p>
+        <p class="text-ink/60 text-sm mt-1">You'll be dropped off at San Felipe Public Market. Tricycles
+          wait right there — just tell the driver your resort's name. Fare to
+          Liwliwa beach is around ₱40–₱100 per person.</p>
+      </div>
+    </div>
+
+    <a href="https://www.victoryliner.com" target="_blank" rel="noopener"
+       class="mt-4 flex items-center justify-between bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+      <span class="flex items-center gap-3 text-sm font-semibold">
+        <i data-lucide="external-link" class="w-4 h-4 text-ocean"></i> Check Victory Liner schedules & fares
+      </span>
+      <i data-lucide="chevron-right" class="w-4 h-4 text-ink/30"></i>
+    </a>
+
+    <div class="mt-4 bg-turquoise/10 rounded-2xl p-4 text-sm text-ink/70 flex gap-3">
+      <i data-lucide="lightbulb" class="w-4 h-4 text-turquoise shrink-0 mt-0.5"></i>
+      <p>Alternative: if Iba/Sta. Cruz buses are sold out, take any bus to <b>Olongapo City</b> first, then
+        transfer to a mini-bus or jeepney heading to San Felipe.</p>
+    </div>
+
+    <!-- Coming from the north (Baguio, La Union, Pangasinan, Ilocos) -->
+    <div class="mt-4 bg-white rounded-[1.5rem] p-5 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+      <h3 class="font-bold text-base mb-1 flex items-center gap-2">
+        <i data-lucide="compass" class="w-4 h-4 text-ocean"></i> Coming from the north?
+      </h3>
+      <p class="text-ink/50 text-xs mb-4">Baguio, La Union, Pangasinan, Ilocos</p>
+
+      <div class="route-step pb-6">
+        <p class="font-semibold text-sm">Option A — Direct Baguio–Olongapo bus</p>
+        <p class="text-ink/60 text-sm mt-1">Victory Liner runs direct trips between Baguio and Olongapo
+          throughout the day — this skips Manila entirely. Check current schedules on their site, since
+          frequency is lower than the Manila routes.</p>
+      </div>
+
+      <div class="route-step pb-6">
+        <p class="font-semibold text-sm">Option B — Via Dau / San Fernando, Pampanga</p>
+        <p class="text-ink/60 text-sm mt-1">From La Union, Pangasinan, or Ilocos, take any bus south along
+          MacArthur Highway and get off at <b>Dau or San Fernando (Pampanga)</b> terminal. From there, transfer
+          to a bus bound for <b>Olongapo</b>.</p>
+      </div>
+
+      <div class="route-step">
+        <p class="font-semibold text-sm">Transfer to San Felipe</p>
+        <p class="text-ink/60 text-sm mt-1">Whichever option you take, once you're at Olongapo terminal, transfer
+          to a bus or mini-bus bound for <b>Iba</b> or <b>Sta. Cruz, Zambales</b>, and get off at San Felipe
+          Public Market — same last-mile tricycle ride from there as above.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BY PRIVATE VEHICLE -->
+  <section id="panelCar" class="px-6 pt-6 pb-4 hidden">
+    <div class="bg-white rounded-[1.5rem] p-5 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+      <h2 class="font-bold text-lg mb-4">Manila → Liwliwa by car</h2>
+
+      <div class="route-step pb-6">
+        <p class="font-semibold text-sm">1. NLEX → SCTEX</p>
+        <p class="text-ink/60 text-sm mt-1">From Metro Manila, take NLEX, then continue onto SCTEX heading toward
+          Subic (SBMA).</p>
+      </div>
+
+      <div class="route-step pb-6">
+        <p class="font-semibold text-sm">2. Through Subic to San Felipe</p>
+        <p class="text-ink/60 text-sm mt-1">Exit toward Subic Bay Freeport Zone, then continue out through
+          Subic town toward Zambales, following the coastal road to San Felipe.</p>
+      </div>
+
+      <div class="route-step pb-6">
+        <p class="font-semibold text-sm">3. Watch for the "Welcome to San Felipe" arch</p>
+        <p class="text-ink/60 text-sm mt-1">After the arch, keep driving straight for about 5–8 minutes to the
+          turn toward Liwliwa (look for signage near Bobulon Elementary School).</p>
+      </div>
+
+      <div class="route-step">
+        <p class="font-semibold text-sm">4. Eco Tourism & Coastal Preservation Fee</p>
+        <p class="text-ink/60 text-sm mt-1">As you enter Liwliwa you'll pass an LGU outpost that collects a small
+          eco-tourism and coastal preservation fee — keep some cash on hand.</p>
+      </div>
+    </div>
+
+    <a id="navigateLink" href="https://www.google.com/maps/search/?api=1&query=Liwliwa+Beach+San+Felipe+Zambales" target="_blank" rel="noopener"
+       class="mt-4 flex items-center justify-between bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+      <span class="flex items-center gap-3 text-sm font-semibold">
+        <i data-lucide="navigation" class="w-4 h-4 text-ocean"></i> Open in Google Maps / Waze
+      </span>
+      <i data-lucide="chevron-right" class="w-4 h-4 text-ink/30"></i>
+    </a>
+
+    <div class="mt-4 bg-turquoise/10 rounded-2xl p-4 text-sm text-ink/70 flex gap-3">
+      <i data-lucide="lightbulb" class="w-4 h-4 text-turquoise shrink-0 mt-0.5"></i>
+      <p>Drive time is around 3–3.5 hours without heavy traffic. Search "San Felipe, Zambales" or your resort's
+        name directly in Waze/Google Maps for turn-by-turn directions.</p>
+    </div>
+
+    <!-- Coming from the north (Baguio, La Union, Pangasinan, Ilocos) -->
+    <div class="mt-4 bg-white rounded-[1.5rem] p-5 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+      <h3 class="font-bold text-base mb-1 flex items-center gap-2">
+        <i data-lucide="compass" class="w-4 h-4 text-ocean"></i> Coming from the north?
+      </h3>
+      <p class="text-ink/50 text-xs mb-4">Baguio, La Union, Pangasinan, Ilocos</p>
+
+      <div class="route-step pb-6">
+        <p class="font-semibold text-sm">1. Head south on MacArthur Highway or TPLEX</p>
+        <p class="text-ink/60 text-sm mt-1">From Baguio, take Kennon/Marcos Highway down to Rosario, La Union,
+          then TPLEX south toward Tarlac. From La Union, Pangasinan, or Ilocos, MacArthur Highway or TPLEX both
+          work — either way you're heading toward Tarlac/Concepcion.</p>
+      </div>
+
+      <div class="route-step pb-6">
+        <p class="font-semibold text-sm">2. Join SCTEX southbound</p>
+        <p class="text-ink/60 text-sm mt-1">Get on SCTEX at Tarlac or Concepcion, heading toward
+          <b>Subic (SBMA)</b> — this is the same expressway used in the Manila route, just entered from the
+          opposite direction, so you skip NLEX and Manila traffic entirely.</p>
+      </div>
+
+      <div class="route-step">
+        <p class="font-semibold text-sm">3. Same final stretch as from Manila</p>
+        <p class="text-ink/60 text-sm mt-1">Once you exit SCTEX toward Subic, follow the same directions as
+          above: through Subic town, watch for the "Welcome to San Felipe" arch, then turn toward Liwliwa near
+          Bobulon Elementary School.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="px-6 pt-2">
+    <a href="map.html" class="flex items-center justify-between bg-oceanDeep text-white rounded-2xl p-4">
+      <span class="flex items-center gap-3 text-sm font-semibold">
+        <i data-lucide="map-pin" class="w-4 h-4"></i> See resorts & landmarks on the map
+      </span>
+      <i data-lucide="chevron-right" class="w-4 h-4 text-white/60"></i>
+    </a>
+  </div>
+
+  <div class="app-bottom-spacer-v2"></div>
+
+  <script src="js/main.js"></script>
+  <script>
+    function setMode(mode) {
+      const isBus = mode === 'bus';
+      document.getElementById('panelBus').classList.toggle('hidden', !isBus);
+      document.getElementById('panelCar').classList.toggle('hidden', isBus);
+      document.getElementById('tabBusBtn').classList.toggle('mode-active', isBus);
+      document.getElementById('tabCarBtn').classList.toggle('mode-active', !isBus);
+    }
+    if (window.lucide) lucide.createIcons();
+  </script>
+
+  <div class="floating-nav-wrap">
+    <nav class="floating-nav">
+      <a href="guest-home.html" class="floating-nav-item">
+        <i data-lucide="home"></i>
+        <span>Home</span>
+      </a>
+      <a href="map.html" class="floating-nav-item">
+        <i data-lucide="compass"></i>
+        <span>Explore</span>
+      </a>
+      <a href="events.html" class="floating-nav-item">
+        <i data-lucide="calendar"></i>
+        <span>Events</span>
+      </a>
+      <a href="favorites.html" class="floating-nav-item">
+        <i data-lucide="heart"></i>
+        <span>Saved</span>
+      </a>
+      <a href="more.html" class="floating-nav-item active">
+        <i data-lucide="menu"></i>
+        <span>More</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

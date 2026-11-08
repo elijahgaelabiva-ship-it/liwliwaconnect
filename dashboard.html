@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Business Dashboard — Liwliwa Connect">
+<meta property="og:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta property="og:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<meta property="og:url" content="https://liwliwaconnect.netlify.app/dashboard.html">
+<meta property="og:site_name" content="Liwliwa Connect">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Business Dashboard — Liwliwa Connect">
+<meta name="twitter:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta name="twitter:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<title>Business Dashboard — Liwliwa Connect</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1668E3">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Liwliwa">
+<script>
+  // "Mobile App V2" palette — see css/style.css "MOBILE APP V2" section.
+  tailwind.config = { theme: { extend: {
+    colors: {
+      ocean: '#1668E3', oceanDeep: '#0B2A4A', turquoise: '#17B8A6', sunset: '#FF7A45',
+      mist: '#F5F7FA', ink: '#141C24', success: '#2FB380', danger: '#F0605F'
+    },
+    fontFamily: { sans: ['Inter', 'sans-serif'] }
+  }}}
+</script>
+<style>
+  .field-input { width:100%; background:#F5F7FA; border:1.5px solid transparent; border-radius:0.85rem; padding:0.75rem 1rem; font-size:0.9rem; outline:none; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+  .field-input:focus { border-color:#1668E3; box-shadow: 0 0 0 3px rgba(22,104,227,0.15); background:#FFFFFF; }
+  .field-label { font-size:0.8rem; font-weight:600; margin-bottom:0.3rem; display:block; }
+</style>
+</head>
+<body class="bg-mist text-ink font-sans antialiased">
+
+  <div id="loginScreen" class="min-h-screen flex flex-col items-center justify-center px-6 gap-4 relative">
+    <a href="guest-home.html" class="absolute top-[max(1.5rem,env(safe-area-inset-top))] left-6 inline-flex items-center gap-1.5 text-ink/50 text-sm font-medium">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      Back
+    </a>
+    <h1 class="font-extrabold text-2xl mb-2">Business Dashboard</h1>
+    <div class="max-w-sm w-full flex flex-col gap-3">
+      <div>
+        <label class="field-label">Email</label>
+        <input id="loginEmail" type="email" class="field-input" />
+      </div>
+      <div>
+        <label class="field-label">Password</label>
+        <input id="loginPassword" type="password" class="field-input" />
+      </div>
+      <button id="loginBtn" class="btn-gradient mt-1">Log in</button>
+      <p id="loginError" class="hidden text-danger text-sm text-center">Email or password not recognized.</p>
+    </div>
+  </div>
+
+  <div id="dashScreen" class="hidden">
+    <header class="px-6 pt-[max(1.5rem,env(safe-area-inset-top))] pb-6 flex flex-col gap-2 text-white" style="background: linear-gradient(135deg, #1668E3, #0B2A4A);">
+      <a href="guest-home.html" class="inline-flex items-center gap-1.5 text-white/70 text-sm font-medium w-fit">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        Back
+      </a>
+      <div class="flex items-center justify-between gap-3">
+        <h1 class="font-extrabold text-2xl">Your Listings</h1>
+        <div class="flex items-center gap-2">
+          <button id="addListingBtn" class="bg-white text-ocean font-semibold px-4 py-2 rounded-full text-sm whitespace-nowrap">+ Add listing</button>
+          <button id="addEventBtn" class="bg-white text-ocean font-semibold px-4 py-2 rounded-full text-sm whitespace-nowrap">+ Add event</button>
+          <button id="logoutBtn" class="text-white/70 text-sm font-medium whitespace-nowrap">Log out</button>
+        </div>
+      </div>
+    </header>
+
+    <div id="siteStatsBanner" class="hidden mx-6 mt-4 text-xs font-semibold text-ocean bg-ocean/10 rounded-full px-4 py-2 w-fit"></div>
+
+    <!-- ADD LISTING form — hidden until the button above is tapped -->
+    <div id="addListingForm" class="hidden px-6 py-6 max-w-2xl mx-auto">
+      <div class="card-app p-5 flex flex-col gap-3">
+        <h3 class="font-bold text-lg mb-1">Add a new listing</h3>
+        <p class="text-xs text-ink/50 mb-1">This goes to the same review queue as a new registration — it'll go live once approved.</p>
+
+        <div>
+          <label class="field-label">Category</label>
+          <select id="newCategory" class="field-input">
+            <option value="resorts">Resort</option>
+            <option value="restaurants">Restaurant</option>
+            <option value="cafes">Café</option>
+            <option value="surfschools">Surf School</option>
+            <option value="activities">Activity</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Business name</label>
+          <input id="newBusinessName" class="field-input" />
+        </div>
+        <div>
+          <label class="field-label">Owner name</label>
+          <input id="newOwnerName" class="field-input" />
+        </div>
+        <div>
+          <label class="field-label">Description</label>
+          <textarea id="newDescription" class="field-input" rows="2"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="field-label">Price range</label>
+            <input id="newPriceRange" class="field-input" placeholder="e.g. ₱500–₱1,200" />
+          </div>
+          <div>
+            <label class="field-label">Price tier</label>
+            <select id="newPriceTier" class="field-input">
+              <option value="budget">₱ Budget</option>
+              <option value="mid">₱₱ Mid-range</option>
+              <option value="premium">₱₱₱ Premium</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Contact number</label>
+          <input id="newContactNumber" class="field-input" />
+        </div>
+        <div>
+          <label class="field-label">Facebook URL</label>
+          <input id="newFacebookUrl" class="field-input" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="field-label">Website URL</label>
+            <input id="newWebsiteUrl" class="field-input" placeholder="https://..." />
+          </div>
+          <div>
+            <label class="field-label">Instagram URL</label>
+            <input id="newInstagramUrl" class="field-input" placeholder="https://instagram.com/..." />
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Amenities</label>
+          <input id="newAmenities" class="field-input" placeholder="e.g. Free Wifi, Pool, Air Conditioning" />
+          <p class="text-xs text-ink/50 mt-1">Comma-separated — shows as tags on your listing.</p>
+        </div>
+
+        <button id="submitNewListingBtn" class="btn-gradient mt-1">Submit for review</button>
+        <p id="newListingStatus" class="hidden text-xs text-ink/60"></p>
+      </div>
+    </div>
+
+    <!-- SUBMIT EVENT form — hidden until "+ Add event" is tapped. Goes to
+         the Events admin queue (see admin.html "Pending Events") and only
+         shows on the public Events page once approved. -->
+    <div id="addEventForm" class="hidden px-6 py-6 max-w-2xl mx-auto">
+      <div class="card-app p-5 flex flex-col gap-3">
+        <h3 class="font-bold text-lg mb-1">Submit an event</h3>
+        <p class="text-xs text-ink/50 mb-1">This goes to the admin for review — it'll show on the public Events page once approved.</p>
+
+        <div>
+          <label class="field-label">Event title</label>
+          <input id="newEventTitle" class="field-input" placeholder="e.g. Friday Night Bonfire" />
+        </div>
+        <div>
+          <label class="field-label">Category</label>
+          <select id="newEventCategory" class="field-input">
+            <option value="livemusic">Live Music</option>
+            <option value="surfcomp">Surf Competition</option>
+            <option value="yoga">Yoga</option>
+            <option value="bonfire">Bonfire</option>
+            <option value="festival">Festival</option>
+            <option value="foodmarket">Food Market</option>
+            <option value="workshop">Workshops</option>
+            <option value="family">Family Activities</option>
+            <option value="petfriendly">Pet Friendly</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="field-label">Date</label>
+            <input id="newEventDate" type="date" class="field-input" />
+          </div>
+          <div>
+            <label class="field-label">Time</label>
+            <input id="newEventTime" type="time" class="field-input" />
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Venue</label>
+          <input id="newEventVenue" class="field-input" placeholder="e.g. Liwliwa Main Beach" />
+        </div>
+        <div>
+          <label class="field-label">Description</label>
+          <textarea id="newEventDescription" class="field-input" rows="3"></textarea>
+        </div>
+        <div>
+          <label class="field-label">Cover photo (optional)</label>
+          <input id="newEventPhoto" type="file" accept="image/*" class="field-input" />
+        </div>
+
+        <button id="submitNewEventBtn" class="btn-gradient mt-1">Submit for review</button>
+        <p id="newEventStatus" class="hidden text-xs text-ink/60"></p>
+      </div>
+    </div>
+
+    <div id="list" class="px-6 py-6 max-w-2xl mx-auto flex flex-col gap-5"></div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    const BASE_URL = 'https://script.google.com/macros/s/AKfycbx1doFh9X93nSzMbxtDFmOUWEDf8MoT7Csb8XiEmKnh7Zw33RDEDjN8N7WlSFTMS5gb/exec';
+    const SESSION_KEY = 'liwliwa_dashboard_session';
+    let sessionEmail = null;
+    let sessionPassword = null;
+    let pendingPhotos = {};
+    let currentListings = []; // set at the top of renderListings — lets the
+                               // booking Confirm/Decline handler (attached
+                               // once, outside renderListings) look up
+                               // which listing/category a booking row
+                               // belongs to.
+
+    function resizeImageFile(file, maxDimension = 1280, quality = 0.75) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            let { width, height } = img;
+            if (width > maxDimension || height > maxDimension) {
+              if (width > height) { height = Math.round(height * (maxDimension / width)); width = maxDimension; }
+              else { width = Math.round(width * (maxDimension / height)); height = maxDimension; }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.onerror = () => reject(new Error('Could not read that image'));
+          img.src = e.target.result;
+        };
+        reader.onerror = () => reject(new Error('Could not read that file'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function escapeHtml(v) { const d = document.createElement('div'); d.textContent = String(v ?? ''); return d.innerHTML; }
+
+    // Sheet dates arrive as full ISO timestamps (or a Date-parseable string)
+    // — <input type="date"> only accepts YYYY-MM-DD, so this trims it down.
+    // Returns '' for anything blank or unparseable, which just leaves the
+    // date field empty rather than throwing.
+    function formatDateInput(value) {
+      if (!value) return '';
+      const d = new Date(value);
+      if (isNaN(d.getTime())) return '';
+      return d.toISOString().slice(0, 10);
+    }
+
+    // Only the email is ever persisted (localStorage), purely so a
+    // returning owner doesn't have to retype it — see performLogin below.
+    // The password is kept in memory only (sessionEmail/sessionPassword
+    // above) for the duration of this page load, never written to
+    // localStorage, and never auto-submitted. Every visit requires
+    // actually entering the password.
+    async function performLogin(email, password) {
+      const res = await fetch(BASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'dashboard_login', email, password })
+      });
+      const data = await res.json();
+      if (!data.success || data.listings.length === 0) return false;
+
+      sessionEmail = email;
+      sessionPassword = password;
+      // Only the email is remembered (as a convenience — it's prefilled
+      // next visit so the owner doesn't have to retype it), never the
+      // password. The password is not persisted anywhere and must be
+      // entered every visit — this is a business owner's login, and
+      // storing it in localStorage would mean anyone else who later uses
+      // this same device/browser could open the dashboard with no
+      // password at all.
+      try { localStorage.setItem(SESSION_KEY, JSON.stringify({ email })); } catch (e) { /* private browsing — email just won't be remembered */ }
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('dashScreen').classList.remove('hidden');
+      renderListings(data.listings);
+      window.AppSiteStats.renderBanner(document.getElementById('siteStatsBanner'), { range: '30d', label: 'in the last 30 days' });
+      return true;
+    }
+
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const loginBtn = document.getElementById('loginBtn');
+
+      document.getElementById('loginError').classList.add('hidden');
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Logging in…';
+      AppProgress.start();
+
+      const ok = await performLogin(email, password);
+
+      AppProgress.done();
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Log in';
+
+      if (!ok) {
+        document.getElementById('loginError').classList.remove('hidden');
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      sessionEmail = null;
+      sessionPassword = null;
+      try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
+      document.getElementById('dashScreen').classList.add('hidden');
+      document.getElementById('loginScreen').classList.remove('hidden');
+      document.getElementById('loginEmail').value = '';
+      document.getElementById('loginPassword').value = '';
+    });
+
+    // Prefill the remembered email (convenience only) and put focus
+    // straight in the password field — the password itself is never
+    // remembered or auto-submitted, so this never logs anyone in silently.
+    (() => {
+      let saved = null;
+      try { saved = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (e) {}
+      if (saved && saved.email) {
+        document.getElementById('loginEmail').value = saved.email;
+        document.getElementById('loginPassword').focus();
+      }
+    })();
+
+    function renderListings(listings) {
+      currentListings = listings;
+      const list = document.getElementById('list');
+      pendingPhotos = {}; // idx -> { cover: base64|null, gallery: [base64,...] } — reset on every render
+      list.innerHTML = listings.map((l, idx) => `
+        <div class="card-app p-5" data-idx="${idx}">
+          <h3 class="font-bold text-lg mb-3">${escapeHtml(l.name)}</h3>
+          <div class="flex flex-col gap-3">
+            <div>
+              <label class="field-label">Description</label>
+              <textarea class="field-input desc" rows="2">${escapeHtml(l.description)}</textarea>
+            </div>
+            ${window.AppPremium.isActive(l) ? `
+            <div class="rounded-xl bg-sunset/5 border border-sunset/20 p-3">
+              <label class="field-label flex items-center gap-1.5"><i data-lucide="megaphone" class="w-4 h-4 text-sunset"></i>Promotion (Premium)</label>
+              <input class="field-input promo_text" value="${escapeHtml(l.promo_text)}" placeholder="e.g. 20% off all rooms this weekend" maxlength="120" />
+              <label class="field-label mt-2">Ends on (optional)</label>
+              <input class="field-input promo_expires" type="date" value="${escapeHtml(formatDateInput(l.promo_expires))}" />
+              <p class="text-xs text-ink/50 mt-1">Shows as a banner on your listing page. Leave the text blank to remove it, or set an end date to auto-hide it after that day.</p>
+            </div>` : ''}
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="field-label">Price range</label>
+                <input class="field-input price_range" value="${escapeHtml(l.price_range)}" />
+              </div>
+              <div>
+                <label class="field-label">Price tier</label>
+                <select class="field-input price_tier">
+                  <option value="budget" ${l.price_tier==='budget'?'selected':''}>₱ Budget</option>
+                  <option value="mid" ${l.price_tier==='mid'?'selected':''}>₱₱ Mid-range</option>
+                  <option value="premium" ${l.price_tier==='premium'?'selected':''}>₱₱₱ Premium</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="field-label">Contact number</label>
+              <input class="field-input contact_number" value="${escapeHtml(l.contact_number)}" />
+            </div>
+            ${l.category === 'resorts' ? `
+            <div>
+              <label class="field-label">Max group size (pax)</label>
+              <input class="field-input max_pax" type="number" min="1" value="${escapeHtml(l.max_pax)}" placeholder="e.g. 20" />
+              <p class="text-xs text-ink/50 mt-1">The most guests you can sleep at once.</p>
+            </div>` : ''}
+            <div>
+              <label class="field-label">Facebook URL</label>
+              <input class="field-input facebook_url" value="${escapeHtml(l.facebook_url)}" />
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="field-label">Website URL</label>
+                <input class="field-input website_url" value="${escapeHtml(l.website_url)}" placeholder="https://..." />
+              </div>
+              <div>
+                <label class="field-label">Instagram URL</label>
+                <input class="field-input instagram_url" value="${escapeHtml(l.instagram_url)}" placeholder="https://instagram.com/..." />
+              </div>
+            </div>
+            <div>
+              <label class="field-label">Amenities</label>
+              <input class="field-input amenities" value="${escapeHtml(l.amenities)}" placeholder="e.g. Free Wifi, Pool, Air Conditioning" />
+              <p class="text-xs text-ink/50 mt-1">Comma-separated — shows as tags on your listing.</p>
+            </div>
+            <div>
+              <label class="field-label">Cover photo</label>
+              <div class="flex items-center gap-3">
+                <div class="coverPreviewWrap w-16 h-16 rounded-xl bg-mist overflow-hidden flex items-center justify-center shrink-0 border-2 border-ink/10">
+                  <img class="coverPreviewImg ${l.photo_url ? '' : 'hidden'} w-full h-full object-cover" src="${escapeHtml(l.photo_url || '')}" alt="" />
+                  <i data-lucide="image-off" class="coverPreviewIcon ${l.photo_url ? 'hidden' : ''} w-5 h-5 text-ink/30"></i>
+                </div>
+                <label class="inline-flex items-center gap-1.5 text-xs font-semibold text-ocean bg-ocean/10 rounded-lg py-2 px-3 cursor-pointer w-fit">
+                  <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                  <span class="coverBtnLabel">${l.photo_url ? 'Change photo' : 'Upload photo'}</span>
+                  <input type="file" accept="image/*" class="coverFileInput hidden" />
+                </label>
+              </div>
+            </div>
+            <div>
+              <label class="field-label">More photos${window.AppPremium.isActive(l) ? ' (Premium: up to 9)' : ' (optional, up to 4)'}</label>
+              <label class="inline-flex items-center gap-1.5 text-xs font-semibold text-ocean bg-ocean/10 rounded-lg py-2 px-3 cursor-pointer w-fit">
+                <i data-lucide="upload" class="w-3.5 h-3.5"></i>Upload photos
+                <input type="file" accept="image/*" multiple class="galleryFileInput hidden" />
+              </label>
+              <div class="galleryPreviewGrid flex gap-2 mt-2 flex-wrap"></div>
+              <p class="text-xs text-ink/50 mt-1">${window.AppPremium.isActive(l)
+                ? 'Cover photo + these = up to 10 total (Premium). Existing extra photos stay as-is unless you add new ones here.'
+                : 'Cover photo + these = up to 5 total. Existing extra photos stay as-is unless you add new ones here.'}</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="field-label">Latitude</label>
+                <input class="field-input latitude" value="${escapeHtml(l.latitude)}" placeholder="e.g. 15.4870" />
+              </div>
+              <div>
+                <label class="field-label">Longitude</label>
+                <input class="field-input longitude" value="${escapeHtml(l.longitude)}" placeholder="e.g. 119.9080" />
+              </div>
+            </div>
+            <p class="text-xs text-ink/50 -mt-1">Latitude/longitude power the map pin and the "Directions" button on your
+              business page — find yours by right-clicking your spot in Google Maps and copying the two numbers shown.</p>
+            <button class="saveBtn btn-gradient mt-1" data-category="${l.category}" data-row="${l.row}">Save changes</button>
+            <p class="saveStatus text-xs text-ink/60 hidden"></p>
+
+            <div class="border-t border-ink/10 mt-2 pt-4">
+              ${window.AppPremium.isActive(l) ? `
+                <div class="flex items-center justify-between mb-3">
+                  <h4 class="font-bold text-sm text-ink/80">Booking Requests</h4>
+                  <span class="bookingsPendingBadge hidden text-[11px] font-bold bg-sunset text-white px-2 py-0.5 rounded-full" data-idx="${idx}"></span>
+                </div>
+                <div class="bookingsList flex flex-col gap-2" data-idx="${idx}">
+                  <p class="text-xs text-ink/40 py-2">Loading…</p>
+                </div>
+              ` : `
+                <div class="rounded-xl bg-sunset/10 border border-sunset/20 px-4 py-4 flex flex-col items-center text-center gap-1.5">
+                  <i data-lucide="lock" class="w-5 h-5 text-sunset"></i>
+                  <h4 class="font-bold text-sm text-ink/80">Booking Requests is a Premium feature</h4>
+                  <p class="text-xs text-ink/60 max-w-xs">Let guests request a reservation right from your listing. Ask the site admin about upgrading to Premium.</p>
+                </div>
+              `}
+            </div>
+
+            <div class="border-t border-ink/10 mt-2 pt-4">
+              ${window.AppPremium.isActive(l) ? `
+                <div class="flex items-center justify-between mb-3">
+                  <h4 class="font-bold text-sm text-ink/80">Analytics</h4>
+                  <div class="flex gap-1 rangeBtns" data-idx="${idx}">
+                    <button class="range-btn text-[11px] px-2.5 py-1 rounded-full bg-ocean text-white" data-range="today">Today</button>
+                    <button class="range-btn text-[11px] px-2.5 py-1 rounded-full bg-ink/5 text-ink/60" data-range="7d">7D</button>
+                    <button class="range-btn text-[11px] px-2.5 py-1 rounded-full bg-ink/5 text-ink/60" data-range="30d">30D</button>
+                    <button class="range-btn text-[11px] px-2.5 py-1 rounded-full bg-ink/5 text-ink/60" data-range="all">All</button>
+                  </div>
+                </div>
+                <div class="analyticsCards grid grid-cols-2 sm:grid-cols-5 gap-2 mb-4" data-idx="${idx}"></div>
+                <p class="text-[11px] font-semibold text-ink/50 mb-1">Views by day</p>
+                <div class="analyticsChart" data-idx="${idx}"></div>
+              ` : `
+                <div class="rounded-xl bg-sunset/10 border border-sunset/20 px-4 py-4 flex flex-col items-center text-center gap-1.5">
+                  <i data-lucide="lock" class="w-5 h-5 text-sunset"></i>
+                  <h4 class="font-bold text-sm text-ink/80">Analytics is a Premium feature</h4>
+                  <p class="text-xs text-ink/60 max-w-xs">See daily views, calls, and clicks for this listing. Ask the site admin about upgrading to Premium.</p>
+                </div>
+              `}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Pre-existing gap: this page never called lucide.createIcons(), so
+      // every icon on it (upload, image-off, and now the analytics lock)
+      // rendered as an empty tag. Fixed here, once, right after the HTML
+      // that contains them is inserted.
+      if (window.lucide) lucide.createIcons();
+
+      document.querySelectorAll('.coverFileInput').forEach(input => {
+        input.addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const card = input.closest('[data-idx]');
+          const idx = card.dataset.idx;
+          try {
+            const dataUrl = await resizeImageFile(file);
+            pendingPhotos[idx] = pendingPhotos[idx] || {};
+            pendingPhotos[idx].cover = dataUrl.split(',')[1];
+            const img = card.querySelector('.coverPreviewImg');
+            img.src = dataUrl;
+            img.classList.remove('hidden');
+            card.querySelector('.coverPreviewIcon').classList.add('hidden');
+            card.querySelector('.coverBtnLabel').textContent = 'Change photo';
+          } catch (err) {
+            console.error(err);
+          }
+          e.target.value = '';
+        });
+      });
+
+      document.querySelectorAll('.galleryFileInput').forEach(input => {
+        input.addEventListener('change', async (e) => {
+          const card = input.closest('[data-idx]');
+          const idx = card.dataset.idx;
+          pendingPhotos[idx] = pendingPhotos[idx] || {};
+          pendingPhotos[idx].gallery = pendingPhotos[idx].gallery || [];
+          const maxExtras = window.AppPremium.isActive(listings[idx]) ? 9 : 4;
+          const files = Array.from(e.target.files).slice(0, maxExtras - pendingPhotos[idx].gallery.length);
+          const grid = card.querySelector('.galleryPreviewGrid');
+          for (const file of files) {
+            try {
+              const dataUrl = await resizeImageFile(file);
+              pendingPhotos[idx].gallery.push(dataUrl.split(',')[1]);
+              const wrap = document.createElement('div');
+              wrap.className = 'w-14 h-14 rounded-lg overflow-hidden border-2 border-ink/10';
+              wrap.innerHTML = `<img src="${dataUrl}" class="w-full h-full object-cover" alt="" />`;
+              grid.appendChild(wrap);
+            } catch (err) {
+              console.error(err);
+            }
+          }
+          e.target.value = '';
+        });
+      });
+
+      document.querySelectorAll('.saveBtn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const card = btn.closest('[data-idx]');
+          const fields = {
+            description: card.querySelector('.desc').value,
+            price_range: card.querySelector('.price_range').value,
+            price_tier: card.querySelector('.price_tier').value,
+            contact_number: card.querySelector('.contact_number').value,
+            facebook_url: card.querySelector('.facebook_url').value,
+            website_url: card.querySelector('.website_url').value,
+            instagram_url: card.querySelector('.instagram_url').value,
+            amenities: card.querySelector('.amenities').value,
+            latitude: card.querySelector('.latitude').value,
+            longitude: card.querySelector('.longitude').value
+          };
+          const maxPaxInput = card.querySelector('.max_pax');
+          if (maxPaxInput) fields.max_pax = maxPaxInput.value;
+          const promoTextInput = card.querySelector('.promo_text');
+          if (promoTextInput) fields.promo_text = promoTextInput.value;
+          const promoExpiresInput = card.querySelector('.promo_expires');
+          if (promoExpiresInput) fields.promo_expires = promoExpiresInput.value;
+          const idx = card.dataset.idx;
+          const pending = pendingPhotos[idx] || {};
+          const status = card.querySelector('.saveStatus');
+          btn.disabled = true;
+          btn.textContent = 'Submitting…';
+          AppProgress.start();
+          try {
+            const data = await AppBackend.postJSON(BASE_URL, {
+              action: 'submit_edit', email: sessionEmail, password: sessionPassword,
+              category: btn.dataset.category, row: parseInt(btn.dataset.row), fields,
+              photo_base64: pending.cover || undefined,
+              photo_base64_list: pending.gallery || [],
+              photo_mime_type: 'image/jpeg'
+            });
+            if (data.success && data.warning) {
+              // A missing-column warning is easy to miss as small inline
+              // text below a button that already says "Saved" — this used
+              // to just be colored text, and it's directly responsible for
+              // photo/promo data silently not saving without the owner
+              // ever noticing why. Now it renders as a real alert box.
+              status.className = 'saveStatus text-xs rounded-xl px-3 py-2.5 bg-sunset/10 border border-sunset/30 text-ink flex items-start gap-2';
+              status.innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4 text-sunset shrink-0 mt-0.5"></i><span>${data.warning}</span>`;
+              if (window.lucide) lucide.createIcons();
+            } else if (data.success) {
+              status.className = 'saveStatus text-xs text-turquoise font-semibold';
+              status.textContent = 'Saved.';
+            } else {
+              status.className = 'saveStatus text-xs rounded-xl px-3 py-2.5 bg-danger/10 border border-danger/30 text-danger font-semibold';
+              status.textContent = 'Error: ' + (data.error || 'unknown');
+            }
+            status.classList.remove('hidden');
+          } catch (err) {
+            console.error(err);
+            status.className = 'saveStatus text-xs rounded-xl px-3 py-2.5 bg-danger/10 border border-danger/30 text-danger font-semibold';
+            status.textContent = err.message || 'Could not reach the server — please try again.';
+            status.classList.remove('hidden');
+          } finally {
+            AppProgress.done();
+            btn.disabled = false;
+            btn.textContent = 'Save changes';
+          }
+        });
+      });
+
+      // Analytics — one load per listing card, per range. Skipped entirely
+      // for free-tier listings (they show the upgrade card instead), and
+      // still double-checked server-side in Analytics.gs either way.
+      listings.forEach((l, idx) => {
+        if (!window.AppPremium.isActive(l)) return;
+        const businessId = l.id || (l.category + '_' + l.row);
+        loadCardAnalytics(businessId, idx, 'today');
+      });
+
+      // Booking Requests — Premium-only perk, same pattern as Analytics:
+      // skipped entirely for free-tier listings (they show the upgrade
+      // card instead), and still double-checked server-side either way.
+      listings.forEach((l, idx) => {
+        if (!window.AppPremium.isActive(l)) return;
+        const businessId = l.id || (l.category + '_' + l.row);
+        loadCardBookings(businessId, idx);
+      });
+
+      document.querySelectorAll('.rangeBtns').forEach(group => {
+        group.addEventListener('click', (evt) => {
+          const btn = evt.target.closest('.range-btn');
+          if (!btn) return;
+          const idx = group.dataset.idx;
+          const l = listings[idx];
+          const businessId = l.id || (l.category + '_' + l.row);
+
+          group.querySelectorAll('.range-btn').forEach(b => b.classList.remove('bg-ocean', 'text-white'));
+          group.querySelectorAll('.range-btn').forEach(b => b.classList.add('bg-ink/5', 'text-ink/60'));
+          btn.classList.remove('bg-ink/5', 'text-ink/60');
+          btn.classList.add('bg-ocean', 'text-white');
+
+          loadCardAnalytics(businessId, idx, btn.dataset.range);
+        });
+      });
+    }
+
+    async function loadCardBookings(businessId, idx) {
+      const listEl = document.querySelector(`.bookingsList[data-idx="${idx}"]`);
+      const badgeEl = document.querySelector(`.bookingsPendingBadge[data-idx="${idx}"]`);
+      if (!listEl) return;
+
+      try {
+        const url = `${BASE_URL}?type=business_bookings&id=${encodeURIComponent(businessId)}&email=${encodeURIComponent(sessionEmail)}&password=${encodeURIComponent(sessionPassword)}`;
+        const res = await fetch(url);
+        const bookings = await res.json();
+        if (!Array.isArray(bookings)) throw new Error('bad response');
+
+        const pendingCount = bookings.filter(b => b.status === 'pending').length;
+        if (badgeEl) {
+          if (pendingCount > 0) {
+            badgeEl.textContent = `${pendingCount} new`;
+            badgeEl.classList.remove('hidden');
+          } else {
+            badgeEl.classList.add('hidden');
+          }
+        }
+
+        if (bookings.length === 0) {
+          listEl.innerHTML = '<p class="text-xs text-ink/40 py-2">No booking requests yet.</p>';
+          return;
+        }
+
+        const STATUS_STYLE = {
+          pending: 'bg-sunset/15 text-sunset',
+          confirmed: 'bg-turquoise/15 text-turquoise',
+          declined: 'bg-ink/10 text-ink/50'
+        };
+
+        listEl.innerHTML = bookings.map(b => `
+          <div class="border border-ink/10 rounded-xl p-3">
+            <div class="flex items-center justify-between gap-2 mb-1">
+              <p class="font-semibold text-sm">${escapeHtml(b.guest_name)}</p>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${STATUS_STYLE[b.status] || STATUS_STYLE.pending}">${escapeHtml(b.status || 'pending')}</span>
+            </div>
+            <p class="text-xs text-ink/60">${escapeHtml(b.preferred_date)}${b.party_size ? ` · ${escapeHtml(b.party_size)} pax` : ''}</p>
+            <p class="text-xs text-ink/60 mt-0.5">
+              <a href="tel:${escapeHtml(b.guest_contact)}" class="text-ocean font-semibold">${escapeHtml(b.guest_contact)}</a>
+            </p>
+            ${b.notes ? `<p class="text-xs text-ink/50 mt-1">"${escapeHtml(b.notes)}"</p>` : ''}
+            ${b.status === 'pending' ? `
+              <div class="flex gap-2 mt-2">
+                <button class="bookingActionBtn flex-1 text-xs font-semibold bg-turquoise text-white py-1.5 rounded-full" data-idx="${idx}" data-row="${b.row}" data-status="confirmed">Confirm</button>
+                <button class="bookingActionBtn flex-1 text-xs font-semibold bg-ink/10 text-ink/70 py-1.5 rounded-full" data-idx="${idx}" data-row="${b.row}" data-status="declined">Decline</button>
+              </div>
+            ` : ''}
+          </div>
+        `).join('');
+      } catch (err) {
+        listEl.innerHTML = '<p class="text-xs text-ink/40 py-2">Couldn\'t load booking requests.</p>';
+      }
+    }
+
+    document.addEventListener('click', async (evt) => {
+      const btn = evt.target.closest('.bookingActionBtn');
+      if (!btn) return;
+      const idx = btn.dataset.idx;
+      const l = currentListings[idx];
+      const businessId = l.id || (l.category + '_' + l.row);
+
+      btn.disabled = true;
+      try {
+        const data = await window.AppBackend.postJSON(BASE_URL, {
+          action: 'update_booking_status',
+          business_id: businessId,
+          email: sessionEmail,
+          password: sessionPassword,
+          row: parseInt(btn.dataset.row, 10),
+          status: btn.dataset.status
+        });
+        if (data && data.success) {
+          loadCardBookings(businessId, idx);
+        } else {
+          btn.disabled = false;
+        }
+      } catch (err) {
+        btn.disabled = false;
+      }
+    });
+
+    async function loadCardAnalytics(businessId, idx, range) {
+      const cardsEl = document.querySelector(`.analyticsCards[data-idx="${idx}"]`);
+      const chartEl = document.querySelector(`.analyticsChart[data-idx="${idx}"]`);
+      if (!cardsEl || !chartEl) return;
+
+      // Show zeros immediately rather than a blank gap while the request is
+      // in flight — a slow analytics load should never make the page feel broken.
+      AppAnalyticsCards.render(cardsEl, {});
+      chartEl.innerHTML = '<p class="text-xs text-ink/40 py-8 text-center">Loading…</p>';
+
+      try {
+        const url = `${BASE_URL}?type=business_analytics&id=${encodeURIComponent(businessId)}&range=${range}&email=${encodeURIComponent(sessionEmail)}&password=${encodeURIComponent(sessionPassword)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.error) {
+          chartEl.innerHTML = data.error === 'premium_required'
+            ? '<p class="text-xs text-ink/40 py-8 text-center">Analytics is a Premium feature.</p>'
+            : '<p class="text-xs text-ink/40 py-8 text-center">Analytics unavailable.</p>';
+          return;
+        }
+        AppAnalyticsCards.render(cardsEl, data.counts);
+        const daily = Object.keys(data.dailySeries || {})
+          .sort()
+          .slice(-14) // keep the chart readable even on the "All time" range
+          .map(day => ({ label: day.slice(5), value: data.dailySeries[day] })); // "MM-DD"
+        AppChart.bar(chartEl, daily);
+      } catch (err) {
+        // Analytics is informational only — a failed load never blocks the
+        // rest of the dashboard (editing/saving listings still works fine).
+        chartEl.innerHTML = '<p class="text-xs text-ink/40 py-8 text-center">Analytics unavailable.</p>';
+      }
+    }
+
+    document.getElementById('addListingBtn').addEventListener('click', () => {
+      const form = document.getElementById('addListingForm');
+      form.classList.toggle('hidden');
+    });
+
+    document.getElementById('submitNewListingBtn').addEventListener('click', async () => {
+      const submitBtn = document.getElementById('submitNewListingBtn');
+      const status = document.getElementById('newListingStatus');
+
+      const payload = {
+        action: 'add_listing',
+        email: sessionEmail,
+        password: sessionPassword,
+        category: document.getElementById('newCategory').value,
+        business_name: document.getElementById('newBusinessName').value.trim(),
+        owner_name: document.getElementById('newOwnerName').value.trim(),
+        description: document.getElementById('newDescription').value.trim(),
+        price_range: document.getElementById('newPriceRange').value.trim(),
+        price_tier: document.getElementById('newPriceTier').value,
+        contact_number: document.getElementById('newContactNumber').value.trim(),
+        facebook_url: document.getElementById('newFacebookUrl').value.trim(),
+        website_url: document.getElementById('newWebsiteUrl').value.trim(),
+        instagram_url: document.getElementById('newInstagramUrl').value.trim(),
+        amenities: document.getElementById('newAmenities').value.trim()
+      };
+
+      if (!payload.business_name) {
+        status.textContent = 'Business name is required.';
+        status.classList.remove('hidden');
+        return;
+      }
+
+      submitBtn.textContent = 'Submitting…';
+      AppProgress.start();
+      const res = await fetch(BASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      AppProgress.done();
+      submitBtn.textContent = 'Submit for review';
+
+      status.classList.remove('hidden');
+      if (data.success) {
+        status.textContent = 'Submitted for review — it\'ll appear once an admin approves it.';
+        ['newBusinessName','newOwnerName','newDescription','newPriceRange','newContactNumber','newFacebookUrl','newWebsiteUrl','newInstagramUrl'].forEach(id => {
+          document.getElementById(id).value = '';
+        });
+      } else {
+        status.textContent = 'Error: ' + (data.error || 'unknown');
+      }
+    });
+
+    document.getElementById('addEventBtn').addEventListener('click', () => {
+      const form = document.getElementById('addEventForm');
+      form.classList.toggle('hidden');
+    });
+
+    document.getElementById('submitNewEventBtn').addEventListener('click', async () => {
+      const submitBtn = document.getElementById('submitNewEventBtn');
+      const status = document.getElementById('newEventStatus');
+
+      const title = document.getElementById('newEventTitle').value.trim();
+      const dateVal = document.getElementById('newEventDate').value;
+      const timeVal = document.getElementById('newEventTime').value;
+
+      status.classList.remove('hidden');
+      if (!title || !dateVal || !timeVal) {
+        status.textContent = 'Event title, date, and time are required.';
+        return;
+      }
+
+      // Combine date + time into a real Date so it round-trips through
+      // toISOString() the same way js/events.js expects (startIso).
+      const startIso = new Date(`${dateVal}T${timeVal}`).toISOString();
+
+      const payload = {
+        action: 'submit_event',
+        email: sessionEmail,
+        password: sessionPassword,
+        title,
+        category: document.getElementById('newEventCategory').value,
+        start_iso: startIso,
+        venue: document.getElementById('newEventVenue').value.trim(),
+        description: document.getElementById('newEventDescription').value.trim()
+      };
+
+      const photoInput = document.getElementById('newEventPhoto');
+      if (photoInput.files && photoInput.files[0]) {
+        try {
+          const dataUrl = await resizeImageFile(photoInput.files[0]);
+          payload.photo_base64 = dataUrl.split(',')[1];
+          payload.photo_mime_type = 'image/jpeg';
+        } catch (e) {
+          // Photo is optional — a resize failure shouldn't block the submission.
+        }
+      }
+
+      submitBtn.textContent = 'Submitting…';
+      AppProgress.start();
+      const res = await fetch(BASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      AppProgress.done();
+      submitBtn.textContent = 'Submit for review';
+
+      status.classList.remove('hidden');
+      if (data.success) {
+        status.textContent = 'Submitted for review — it\'ll appear on the public Events page once an admin approves it.';
+        ['newEventTitle','newEventVenue','newEventDescription','newEventDate','newEventTime'].forEach(id => {
+          document.getElementById(id).value = '';
+        });
+        photoInput.value = '';
+      } else {
+        status.textContent = 'Error: ' + (data.error || 'unknown');
+      }
+    });
+
+    // Static icons present at page load (login screen back button, etc.)
+    // — renderListings() re-runs this after login for the dynamic content,
+    // but this covers everything visible before that point too.
+    if (window.lucide) lucide.createIcons();
+  </script>
+</body>
+</html>

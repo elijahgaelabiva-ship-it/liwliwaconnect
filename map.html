@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Map — Liwliwa Connect">
+<meta property="og:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta property="og:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<meta property="og:url" content="https://liwliwaconnect.netlify.app/map.html">
+<meta property="og:site_name" content="Liwliwa Connect">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Map — Liwliwa Connect">
+<meta name="twitter:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta name="twitter:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<title>Map — Liwliwa Connect</title>
+<meta name="description" content="Explore Liwliwa on the map — resorts, restaurants, cafés, surf schools, and activities." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css" />
+
+<!-- Makes the site installable to the home screen, opening full-view with no
+     browser address bar or nav bar, like a native app. -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1668E3">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Liwliwa">
+<meta name="mobile-web-app-capable" content="yes">
+
+<script>
+  // "Mobile App V2" palette — see css/style.css "MOBILE APP V2" section.
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ocean: '#1668E3',
+          oceanDeep: '#0B2A4A',
+          turquoise: '#17B8A6',
+          sunset: '#FF7A45',
+          mist: '#F5F7FA',
+          ink: '#141C24',
+          success: '#2FB380',
+          danger: '#F0605F',
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+<style>
+  #map { height: 100%; width: 100%; }
+  .category-icon { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; margin-right: 6px; vertical-align: -4px; }
+  .category-icon i { width: 11px; height: 11px; color: #fff; stroke-width: 2.75; }
+  .map-marker-pin {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2.5px solid #fff;
+    box-shadow: 0 2px 6px -1px rgba(20,28,36,0.4);
+  }
+  .map-marker-pin i { width: 16px; height: 16px; color: #fff; stroke-width: 2.5; }
+
+  /* Leaflet's own CSS puts .leaflet-top/.leaflet-bottom (which holds the
+     zoom control and the "Leaflet | © OpenStreetMap" attribution logo) at
+     z-index:1000 — higher than .floating-nav-wrap's z-index:900, so the
+     attribution logo rendered on top of the bottom nav bar. Dropping it
+     below the nav's stacking context fixes that. */
+  .leaflet-top, .leaflet-bottom { z-index: 800; }
+</style>
+</head>
+<body class="bg-mist text-ink font-sans antialiased">
+
+  <section class="relative overflow-hidden px-6 pt-[max(1.5rem,env(safe-area-inset-top))] pb-5 text-white" style="background-image:url('images/hero-category.webp'); background-size:cover; background-position:center;">
+    <div class="absolute inset-0 bg-gradient-to-b from-oceanDeep/55 via-oceanDeep/45 to-oceanDeep/90"></div>
+    <div class="relative z-10">
+    <p class="animate-in uppercase tracking-[0.2em] text-xs font-semibold text-sunset mb-1">Explore</p>
+    <h1 class="animate-in animate-in-delay-1 font-extrabold text-2xl sm:text-3xl mb-3">Liwliwa Map</h1>
+    <div class="animate-in animate-in-delay-2 flex flex-wrap gap-3 text-xs text-white/85">
+      <span><span class="category-icon" style="background:#FF7A45"><i data-lucide="bed"></i></span>Resorts</span>
+      <span><span class="category-icon" style="background:#1668E3"><i data-lucide="utensils"></i></span>Restaurants</span>
+      <span><span class="category-icon" style="background:#17B8A6"><i data-lucide="coffee"></i></span>Cafés</span>
+      <span><span class="category-icon" style="background:#0B2A4A"><i data-lucide="waves"></i></span>Surf Schools</span>
+      <span><span class="category-icon" style="background:#8B5CF6"><i data-lucide="compass"></i></span>Activities</span>
+      <span><span class="category-icon" style="background:#E0507A"><i data-lucide="store"></i></span>Local Vendors</span>
+    </div>
+    </div>
+  </section>
+
+  <div id="mapStatus" class="px-6 py-3 text-sm text-ink/60"></div>
+  <div class="relative mx-4 rounded-[1.5rem] overflow-hidden shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06),0_12px_24px_-12px_rgba(20,28,36,0.16)]">
+    <div id="map" style="height: 65vh;"></div>
+    <div id="mapSkeleton" class="skel absolute inset-0 pointer-events-none" style="height: 65vh;"></div>
+  </div>
+
+  <div class="app-bottom-spacer-v2"></div>
+
+  <script src="js/main.js"></script>
+  <script>
+    // Feature 8: Interactive Map — one request for all five directories, using ?type=all
+    const ALL_DATA_URL = 'https://script.google.com/macros/s/AKfycbx1doFh9X93nSzMbxtDFmOUWEDf8MoT7Csb8XiEmKnh7Zw33RDEDjN8N7WlSFTMS5gb/exec?type=all';
+    // Local vendors have a different schema (vendor_name, not name; no price_tier),
+    // so they're fetched separately rather than folded into ?type=all.
+    const LOCAL_VENDORS_DATA_URL = 'https://script.google.com/macros/s/AKfycbx1doFh9X93nSzMbxtDFmOUWEDf8MoT7Csb8XiEmKnh7Zw33RDEDjN8N7WlSFTMS5gb/exec?type=localvendors';
+    const LOCAL_VENDOR_COLOR = '#E0507A';
+
+    const CATEGORY_COLORS = {
+      resorts: '#FF7A45',
+      restaurants: '#1668E3',
+      cafes: '#17B8A6',
+      surfschools: '#0B2A4A',
+      activities: '#8B5CF6'
+    };
+
+    const CATEGORY_LABELS = {
+      resorts: 'Resort',
+      restaurants: 'Restaurant',
+      cafes: 'Café',
+      surfschools: 'Surf School',
+      activities: 'Activity'
+    };
+
+    const CATEGORY_ICONS = {
+      resorts: 'bed',
+      restaurants: 'utensils',
+      cafes: 'coffee',
+      surfschools: 'waves',
+      activities: 'compass'
+    };
+
+    // Builds a colored, icon-filled pin (instead of a plain circle) so each
+    // category reads at a glance on the map — matches the legend above.
+    function makeMarkerIcon(color, iconName) {
+      return L.divIcon({
+        className: '', // avoid Leaflet's default marker box/shadow styling
+        html: `<div class="map-marker-pin" style="background:${color}"><i data-lucide="${iconName}"></i></div>`,
+        iconSize: [30, 30],
+        iconAnchor: [15, 15],
+        popupAnchor: [0, -15]
+      });
+    }
+
+    // Centered on Liwliwa Surfing Beach, Sitio Liwliwa, Barangay Sto. Niño, San Felipe, Zambales
+    const map = L.map('map').setView([15.0510, 120.0595], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 19
+    }).addTo(map);
+
+    map.whenReady(() => {
+      const skel = document.getElementById('mapSkeleton');
+      if (skel) {
+        skel.style.transition = 'opacity 0.3s ease';
+        skel.style.opacity = '0';
+        setTimeout(() => skel.remove(), 300);
+      }
+    });
+
+    function escapeHtml(value) {
+      const div = document.createElement('div');
+      div.textContent = String(value ?? '');
+      return div.innerHTML;
+    }
+
+    async function loadMapData() {
+      const statusEl = document.getElementById('mapStatus');
+      statusEl.innerHTML = `
+        <span class="inline-flex items-center gap-2">
+          <i data-lucide="loader-circle" class="w-4 h-4 animate-spin"></i>
+          Loading locations…
+        </span>`;
+      lucide.createIcons();
+      AppProgress.start();
+      try {
+        const response = await fetch(ALL_DATA_URL);
+        if (!response.ok) throw new Error('Bad response');
+        const items = await response.json();
+
+        let plotted = 0;
+        const bounds = [];
+
+        items.forEach(item => {
+          const lat = parseFloat(item.latitude);
+          const lng = parseFloat(item.longitude);
+          if (isNaN(lat) || isNaN(lng)) return; // skip entries without coordinates yet
+
+          const color = CATEGORY_COLORS[item.category] || '#1668E3';
+          const iconName = CATEGORY_ICONS[item.category] || 'map-pin';
+          const marker = L.marker([lat, lng], { icon: makeMarkerIcon(color, iconName) }).addTo(map);
+
+          const label = CATEGORY_LABELS[item.category] || 'Listing';
+          marker.bindPopup(
+            `<strong>${escapeHtml(item.name || 'Unnamed')}</strong><br>
+             <span style="color:#FF7A45">${escapeHtml(label)}</span><br>
+             ${item.description ? escapeHtml(item.description) : ''}`
+          );
+
+          plotted++;
+          bounds.push([lat, lng]);
+        });
+
+        if (bounds.length > 0) {
+          map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
+        }
+        lucide.createIcons(); // renders the <i data-lucide> icons Leaflet just inserted into each pin
+
+        statusEl.textContent = plotted > 0
+          ? `Showing ${plotted} location${plotted === 1 ? '' : 's'} with coordinates.`
+          : 'No locations have coordinates yet — add latitude/longitude to your sheet rows to see pins here.';
+        AppProgress.done();
+
+      } catch (err) {
+        console.error('Failed to load map data:', err);
+        statusEl.textContent = "Couldn't load map data right now — check back in a moment.";
+        AppProgress.done();
+      }
+    }
+
+    async function loadLocalVendors() {
+      try {
+        const response = await fetch(LOCAL_VENDORS_DATA_URL);
+        if (!response.ok) return;
+        const vendors = await response.json();
+        if (!Array.isArray(vendors)) return;
+
+        const bounds = [];
+        vendors.forEach(vendor => {
+          // Guards against a stale/undeployed backend accidentally falling
+          // back to a directory sheet (e.g. Resorts) for this endpoint —
+          // real vendor rows always have vendor_name; directory rows don't.
+          if (!vendor.vendor_name) return;
+
+          const lat = parseFloat(vendor.latitude);
+          const lng = parseFloat(vendor.longitude);
+          if (isNaN(lat) || isNaN(lng)) return;
+
+          const marker = L.marker([lat, lng], { icon: makeMarkerIcon(LOCAL_VENDOR_COLOR, 'store') }).addTo(map);
+
+          const isOpen = String(vendor.status || '').trim().toLowerCase() === 'open';
+          marker.bindPopup(
+            `<strong>${escapeHtml(vendor.emoji || '')} ${escapeHtml(vendor.vendor_name || 'Local vendor')}</strong><br>
+             <span style="color:${LOCAL_VENDOR_COLOR}">Local Vendor</span><br>
+             ${isOpen ? (escapeHtml(vendor.hours_text || 'Open now')) : 'Closed now'}`
+          );
+
+          bounds.push([lat, lng]);
+        });
+        lucide.createIcons();
+      } catch (err) {
+        console.error('Failed to load local vendors for map:', err);
+      }
+    }
+
+    loadMapData();
+    loadLocalVendors();
+  </script>
+
+  <div class="floating-nav-wrap">
+    <nav class="floating-nav">
+      <a href="guest-home.html" class="floating-nav-item">
+        <i data-lucide="home"></i>
+        <span>Home</span>
+      </a>
+      <a href="map.html" class="floating-nav-item active">
+        <i data-lucide="compass"></i>
+        <span>Explore</span>
+      </a>
+      <a href="events.html" class="floating-nav-item">
+        <i data-lucide="calendar"></i>
+        <span>Events</span>
+      </a>
+      <a href="favorites.html" class="floating-nav-item">
+        <i data-lucide="heart"></i>
+        <span>Saved</span>
+      </a>
+      <a href="more.html" class="floating-nav-item">
+        <i data-lucide="menu"></i>
+        <span>More</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

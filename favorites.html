@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Favorites — Liwliwa Connect">
+<meta property="og:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta property="og:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<meta property="og:url" content="https://liwliwaconnect.netlify.app/favorites.html">
+<meta property="og:site_name" content="Liwliwa Connect">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Favorites — Liwliwa Connect">
+<meta name="twitter:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta name="twitter:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<title>Favorites — Liwliwa Connect</title>
+<meta name="description" content="Everything you've saved in Liwliwa Connect." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://wsrv.nl"> <!-- image optimization proxy, see js/main.js AppImage -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css" />
+
+<!-- Makes the site installable to the home screen, opening full-view with no
+     browser address bar or nav bar, like a native app. -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1668E3">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Liwliwa">
+<meta name="mobile-web-app-capable" content="yes">
+
+<script>
+  // "Mobile App V2" palette — see css/style.css "MOBILE APP V2" section.
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ocean: '#1668E3',
+          oceanDeep: '#0B2A4A',
+          turquoise: '#17B8A6',
+          sunset: '#FF7A45',
+          mist: '#F5F7FA',
+          ink: '#141C24',
+          success: '#2FB380',
+          danger: '#F0605F',
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+</head>
+<body class="bg-mist text-ink font-sans antialiased">
+
+  <section class="relative overflow-hidden px-6 pt-[max(1.5rem,env(safe-area-inset-top))] pb-6 text-white" style="background-image:url('images/hero-category.webp'); background-size:cover; background-position:center;">
+    <div class="absolute inset-0 bg-gradient-to-b from-oceanDeep/55 via-oceanDeep/45 to-oceanDeep/90"></div>
+    <div class="relative z-10">
+    <a href="guest-home.html" class="animate-in inline-flex items-center gap-1.5 text-white/70 text-sm font-medium mb-3">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      Back
+    </a>
+    <p class="animate-in uppercase tracking-[0.2em] text-xs font-semibold text-sunset mb-1">Saved for later</p>
+    <h1 class="animate-in animate-in-delay-1 font-extrabold text-3xl sm:text-4xl">Favorites</h1>
+  </div>
+  </section>
+
+  <section class="px-6 py-6">
+
+    <!-- Interested events — separate from favorited businesses (different
+         data source, EventsApp.AppEventInterest), hidden entirely if none. -->
+    <div id="interestedEventsSection" class="hidden mb-6">
+      <h2 class="font-bold text-lg mb-3">Events you're interested in</h2>
+      <div id="interestedEventsList" class="flex flex-col gap-4"></div>
+    </div>
+
+    <h2 id="favoritesHeading" class="hidden font-bold text-lg mb-3">Saved businesses</h2>
+
+    <!-- Loading state — shimmer skeleton cards, replaced once real data arrives -->
+    <div id="loadingState" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+    <!-- Error state -->
+    <div id="errorState" class="hidden bg-danger/10 border border-danger/25 rounded-2xl p-5 text-ink">
+      <p class="font-semibold mb-1">Couldn't load your favorites right now.</p>
+      <p class="text-sm text-ink/70">This usually means there's no internet connection. Nothing on your end is broken — try refreshing in a moment.</p>
+    </div>
+
+    <!-- Empty state -->
+    <div id="emptyState" class="hidden text-center py-14">
+      <div class="w-16 h-16 rounded-full bg-sunset/10 flex items-center justify-center mx-auto mb-4">
+        <i data-lucide="heart" class="w-7 h-7 text-sunset"></i>
+      </div>
+      <p class="font-semibold mb-1">No favorites yet</p>
+      <p class="text-sm text-ink/50 mb-5">Tap the heart on any resort, restaurant, café, surf school, or activity to save it here — or tap "Interested?" on an event.</p>
+      <a href="guest-home.html" class="btn-gradient inline-flex !w-auto px-6 !py-3">Browse Liwliwa</a>
+    </div>
+
+    <!-- Cards render here -->
+    <div id="favoritesGrid" class="hidden grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+  </section>
+
+  <div class="app-bottom-spacer-v2"></div>
+
+  <script src="js/main.js"></script>
+  <script src="js/events.js"></script>
+  <script>
+    // Favorites — reuses the same ?type=all endpoint the home page's search
+    // already fetches (one Web App, all 5 directories), then filters
+    // client-side down to whatever's saved in AppFavorites (device-local
+    // localStorage, see js/main.js). No new backend endpoint needed.
+    const ALL_DATA_URL = 'https://script.google.com/macros/s/AKfycbx1doFh9X93nSzMbxtDFmOUWEDf8MoT7Csb8XiEmKnh7Zw33RDEDjN8N7WlSFTMS5gb/exec?type=all';
+
+    const TIER_LABELS = { budget: '₱ Budget', mid: '₱₱ Mid-range', premium: '₱₱₱ Premium' };
+
+    // Interested events sit in their own store (EventsApp.AppEventInterest,
+    // separate from AppFavorites — see js/events.js) so this renders as its
+    // own section rather than mixing into the business grid below.
+    function renderInterestedEvents() {
+      const section = document.getElementById('interestedEventsSection');
+      const list = document.getElementById('interestedEventsList');
+      const interestedIds = window.EventsApp.AppEventInterest.getAll();
+      const events = interestedIds
+        .map((id) => window.EventsApp.getById(id))
+        .filter(Boolean);
+
+      if (events.length === 0) {
+        section.classList.add('hidden');
+        return false;
+      }
+
+      list.innerHTML = events.map((ev) => window.EventsApp.renderCard(ev, { compact: false })).join('');
+      window.EventsApp.wireCardActions(list);
+
+      // Unlike other pages, a card un-marked "Interested" here has no
+      // reason to keep showing — this list only exists to show what
+      // you're interested in. Runs after wireCardActions' own toggle
+      // (same click event, listeners fire in attachment order) so the
+      // interest state has already flipped by the time this checks it.
+      if (list.dataset.removalWired !== '1') {
+        list.dataset.removalWired = '1';
+        list.addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-event-interest]');
+          if (!btn) return;
+          if (window.EventsApp.AppEventInterest.isInterested(btn.dataset.eventInterest)) return;
+          const card = btn.closest('.card-app');
+          if (card) card.remove();
+          if (list.children.length === 0) {
+            section.classList.add('hidden');
+            const grid = document.getElementById('favoritesGrid');
+            if (grid.classList.contains('hidden')) document.getElementById('emptyState').classList.remove('hidden');
+          }
+        });
+      }
+
+      section.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+      return true;
+    }
+
+    async function loadFavorites() {
+      const loadingState = document.getElementById('loadingState');
+      const errorState = document.getElementById('errorState');
+      const emptyState = document.getElementById('emptyState');
+
+      const hasInterestedEvents = await window.EventsApp.ready.then(renderInterestedEvents);
+
+      const savedIds = window.AppFavorites.getAll();
+
+      // Nothing saved on the business side — skip the network call, but
+      // only show the "nothing saved" empty state if there are also no
+      // interested events (already rendered in their own section above).
+      if (savedIds.length === 0) {
+        loadingState.classList.add('hidden');
+        if (!hasInterestedEvents) emptyState.classList.remove('hidden');
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
+
+      AppSkeleton.cardGrid(loadingState, 6);
+      AppProgress.start();
+
+      try {
+        const response = await fetch(ALL_DATA_URL);
+        if (!response.ok) throw new Error('Bad response from server');
+        const allListings = await response.json();
+
+        loadingState.classList.add('hidden');
+        AppProgress.done();
+
+        const idSet = new Set(window.AppFavorites.getAll());
+        const favorited = (Array.isArray(allListings) ? allListings : []).filter((item) => idSet.has(item.id));
+
+        renderGrid(favorited, hasInterestedEvents);
+
+      } catch (err) {
+        console.error('Failed to load favorites:', err);
+        loadingState.classList.add('hidden');
+        errorState.classList.remove('hidden');
+        AppProgress.done();
+      }
+    }
+
+    function renderGrid(items, hasInterestedEvents) {
+      const grid = document.getElementById('favoritesGrid');
+      const emptyState = document.getElementById('emptyState');
+      const heading = document.getElementById('favoritesHeading');
+
+      if (items.length === 0) {
+        grid.classList.add('hidden');
+        grid.innerHTML = '';
+        heading.classList.add('hidden');
+        if (!hasInterestedEvents) emptyState.classList.remove('hidden');
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      // Only show the "Saved businesses" heading when there's also an
+      // events section above it — otherwise the page's own title already
+      // makes clear what this grid is.
+      heading.classList.toggle('hidden', !hasInterestedEvents);
+      grid.innerHTML = items.map(renderFavoriteCard).join('');
+      grid.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function renderFavoriteCard(item) {
+      const businessId = item.id || '';
+      const hasPhoto = item.photo_url && String(item.photo_url).trim() !== '';
+      const photoBlock = hasPhoto
+        ? AppImage.cardImg(item.photo_url, item.name || 'Photo', { className: 'w-full h-40 object-cover' })
+        : placeholderPhotoHtml();
+
+      const catMeta = window.CATEGORIES[item.category] || null;
+
+      const contactBlock = item.contact_number
+        ? `<a href="tel:${escapeHtml(item.contact_number)}" onclick="AppAnalytics.track('${escapeHtml(businessId)}', 'CALL')" class="inline-flex items-center gap-1.5 text-xs font-semibold bg-ocean/10 text-ocean px-3 py-1.5 rounded-full"><i data-lucide="phone" class="w-3.5 h-3.5"></i>Call</a>`
+        : '';
+
+      const fbBlock = item.facebook_url
+        ? `<a href="${escapeHtml(item.facebook_url)}" target="_blank" rel="noopener" onclick="AppAnalytics.track('${escapeHtml(businessId)}', 'FACEBOOK')" class="inline-flex items-center gap-1.5 text-xs font-semibold bg-ink/5 text-ink/70 px-3 py-1.5 rounded-full"><i data-lucide="external-link" class="w-3.5 h-3.5"></i>Facebook</a>`
+        : '';
+
+      const tierKey = String(item.price_tier || '').toLowerCase();
+      const tierBadge = TIER_LABELS[tierKey]
+        ? `<span class="text-xs font-semibold bg-sunset/15 text-sunset px-2 py-1 rounded-full inline-block w-fit">${TIER_LABELS[tierKey]}</span>`
+        : '';
+
+      const categoryBadge = catMeta
+        ? `<span class="text-xs font-semibold bg-ocean/10 text-ocean px-2 py-1 rounded-full inline-block w-fit">${escapeHtml(catMeta.label)}</span>`
+        : '';
+
+      return `
+        <div class="card-app flex flex-col" data-business-id="${escapeHtml(businessId)}">
+          <a href="business.html?id=${encodeURIComponent(businessId)}" class="contents">
+            <div class="relative">
+              ${photoBlock}
+              <button type="button" onclick="event.preventDefault(); event.stopPropagation(); unfavorite('${businessId}');"
+                class="favorite-btn absolute top-3 right-3 is-favorited">
+                <i data-lucide="heart" class="w-4 h-4"></i>
+              </button>
+            </div>
+            <div class="p-4 flex flex-col gap-2 flex-1">
+              <h3 class="font-bold text-lg leading-tight">${escapeHtml(item.name || 'Unnamed')}</h3>
+              ${window.AppRating.badge(item)}
+              ${item.description ? `<p class="text-sm text-ink/60 line-clamp-2">${escapeHtml(item.description)}</p>` : ''}
+              <div class="flex flex-wrap gap-1.5">${categoryBadge}${tierBadge}</div>
+              ${item.price_range ? `<p class="text-sm font-semibold text-ink/80 mt-0.5">${escapeHtml(item.price_range)}</p>` : ''}
+              ${window.AppAmenities.cardChips(item.amenities)}
+            </div>
+          </a>
+          <div class="flex flex-wrap gap-2 px-4 pb-4 mt-auto">
+            ${contactBlock}
+            ${fbBlock}
+          </div>
+        </div>
+      `;
+    }
+
+    // Unfavoriting from this page should drop the card immediately —
+    // toggling the class alone (like the directory pages do) would leave a
+    // stale "favorited" card sitting in a list called Favorites.
+    function unfavorite(businessId) {
+      AppFavorites.toggle(businessId);
+      const card = document.querySelector(`[data-business-id="${CSS.escape(businessId)}"]`);
+      if (card) card.remove();
+      const grid = document.getElementById('favoritesGrid');
+      const eventsSection = document.getElementById('interestedEventsSection');
+      const noEventsLeft = eventsSection.classList.contains('hidden');
+      if (grid && grid.children.length === 0) {
+        grid.classList.add('hidden');
+        document.getElementById('favoritesHeading').classList.add('hidden');
+        if (noEventsLeft) document.getElementById('emptyState').classList.remove('hidden');
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+
+    function placeholderPhotoHtml() {
+      return `<div class="w-full h-40 bg-ocean/10 flex items-center justify-center">
+                <i data-lucide="image-off" class="w-8 h-8 text-ocean/30"></i>
+              </div>`;
+    }
+
+    // Basic escaping so sheet data can never break the page's HTML
+    function escapeHtml(value) {
+      const div = document.createElement('div');
+      div.textContent = String(value ?? '');
+      return div.innerHTML;
+    }
+
+    loadFavorites();
+  </script>
+
+  <div class="floating-nav-wrap">
+    <nav class="floating-nav">
+      <a href="guest-home.html" class="floating-nav-item">
+        <i data-lucide="home"></i>
+        <span>Home</span>
+      </a>
+      <a href="map.html" class="floating-nav-item">
+        <i data-lucide="compass"></i>
+        <span>Explore</span>
+      </a>
+      <a href="events.html" class="floating-nav-item">
+        <i data-lucide="calendar"></i>
+        <span>Events</span>
+      </a>
+      <a href="favorites.html" class="floating-nav-item active">
+        <i data-lucide="heart"></i>
+        <span>Saved</span>
+      </a>
+      <a href="more.html" class="floating-nav-item">
+        <i data-lucide="menu"></i>
+        <span>More</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

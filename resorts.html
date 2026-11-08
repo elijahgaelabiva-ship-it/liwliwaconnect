@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Resorts — Liwliwa Connect">
+<meta property="og:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta property="og:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<meta property="og:url" content="https://liwliwaconnect.netlify.app/resorts.html">
+<meta property="og:site_name" content="Liwliwa Connect">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Resorts — Liwliwa Connect">
+<meta name="twitter:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta name="twitter:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<title>Resorts — Liwliwa Connect</title>
+<meta name="description" content="Browse resorts in Liwliwa, San Felipe, Zambales." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://wsrv.nl"> <!-- image optimization proxy, see js/main.js AppImage -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css" />
+
+<!-- Makes the site installable to the home screen, opening full-view with no
+     browser address bar or nav bar, like a native app. -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1668E3">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Liwliwa">
+<meta name="mobile-web-app-capable" content="yes">
+
+<script>
+  // "Mobile App V2" palette — see css/style.css "MOBILE APP V2" section.
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ocean: '#1668E3',
+          oceanDeep: '#0B2A4A',
+          turquoise: '#17B8A6',
+          sunset: '#FF7A45',
+          mist: '#F5F7FA',
+          ink: '#141C24',
+          success: '#2FB380',
+          danger: '#F0605F',
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+</head>
+<body class="bg-mist text-ink font-sans antialiased">
+
+  <section class="relative overflow-hidden px-6 pt-[max(1.5rem,env(safe-area-inset-top))] pb-6 text-white" style="background-image:url('images/hero-category.webp'); background-size:cover; background-position:center;">
+    <div class="absolute inset-0 bg-gradient-to-b from-oceanDeep/55 via-oceanDeep/45 to-oceanDeep/90"></div>
+    <div class="relative z-10">
+    <a href="guest-home.html" class="animate-in inline-flex items-center gap-1.5 text-white/70 text-sm font-medium mb-3">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      Back
+    </a>
+    <p class="animate-in uppercase tracking-[0.2em] text-xs font-semibold text-sunset mb-1">Directory</p>
+    <h1 class="animate-in animate-in-delay-1 font-extrabold text-3xl sm:text-4xl mb-5">Resorts</h1>
+    <div id="filterBar" class="animate-in animate-in-delay-2 hscroll gap-2">
+      <button data-tier="all" class="chip chip-active">All</button>
+      <button data-tier="budget" class="chip">₱ Budget</button>
+      <button data-tier="mid" class="chip">₱₱ Mid-range</button>
+      <button data-tier="premium" class="chip">₱₱₱ Premium</button>
+    </div>
+    <div id="extraFilterBar" class="animate-in animate-in-delay-2 hscroll gap-2 mt-2">
+      <button data-beachfront="off" class="chip"><i data-lucide="umbrella" class="w-3.5 h-3.5 inline -mt-0.5 mr-1"></i>Beachfront</button>
+      <button data-pax="20" class="chip">Fits 20+ pax</button>
+      <button data-pax="10" class="chip">Fits 10+ pax</button>
+    </div>
+    <div id="highlightBanner" class="hidden mt-3 text-sm bg-white/15 text-white px-4 py-2 rounded-full inline-flex items-center gap-2">
+      <span id="highlightBannerText"></span>
+      <a href="resorts.html" class="underline font-semibold">Show all</a>
+    </div>
+  </div>
+  </section>
+
+  <section class="px-6 py-6">
+
+    <!-- Loading state — shimmer skeleton cards, replaced once real data arrives -->
+    <div id="loadingState" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+    <!-- Error state -->
+    <div id="errorState" class="hidden bg-danger/10 border border-danger/25 rounded-2xl p-5 text-ink">
+      <p class="font-semibold mb-1">Couldn't load resorts right now.</p>
+      <p class="text-sm text-ink/70">This usually means the data link isn't set up correctly, or there's no internet connection. Nothing on your end is broken — try refreshing in a moment.</p>
+    </div>
+
+    <!-- Empty state -->
+    <div id="emptyState" class="hidden text-ink/50 py-10 text-center">
+      No resorts listed yet — check back soon.
+    </div>
+
+    <!-- Cards render here -->
+    <div id="resortGrid" class="hidden grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+  </section>
+
+  <div class="app-bottom-spacer-v2"></div>
+
+  <script src="js/main.js"></script>
+  <script>
+    // Feature 3: Resort Directory — fetches live data from the Apps Script endpoint below.
+    const RESORTS_API_URL = 'https://script.google.com/macros/s/AKfycbx1doFh9X93nSzMbxtDFmOUWEDf8MoT7Csb8XiEmKnh7Zw33RDEDjN8N7WlSFTMS5gb/exec?type=resorts';
+
+    let allResorts = [];
+    let currentTier = 'all';
+    let beachfrontOnly = false;
+    let minPax = 0;
+    const highlightQuery = (new URLSearchParams(window.location.search).get('name') || '').toLowerCase();
+
+    async function loadResorts() {
+      const loadingState = document.getElementById('loadingState');
+      const errorState = document.getElementById('errorState');
+      const emptyState = document.getElementById('emptyState');
+
+      AppSkeleton.cardGrid(loadingState, 6);
+      AppProgress.start();
+
+      try {
+        const response = await fetch(RESORTS_API_URL);
+        if (!response.ok) throw new Error('Bad response from server');
+        allResorts = await response.json();
+
+        loadingState.classList.add('hidden');
+        AppProgress.done();
+
+        if (!Array.isArray(allResorts) || allResorts.length === 0) {
+          emptyState.classList.remove('hidden');
+          return;
+        }
+
+        renderFiltered();
+
+      } catch (err) {
+        console.error('Failed to load resorts:', err);
+        loadingState.classList.add('hidden');
+        errorState.classList.remove('hidden');
+        AppProgress.done();
+      }
+    }
+
+    function renderFiltered() {
+      const grid = document.getElementById('resortGrid');
+      const emptyState = document.getElementById('emptyState');
+      const banner = document.getElementById('highlightBanner');
+      const bannerText = document.getElementById('highlightBannerText');
+
+      let filtered = currentTier === 'all'
+        ? allResorts
+        : allResorts.filter(r => String(r.price_tier || '').toLowerCase() === currentTier);
+
+      if (beachfrontOnly) {
+        filtered = filtered.filter(r => /beach/i.test(String(r.amenities || '')));
+      }
+
+      if (minPax > 0) {
+        filtered = filtered.filter(r => Number(r.max_pax || 0) >= minPax);
+      }
+
+      if (highlightQuery) {
+        filtered = filtered.filter(r => String(r.name || '').toLowerCase().includes(highlightQuery));
+        banner.classList.remove('hidden');
+        bannerText.textContent = `Showing results matching "${highlightQuery}"`;
+      } else {
+        banner.classList.add('hidden');
+      }
+
+      if (filtered.length === 0) {
+        grid.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        emptyState.textContent = highlightQuery
+          ? `No resorts found matching "${highlightQuery}".`
+          : (beachfrontOnly || minPax > 0)
+            ? `No resorts match those filters yet — try loosening them.`
+            : currentTier === 'all'
+              ? 'No resorts listed yet — check back soon.'
+              : `No resorts in this price range yet — try "All" or another filter.`;
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      grid.innerHTML = window.AppPremium.sort(filtered).map(renderResortCard).join('');
+      grid.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    document.getElementById('filterBar').addEventListener('click', (e) => {
+      const btn = e.target.closest('.chip');
+      if (!btn) return;
+      currentTier = btn.dataset.tier;
+      document.querySelectorAll('#filterBar .chip').forEach(b => b.classList.remove('chip-active'));
+      btn.classList.add('chip-active');
+      renderFiltered();
+    });
+
+    document.getElementById('extraFilterBar').addEventListener('click', (e) => {
+      const btn = e.target.closest('.chip');
+      if (!btn) return;
+
+      if (btn.dataset.beachfront !== undefined) {
+        beachfrontOnly = !beachfrontOnly;
+        btn.classList.toggle('chip-active', beachfrontOnly);
+      }
+
+      if (btn.dataset.pax !== undefined) {
+        const clickedPax = Number(btn.dataset.pax);
+        const wasActive = btn.classList.contains('chip-active');
+        document.querySelectorAll('#extraFilterBar [data-pax]').forEach(b => b.classList.remove('chip-active'));
+        minPax = wasActive ? 0 : clickedPax; // clicking an already-active pax chip clears it
+        if (!wasActive) btn.classList.add('chip-active');
+      }
+
+      renderFiltered();
+    });
+
+    const TIER_LABELS = { budget: '₱ Budget', mid: '₱₱ Mid-range', premium: '₱₱₱ Premium' };
+
+    function renderResortCard(resort) {
+      const businessId = resort.id || '';
+      const isPremium = window.AppPremium.isActive(resort);
+      const photoHeight = window.AppPremium.photoHeightClass(resort);
+      const hasPhoto = resort.photo_url && String(resort.photo_url).trim() !== '';
+      const photoBlock = hasPhoto
+        ? AppImage.cardImg(resort.photo_url, resort.name || 'Photo', { className: `w-full ${photoHeight} object-cover` })
+        : placeholderPhotoHtml(photoHeight);
+
+      const isFav = window.AppFavorites.isFavorited(businessId);
+
+      const contactBlock = resort.contact_number
+        ? `<a href="tel:${escapeHtml(resort.contact_number)}" onclick="AppAnalytics.track('${escapeHtml(businessId)}', 'CALL')" class="inline-flex items-center gap-1.5 text-xs font-semibold bg-ocean/10 text-ocean px-3 py-1.5 rounded-full"><i data-lucide="phone" class="w-3.5 h-3.5"></i>Call</a>`
+        : '';
+
+      const fbBlock = resort.facebook_url
+        ? `<a href="${escapeHtml(resort.facebook_url)}" target="_blank" rel="noopener" onclick="AppAnalytics.track('${escapeHtml(businessId)}', 'FACEBOOK')" class="inline-flex items-center gap-1.5 text-xs font-semibold bg-ink/5 text-ink/70 px-3 py-1.5 rounded-full"><i data-lucide="external-link" class="w-3.5 h-3.5"></i>Facebook</a>`
+        : '';
+
+      const tierKey = String(resort.price_tier || '').toLowerCase();
+      const tierBadge = TIER_LABELS[tierKey]
+        ? `<span class="text-xs font-semibold bg-sunset/15 text-sunset px-2 py-1 rounded-full inline-block w-fit">${TIER_LABELS[tierKey]}</span>`
+        : '';
+
+      const paxBadge = resort.max_pax
+        ? `<span class="text-xs font-semibold bg-ocean/10 text-ocean px-2 py-1 rounded-full inline-flex items-center gap-1 w-fit"><i data-lucide="users" class="w-3.5 h-3.5"></i>Fits up to ${escapeHtml(resort.max_pax)}</span>`
+        : '';
+
+      return `
+        <div class="card-app flex flex-col ${window.AppPremium.cardClass(resort)}">
+          <a href="business.html?id=${encodeURIComponent(businessId)}" class="contents">
+            <div class="relative">
+              ${photoBlock}
+              ${isPremium ? window.AppPremium.ribbon() : ''}
+              <button type="button" onclick="event.preventDefault(); event.stopPropagation(); const fav = AppFavorites.toggle('${businessId}'); this.classList.toggle('is-favorited', fav);"
+                class="favorite-btn absolute top-3 right-3 ${isFav ? 'is-favorited' : ''}">
+                <i data-lucide="heart" class="w-4 h-4"></i>
+              </button>
+            </div>
+            <div class="p-4 flex flex-col gap-2 flex-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="font-bold text-lg leading-tight">${escapeHtml(resort.name || 'Unnamed resort')}</h3>
+                ${window.AppPremium.verifiedBadge(resort)}
+              </div>
+              ${window.AppRating.badge(resort)}
+              ${window.AppPremium.activePromo(resort) ? `<p class="text-[11px] font-bold text-sunset flex items-center gap-1 truncate"><i data-lucide="megaphone" class="w-3 h-3 shrink-0"></i><span class="truncate">${escapeHtml(window.AppPremium.activePromo(resort))}</span></p>` : ''}
+              ${resort.description ? `<p class="text-sm text-ink/60 line-clamp-2">${escapeHtml(resort.description)}</p>` : ''}
+              ${tierBadge}
+              ${paxBadge}
+              ${resort.price_range ? `<p class="text-sm font-semibold text-ink/80 mt-0.5">${escapeHtml(resort.price_range)}</p>` : ''}
+              ${window.AppAmenities.cardChips(resort.amenities)}
+            </div>
+          </a>
+          <div class="flex flex-wrap gap-2 px-4 pb-4 mt-auto">
+            ${contactBlock}
+            ${fbBlock}
+          </div>
+        </div>
+      `;
+    }
+
+    function placeholderPhotoHtml(heightClass = 'h-40') {
+      return `<div class="w-full ${heightClass} bg-ocean/10 flex items-center justify-center">
+                <i data-lucide="image-off" class="w-8 h-8 text-ocean/30"></i>
+              </div>`;
+    }
+
+    // Basic escaping so sheet data can never break the page's HTML
+    function escapeHtml(value) {
+      const div = document.createElement('div');
+      div.textContent = String(value ?? '');
+      return div.innerHTML;
+    }
+
+    loadResorts();
+  </script>
+
+  <div class="floating-nav-wrap">
+    <nav class="floating-nav">
+      <a href="guest-home.html" class="floating-nav-item">
+        <i data-lucide="home"></i>
+        <span>Home</span>
+      </a>
+      <a href="map.html" class="floating-nav-item active">
+        <i data-lucide="compass"></i>
+        <span>Explore</span>
+      </a>
+      <a href="events.html" class="floating-nav-item">
+        <i data-lucide="calendar"></i>
+        <span>Events</span>
+      </a>
+      <a href="favorites.html" class="floating-nav-item">
+        <i data-lucide="heart"></i>
+        <span>Saved</span>
+      </a>
+      <a href="more.html" class="floating-nav-item">
+        <i data-lucide="menu"></i>
+        <span>More</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

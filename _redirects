@@ -1,0 +1,33 @@
+# Netlify reads this automatically — no config needed on their end.
+# "200" makes these REWRITES (the .html file's content is served, but the
+# clean URL stays in the address bar) rather than redirects (which would
+# flip the URL back to the messy .html version).
+#
+# Query strings pass through untouched, so business.html?id=resorts_14
+# still works exactly the same as /business?id=resorts_14.
+
+# "/" is left alone on purpose — Netlify already serves index.html there
+# by default, which is your landing/splash page, distinct from the app
+# home (guest-home.html) people land on after tapping in.
+
+/home                 /guest-home.html          200
+/resorts              /resorts.html             200
+/restaurants          /restaurants.html         200
+/cafes                /cafes.html               200
+/surf-schools         /surf-schools.html        200
+/activities           /activities.html          200
+/business             /business.html            200
+/register             /register.html            200
+/dashboard            /dashboard.html           200
+/admin                /admin.html               200
+/map                  /map.html                 200
+/for-business-owners  /for-business-owners.html 200
+/getting-here         /getting-here.html        200
+/beach-etiquette      /beach-etiquette.html     200
+/emergency-help       /emergency-help.html      200
+/food-finder          /food-finder.html         200
+/nearby-essentials    /nearby-essentials.html   200
+/parking-guide        /parking-guide.html       200
+
+/404                  /404.html                 404
+/500                  /500.html                 500

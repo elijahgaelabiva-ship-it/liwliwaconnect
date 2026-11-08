@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Local Vendors — Liwliwa Connect">
+<meta property="og:description" content="Halo-halo stalls, sari-sari stores, fish vendors, street food, crafts, and pop-up stalls in Liwliwa, Zambales.">
+<meta property="og:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<meta property="og:url" content="https://liwliwaconnect.netlify.app/local.html">
+<meta property="og:site_name" content="Liwliwa Connect">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Local Vendors — Liwliwa Connect">
+<meta name="twitter:description" content="Halo-halo stalls, sari-sari stores, fish vendors, street food, crafts, and pop-up stalls in Liwliwa, Zambales.">
+<meta name="twitter:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<title>Local Vendors — Liwliwa Connect</title>
+<meta name="description" content="Browse local vendors and small businesses in Liwliwa, San Felipe, Zambales." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://wsrv.nl"> <!-- image optimization proxy, see js/main.js AppImage -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css" />
+
+<!-- Makes the site installable to the home screen, opening full-view with no
+     browser address bar or nav bar, like a native app. -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1668E3">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Liwliwa">
+<meta name="mobile-web-app-capable" content="yes">
+
+<script>
+  // "Mobile App V2" palette — see css/style.css "MOBILE APP V2" section.
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ocean: '#1668E3',
+          oceanDeep: '#0B2A4A',
+          turquoise: '#17B8A6',
+          sunset: '#FF7A45',
+          mist: '#F5F7FA',
+          ink: '#141C24',
+          success: '#2FB380',
+          danger: '#F0605F',
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+</head>
+<body class="bg-mist text-ink font-sans antialiased">
+
+  <section class="relative overflow-hidden px-6 pt-[max(1.5rem,env(safe-area-inset-top))] pb-6 text-white" style="background-image:url('images/hero-category.webp'); background-size:cover; background-position:center;">
+    <div class="absolute inset-0 bg-gradient-to-b from-oceanDeep/55 via-oceanDeep/45 to-oceanDeep/90"></div>
+    <div class="relative z-10">
+    <a href="guest-home.html" class="animate-in inline-flex items-center gap-1.5 text-white/70 text-sm font-medium mb-3">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      Back
+    </a>
+    <p class="animate-in uppercase tracking-[0.2em] text-xs font-semibold text-sunset mb-1">Directory</p>
+    <h1 class="animate-in animate-in-delay-1 font-extrabold text-3xl sm:text-4xl mb-1">Local Vendors</h1>
+    <p class="animate-in animate-in-delay-1 text-white/70 text-sm mb-5">Halo-halo stalls, sari-sari stores, fish vendors, street food, crafts &amp; pop-ups</p>
+    <div id="filterBar" class="animate-in animate-in-delay-2 hscroll gap-2">
+      <button data-cat="all" class="chip chip-active">All</button>
+      <button data-cat="halohalo" class="chip">🍧 Halo-Halo</button>
+      <button data-cat="tindahan" class="chip">🏪 Tindahan</button>
+      <button data-cat="fishvendor" class="chip">🐟 Fish Vendors</button>
+      <button data-cat="streetfood" class="chip">🍢 Street Food</button>
+      <button data-cat="crafts" class="chip">🎨 Crafts</button>
+      <button data-cat="popup" class="chip">⛺ Pop-up Stalls</button>
+    </div>
+    </div>
+  </section>
+
+  <section class="px-6 py-6">
+
+    <a href="vendor-register.html" class="flex items-center gap-3 rounded-2xl p-4 mb-5 text-white" style="background: linear-gradient(135deg, #F0605F, #7A1F3D);">
+      <span class="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center shrink-0"><i data-lucide="store" class="w-5 h-5"></i></span>
+      <span class="flex-1">
+        <span class="block font-bold text-sm">Own a stall?</span>
+        <span class="block text-white/75 text-xs mt-0.5">Register it here — free, always</span>
+      </span>
+      <i data-lucide="chevron-right" class="w-4 h-4 text-white/70 shrink-0"></i>
+    </a>
+
+    <!-- Loading state — shimmer skeleton cards, replaced once real data arrives -->
+    <div id="loadingState" class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"></div>
+
+    <!-- Error state -->
+    <div id="errorState" class="hidden bg-danger/10 border border-danger/25 rounded-2xl p-5 text-ink">
+      <p class="font-semibold mb-1">Couldn't load local vendors right now.</p>
+      <p class="text-sm text-ink/70">This usually means the data link isn't set up correctly, or there's no internet connection. Nothing on your end is broken — try refreshing in a moment.</p>
+    </div>
+
+    <!-- Empty state -->
+    <div id="emptyState" class="hidden text-ink/50 py-10 text-center"></div>
+
+    <!-- Cards render here -->
+    <div id="vendorGrid" class="hidden grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"></div>
+
+  </section>
+
+  <!-- Vendor CTA -->
+  <section class="px-6 pb-4">
+    <a href="vendor-update.html" class="flex items-center justify-between gap-3 rounded-2xl p-4 text-white"
+       style="background: linear-gradient(135deg, #FF7A45, #0B2A4A);">
+      <span class="flex items-center gap-3">
+        <span class="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center shrink-0">
+          <i data-lucide="store" class="w-5 h-5"></i>
+        </span>
+        <span>
+          <span class="block font-bold text-sm">Run a stall here?</span>
+          <span class="block text-white/75 text-xs mt-0.5">Update your open hours &amp; status anytime</span>
+        </span>
+      </span>
+      <i data-lucide="chevron-right" class="w-4 h-4 text-white/70 shrink-0"></i>
+    </a>
+  </section>
+
+  <div class="app-bottom-spacer-v2"></div>
+
+  <script src="js/main.js"></script>
+  <script>
+    // Local Vendors directory — fetches live data from the Apps Script endpoint below.
+    // Uses its own type=localvendors endpoint (kept separate from type=all/5-directory
+    // schema on purpose — vendors have different fields: vendor_name instead of name,
+    // hours_text/status instead of price_tier, etc.)
+    const LOCAL_VENDORS_API_URL = 'https://script.google.com/macros/s/AKfycbx1doFh9X93nSzMbxtDFmOUWEDf8MoT7Csb8XiEmKnh7Zw33RDEDjN8N7WlSFTMS5gb/exec?type=localvendors';
+
+    const CATEGORY_LABELS = {
+      halohalo: 'Halo-Halo', tindahan: 'Tindahan', fishvendor: 'Fish Vendor',
+      streetfood: 'Street Food', crafts: 'Crafts', popup: 'Pop-up Stall'
+    };
+
+    let allVendors = [];
+    let currentCat = 'all';
+    const highlightQuery = (new URLSearchParams(window.location.search).get('name') || '').toLowerCase();
+
+    async function loadVendors() {
+      const loadingState = document.getElementById('loadingState');
+      const errorState = document.getElementById('errorState');
+      const emptyState = document.getElementById('emptyState');
+
+      AppSkeleton.cardGrid(loadingState, 6);
+      AppProgress.start();
+
+      try {
+        const response = await fetch(LOCAL_VENDORS_API_URL);
+        if (!response.ok) throw new Error('Bad response from server');
+        allVendors = await response.json();
+        // Guards against a stale/undeployed backend accidentally falling
+        // back to a directory sheet (e.g. Resorts) for this endpoint —
+        // real vendor rows always have vendor_name; directory rows don't.
+        allVendors = Array.isArray(allVendors) ? allVendors.filter(v => v.vendor_name) : allVendors;
+
+        loadingState.classList.add('hidden');
+        AppProgress.done();
+
+        if (!Array.isArray(allVendors) || allVendors.length === 0) {
+          emptyState.textContent = 'No local vendors listed yet — check back soon.';
+          emptyState.classList.remove('hidden');
+          return;
+        }
+
+        renderFiltered();
+
+      } catch (err) {
+        console.error('Failed to load local vendors:', err);
+        loadingState.classList.add('hidden');
+        errorState.classList.remove('hidden');
+        AppProgress.done();
+      }
+    }
+
+    function renderFiltered() {
+      const grid = document.getElementById('vendorGrid');
+      const emptyState = document.getElementById('emptyState');
+
+      let filtered = currentCat === 'all'
+        ? allVendors
+        : allVendors.filter(v => String(v.category || '').toLowerCase() === currentCat);
+
+      if (highlightQuery) {
+        filtered = filtered.filter(v => String(v.vendor_name || '').toLowerCase().includes(highlightQuery));
+      }
+
+      if (filtered.length === 0) {
+        grid.classList.add('hidden');
+        emptyState.textContent = highlightQuery
+          ? `No vendors found matching "${highlightQuery}".`
+          : currentCat === 'all'
+            ? 'No local vendors listed yet — check back soon.'
+            : 'No vendors in this category yet — try "All" or another filter.';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      grid.innerHTML = window.AppPremium.sort(filtered).map(renderVendorCard).join('');
+      grid.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    document.getElementById('filterBar').addEventListener('click', (e) => {
+      const btn = e.target.closest('.chip');
+      if (!btn) return;
+      currentCat = btn.dataset.cat;
+      document.querySelectorAll('#filterBar .chip').forEach(b => b.classList.remove('chip-active'));
+      btn.classList.add('chip-active');
+      renderFiltered();
+    });
+
+    function directionsUrl(vendor) {
+      const lat = parseFloat(vendor.latitude);
+      const lng = parseFloat(vendor.longitude);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+      }
+      const query = encodeURIComponent(`${vendor.vendor_name || 'Local vendor'} Liwliwa San Felipe Zambales`);
+      return `https://www.google.com/maps/search/?api=1&query=${query}`;
+    }
+
+    function isTrue(value) {
+      return String(value).trim().toLowerCase() === 'true';
+    }
+
+    function renderVendorCard(vendor) {
+      const isPremium = window.AppPremium.isActive(vendor);
+      const hasPhoto = vendor.photo_url && String(vendor.photo_url).trim() !== '';
+      const galleryPhotos = window.AppGallery.collect(vendor);
+      const photoBlock = hasPhoto
+        ? AppImage.cardImg(vendor.photo_url, vendor.vendor_name || 'Photo', { className: 'w-full aspect-square object-cover' })
+        : placeholderPhotoHtml();
+
+      const rating = parseFloat(vendor.rating);
+      const starsBlock = !isNaN(rating)
+        ? `<div class="flex items-center gap-0.5">${window.AppRating.starsHtml(rating, 'w-3 h-3')}</div>`
+        : '';
+
+      const familyBadge = isTrue(vendor.family_owned)
+        ? `<span class="text-[10px] font-semibold bg-turquoise/15 text-turquoise px-1.5 py-0.5 rounded-full inline-flex items-center gap-1 w-fit"><i data-lucide="users" class="w-2.5 h-2.5"></i>Family-owned</span>`
+        : '';
+
+      const paymentBits = [];
+      if (isTrue(vendor.accepts_cash)) paymentBits.push('Cash');
+      if (isTrue(vendor.accepts_gcash)) paymentBits.push('GCash');
+      const paymentBlock = paymentBits.length
+        ? `<p class="text-[11px] font-medium text-ink/60">${paymentBits.join(' • ')}</p>`
+        : '';
+
+      const isOpen = String(vendor.status || '').trim().toLowerCase() === 'open';
+      const hoursText = escapeHtml(vendor.hours_text || '');
+      const statusBlock = isOpen
+        ? `<span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-success"><span class="w-1.5 h-1.5 rounded-full bg-success shrink-0"></span><span class="truncate">${hoursText || 'Open now'}</span></span>`
+        : `<span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-ink/40"><span class="w-1.5 h-1.5 rounded-full bg-ink/30 shrink-0"></span>Closed now</span>`;
+
+      const emoji = escapeHtml(vendor.emoji || '📍');
+      const catLabel = CATEGORY_LABELS[String(vendor.category || '').toLowerCase()] || '';
+
+      return `
+        <div class="card-app flex flex-col ${window.AppPremium.cardClass(vendor)}">
+          <div class="relative">
+            ${galleryPhotos.length > 1
+              ? `<button type="button" class="vendorGalleryBtn block w-full" data-row="${vendor.row}">${photoBlock}</button>`
+              : photoBlock}
+            ${catLabel ? `<span class="absolute top-2 left-2 text-[10px] font-semibold bg-white/90 text-ink px-2 py-0.5 rounded-full">${catLabel}</span>` : ''}
+            ${galleryPhotos.length > 1 ? `<span class="absolute bottom-2 right-2 text-[10px] font-semibold bg-black/55 text-white px-1.5 py-0.5 rounded-full flex items-center gap-1"><i data-lucide="images" class="w-2.5 h-2.5"></i>${galleryPhotos.length}</span>` : ''}
+            ${isPremium ? window.AppPremium.ribbon() : ''}
+          </div>
+          <div class="p-3 flex flex-col gap-1.5 flex-1">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <h3 class="font-bold text-sm leading-tight line-clamp-2">${emoji} ${escapeHtml(vendor.vendor_name || 'Local vendor')}</h3>
+            </div>
+            ${window.AppPremium.verifiedBadge(vendor)}
+            ${starsBlock}
+            ${familyBadge}
+            ${paymentBlock}
+            ${statusBlock}
+            ${window.AppPremium.activePromo(vendor) ? `<p class="text-[11px] font-bold text-sunset flex items-center gap-1 truncate"><i data-lucide="megaphone" class="w-3 h-3 shrink-0"></i><span class="truncate">${escapeHtml(window.AppPremium.activePromo(vendor))}</span></p>` : ''}
+            ${vendor.description && String(vendor.description).trim()
+              ? `<div class="mt-1.5 rounded-xl bg-sunset/10 border border-sunset/20 px-2.5 py-2">
+                   <p class="text-[10px] font-bold uppercase tracking-wide text-sunset mb-0.5">Today's note</p>
+                   <p class="text-xs font-medium text-ink/75 leading-snug">${escapeHtml(vendor.description)}</p>
+                 </div>`
+              : ''}
+          </div>
+          <div class="px-3 pb-3 mt-auto flex gap-2">
+            ${vendor.contact_number ? `
+            <a href="tel:${escapeHtml(vendor.contact_number)}"
+               class="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-semibold bg-turquoise/10 text-turquoise px-3 py-2 rounded-full">
+              <i data-lucide="phone" class="w-3.5 h-3.5"></i>Call
+            </a>` : ''}
+            <a href="${directionsUrl(vendor)}" target="_blank" rel="noopener"
+               class="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-semibold bg-ocean/10 text-ocean px-3 py-2 rounded-full">
+              <i data-lucide="navigation" class="w-3.5 h-3.5"></i>Direction
+            </a>
+          </div>
+        </div>
+      `;
+    }
+
+    function placeholderPhotoHtml() {
+      return `<div class="w-full aspect-square bg-ocean/10 flex items-center justify-center">
+                <i data-lucide="image-off" class="w-8 h-8 text-ocean/30"></i>
+              </div>`;
+    }
+
+    // Basic escaping so sheet data can never break the page's HTML
+    function escapeHtml(value) {
+      const div = document.createElement('div');
+      div.textContent = String(value ?? '');
+      return div.innerHTML;
+    }
+
+    // Delegated (not per-card) so it survives renderFiltered() re-rendering
+    // the grid's innerHTML every time a filter/search changes.
+    document.getElementById('vendorGrid').addEventListener('click', (e) => {
+      const btn = e.target.closest('.vendorGalleryBtn');
+      if (!btn) return;
+      const vendor = allVendors.find((v) => String(v.row) === String(btn.dataset.row));
+      if (!vendor) return;
+      const photos = window.AppGallery.collect(vendor).map((u) => window.AppImage.optimizedUrl(u, 1600, 85));
+      window.AppLightbox.open(photos, 0, vendor.vendor_name || 'Photo');
+    });
+
+    loadVendors();
+  </script>
+
+  <div class="floating-nav-wrap">
+    <nav class="floating-nav">
+      <a href="guest-home.html" class="floating-nav-item">
+        <i data-lucide="home"></i>
+        <span>Home</span>
+      </a>
+      <a href="map.html" class="floating-nav-item active">
+        <i data-lucide="compass"></i>
+        <span>Explore</span>
+      </a>
+      <a href="events.html" class="floating-nav-item">
+        <i data-lucide="calendar"></i>
+        <span>Events</span>
+      </a>
+      <a href="favorites.html" class="floating-nav-item">
+        <i data-lucide="heart"></i>
+        <span>Saved</span>
+      </a>
+      <a href="more.html" class="floating-nav-item">
+        <i data-lucide="menu"></i>
+        <span>More</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

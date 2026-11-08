@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Event — Liwliwa Connect">
+<meta property="og:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<meta property="og:site_name" content="Liwliwa Connect">
+<meta name="twitter:card" content="summary_large_image">
+<title>Event — Liwliwa Connect</title>
+<meta name="description" content="Event details — Liwliwa Connect" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://wsrv.nl"> <!-- image optimization proxy, see js/main.js AppImage -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css" />
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1668E3">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Liwliwa">
+<meta name="mobile-web-app-capable" content="yes">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ocean: '#1668E3',
+          oceanDeep: '#0B2A4A',
+          turquoise: '#17B8A6',
+          sunset: '#FF7A45',
+          mist: '#F5F7FA',
+          ink: '#141C24',
+          success: '#2FB380',
+          danger: '#F0605F',
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+</head>
+<body class="bg-mist text-ink font-sans antialiased">
+
+  <div class="px-6 pt-[max(1.25rem,env(safe-area-inset-top))] max-w-2xl mx-auto">
+    <a href="events.html" class="inline-flex items-center gap-1.5 text-sm font-semibold text-ocean">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      Back to Events
+    </a>
+  </div>
+
+  <section class="px-6 py-5 max-w-2xl mx-auto">
+
+    <!-- Loading state -->
+    <div id="loadingState">
+      <div class="skel w-full h-64 sm:h-80 rounded-[1.5rem] mb-5"></div>
+      <div class="skel skel-line mb-3" style="width:60%; height:1.5rem;"></div>
+      <div class="skel skel-line mb-2" style="width:90%;"></div>
+      <div class="skel skel-line mb-5" style="width:75%;"></div>
+      <div class="grid grid-cols-3 gap-3">
+        <div class="skel h-12 rounded-full"></div>
+        <div class="skel h-12 rounded-full"></div>
+        <div class="skel h-12 rounded-full"></div>
+      </div>
+    </div>
+
+    <!-- Not found state -->
+    <div id="notFoundState" class="hidden text-center py-10">
+      <div class="mx-auto mb-4 w-14 h-14 flex items-center justify-center rounded-full bg-ocean/10">
+        <i data-lucide="calendar-x" class="w-7 h-7 text-ocean/50"></i>
+      </div>
+      <p class="font-bold text-lg mb-1">Couldn't find this event</p>
+      <p class="text-sm text-ink/60 mb-5">It may have been removed, or the link isn't quite right.</p>
+      <a href="events.html" class="btn-gradient">Back to Events</a>
+    </div>
+
+    <!-- Event content -->
+    <div id="eventContent" class="hidden">
+      <div id="heroPhoto" class="relative mb-5"></div>
+
+      <span id="evtCategory" class="inline-flex items-center gap-1.5 text-xs font-semibold text-white px-2.5 py-1 rounded-full mb-2"></span>
+
+      <h1 id="evtTitle" class="font-extrabold text-2xl sm:text-3xl mb-3"></h1>
+
+      <div class="flex flex-col gap-2 mb-4">
+        <p class="text-sm text-ink/70 flex items-center gap-2">
+          <i data-lucide="calendar" class="w-4 h-4 text-ocean shrink-0"></i><span id="evtDateTime"></span>
+        </p>
+        <p class="text-sm text-ink/70 flex items-center gap-2">
+          <i data-lucide="map-pin" class="w-4 h-4 text-ocean shrink-0"></i><span id="evtVenue"></span>
+        </p>
+        <p class="text-sm text-ink/70 flex items-center gap-2">
+          <i data-lucide="user" class="w-4 h-4 text-ocean shrink-0"></i>Organized by <span id="evtOrganizer" class="font-semibold"></span>
+        </p>
+        <p class="text-sm text-ink/70 flex items-center gap-2">
+          <i data-lucide="heart" class="w-4 h-4 text-ocean shrink-0"></i><span id="evtInterestedCount"></span> people interested
+        </p>
+      </div>
+
+      <p id="evtDescription" class="text-ink/60 mb-6 leading-relaxed"></p>
+
+      <div id="evtActions" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-2"></div>
+      <p id="shareMsg" class="hidden text-center text-xs text-ink/50 mt-2"></p>
+    </div>
+
+  </section>
+
+  <div class="app-bottom-spacer-v2"></div>
+
+  <script src="js/main.js"></script>
+  <script src="js/events.js"></script>
+  <script>
+    const eventId = new URLSearchParams(window.location.search).get('id') || '';
+
+    function showNotFound() {
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('notFoundState').classList.remove('hidden');
+    }
+
+    function actionBtn({ tag, href, icon, label, onclick, id, primary }) {
+      const cls = primary
+        ? 'flex items-center justify-center gap-1.5 text-white font-semibold py-3 rounded-full text-sm'
+        : 'flex items-center justify-center gap-1.5 bg-white border border-ink/10 text-ink font-semibold py-3 rounded-full shadow-sm text-sm';
+      const style = primary ? 'style="background: linear-gradient(135deg, #1668E3, #17B8A6);"' : '';
+      const idAttr = id ? `id="${id}"` : '';
+      const clickAttr = onclick ? `onclick="${onclick}"` : '';
+      if (tag === 'button') {
+        return `<button type="button" ${idAttr} ${clickAttr} class="${cls}" ${style}><i data-lucide="${icon}" class="w-4 h-4"></i>${label}</button>`;
+      }
+      return `<a ${idAttr} href="${href}" target="_blank" rel="noopener" ${clickAttr} class="${cls}" ${style}><i data-lucide="${icon}" class="w-4 h-4"></i>${label}</a>`;
+    }
+
+    function renderEvent(ev) {
+      document.getElementById('loadingState').classList.add('hidden');
+      document.title = `${ev.title} — Liwliwa Connect`;
+
+      const hero = document.getElementById('heroPhoto');
+      const photos = window.AppGallery.renderHero(hero, ev, ev.title);
+
+      const isInterested = window.EventsApp.AppEventInterest.isInterested(ev.id);
+      const favBtn = document.createElement('button');
+      favBtn.type = 'button';
+      favBtn.className = `favorite-btn absolute top-3 right-3 ${isInterested ? 'is-favorited' : ''}`;
+      favBtn.innerHTML = '<i data-lucide="heart" class="w-4 h-4"></i>';
+      favBtn.addEventListener('click', () => {
+        window.EventsApp.AppEventInterest.toggle(ev.id);
+        favBtn.classList.toggle('is-favorited');
+        document.getElementById('evtInterestedCount').textContent = window.EventsApp.interestedCount(ev);
+      });
+      hero.appendChild(favBtn);
+
+      if (window.EventsApp.isSponsored(ev)) {
+        const sponsoredBadge = document.createElement('span');
+        sponsoredBadge.className = 'absolute top-3 left-3 text-[11px] font-bold text-white px-2.5 py-1 rounded-full flex items-center gap-1';
+        sponsoredBadge.style.background = 'linear-gradient(135deg, #FF7A45, #7A1F3D)';
+        sponsoredBadge.innerHTML = '<i data-lucide="star" class="w-3 h-3"></i>Sponsored';
+        hero.appendChild(sponsoredBadge);
+      }
+
+      const cat = window.EventsApp.CATEGORIES[ev.category] || { label: ev.category, icon: 'calendar', gradient: 'linear-gradient(135deg,#1668E3,#0B2A4A)' };
+      const catEl = document.getElementById('evtCategory');
+      catEl.style.background = cat.gradient;
+      catEl.innerHTML = `<i data-lucide="${cat.icon}" class="w-3.5 h-3.5"></i>${cat.label}`;
+
+      document.getElementById('evtTitle').textContent = ev.title;
+      document.getElementById('evtDateTime').textContent = `${window.EventsApp.formatDateLabel(ev.startIso)} · ${window.EventsApp.formatTimeLabel(ev.startIso)}`;
+      document.getElementById('evtVenue').textContent = ev.venue;
+      document.getElementById('evtOrganizer').textContent = ev.organizer;
+      document.getElementById('evtInterestedCount').textContent = window.EventsApp.interestedCount(ev);
+      document.getElementById('evtDescription').textContent = ev.description;
+
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.venue + ', Liwliwa, San Felipe, Zambales')}`;
+
+      const actions = [
+        actionBtn({ tag: 'button', id: 'interestedBtn', icon: 'heart', label: isInterested ? 'Interested' : 'Interested?', primary: true }),
+        actionBtn({ tag: 'button', id: 'shareBtn', icon: 'share-2', label: 'Share' }),
+        actionBtn({ tag: 'a', href: window.EventsApp.googleCalendarUrl(ev), icon: 'calendar-plus', label: 'Add to Calendar' }),
+        actionBtn({ tag: 'a', href: mapsUrl, icon: 'navigation', label: 'Directions' })
+      ];
+      document.getElementById('evtActions').innerHTML = actions.join('');
+
+      document.getElementById('interestedBtn').addEventListener('click', () => {
+        const now = window.EventsApp.AppEventInterest.toggle(ev.id);
+        document.getElementById('interestedBtn').innerHTML = `<i data-lucide="heart" class="w-4 h-4"></i>${now ? 'Interested' : 'Interested?'}`;
+        document.getElementById('evtInterestedCount').textContent = window.EventsApp.interestedCount(ev);
+        document.querySelector('#heroPhoto .favorite-btn').classList.toggle('is-favorited', now);
+        if (window.lucide) lucide.createIcons();
+      });
+
+      document.getElementById('shareBtn').addEventListener('click', async () => {
+        const result = await window.EventsApp.shareEvent(ev);
+        const msg = document.getElementById('shareMsg');
+        if (result === 'copied') {
+          msg.textContent = 'Link copied to clipboard!';
+          msg.classList.remove('hidden');
+          setTimeout(() => msg.classList.add('hidden'), 2200);
+        }
+      });
+
+      document.getElementById('eventContent').classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function loadEvent() {
+      const ev = eventId ? window.EventsApp.getById(eventId) : null;
+      if (!ev) { showNotFound(); return; }
+      renderEvent(ev);
+    }
+
+    window.EventsApp.ready.then(loadEvent);
+    if (window.lucide) lucide.createIcons();
+  </script>
+
+  <div class="floating-nav-wrap">
+    <nav class="floating-nav">
+      <a href="guest-home.html" class="floating-nav-item">
+        <i data-lucide="home"></i>
+        <span>Home</span>
+      </a>
+      <a href="map.html" class="floating-nav-item">
+        <i data-lucide="compass"></i>
+        <span>Explore</span>
+      </a>
+      <a href="events.html" class="floating-nav-item active">
+        <i data-lucide="calendar"></i>
+        <span>Events</span>
+      </a>
+      <a href="favorites.html" class="floating-nav-item">
+        <i data-lucide="heart"></i>
+        <span>Saved</span>
+      </a>
+      <a href="more.html" class="floating-nav-item">
+        <i data-lucide="menu"></i>
+        <span>More</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="List Your Business — Liwliwa Connect">
+<meta property="og:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta property="og:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<meta property="og:url" content="https://liwliwaconnect.netlify.app/register.html">
+<meta property="og:site_name" content="Liwliwa Connect">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="List Your Business — Liwliwa Connect">
+<meta name="twitter:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta name="twitter:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<title>List Your Business — Liwliwa Connect</title>
+<meta name="description" content="Apply to list your resort, restaurant, café, surf school, or activity on Liwliwa Connect." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css" />
+
+<!-- Makes the site installable to the home screen, opening full-view with no
+     browser address bar or nav bar, like a native app. -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1668E3">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Liwliwa">
+
+<script>
+  // "Mobile App V2" palette — see css/style.css "MOBILE APP V2" section.
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ocean: '#1668E3',
+          oceanDeep: '#0B2A4A',
+          turquoise: '#17B8A6',
+          sunset: '#FF7A45',
+          mist: '#F5F7FA',
+          ink: '#141C24',
+          success: '#2FB380',
+          danger: '#F0605F',
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+<style>
+  /* Filled-style inputs, per the redesign brief — no border by default, a
+     visible focus ring in the accent color, generous touch targets. */
+  .field-input {
+    width: 100%;
+    background: #F5F7FA;
+    border: 1.5px solid transparent;
+    border-radius: 1rem;
+    padding: 0.9rem 1.1rem;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field-input:focus { border-color: #1668E3; box-shadow: 0 0 0 3px rgba(22,104,227,0.15); background: #FFFFFF; }
+  .field-label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; display: block; color: #141C24; }
+</style>
+</head>
+<body class="bg-mist text-ink font-sans antialiased">
+
+  <section class="px-6 pt-[max(1.5rem,env(safe-area-inset-top))] pb-8 text-white" style="background: linear-gradient(135deg, #1668E3, #0B2A4A);">
+    <div class="flex items-center justify-between mb-4">
+      <a href="index.html" class="font-semibold tracking-tight">
+        Liwliwa <span class="text-sunset">Connect</span>
+      </a>
+      <a href="for-business-owners.html" class="text-white/70 text-sm">Back</a>
+    </div>
+    <p class="animate-in uppercase tracking-[0.2em] text-xs font-semibold text-sunset mb-2">For business owners</p>
+    <h1 class="animate-in animate-in-delay-1 font-extrabold text-3xl sm:text-4xl mb-2">List your business</h1>
+    <p class="animate-in animate-in-delay-2 text-white/70 text-sm">Fill this in and we'll review it before it goes live. Free, always.</p>
+  </section>
+
+  <section class="px-6 py-8">
+    <div class="max-w-2xl mx-auto">
+
+      <!-- The form -->
+      <form id="registerForm" class="flex flex-col gap-5">
+
+        <div>
+          <label class="field-label" for="business_name">Business name *</label>
+          <input class="field-input" type="text" id="business_name" name="business_name" required />
+        </div>
+
+        <div>
+          <label class="field-label" for="category">Category *</label>
+          <select class="field-input" id="category" name="category" required>
+            <option value="">Select one</option>
+            <option value="resorts">Resort</option>
+            <option value="restaurants">Restaurant</option>
+            <option value="cafes">Café</option>
+            <option value="surfschools">Surf School</option>
+            <option value="activities">Activity</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="field-label" for="description">Short description *</label>
+          <textarea class="field-input" id="description" name="description" rows="3" required></textarea>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-5">
+          <div>
+            <label class="field-label" for="price_range">Price range</label>
+            <input class="field-input" type="text" id="price_range" name="price_range" placeholder="e.g. ₱500–₱1,500" />
+          </div>
+          <div>
+            <label class="field-label" for="price_tier">Price tier</label>
+            <select class="field-input" id="price_tier" name="price_tier">
+              <option value="">Select one</option>
+              <option value="budget">₱ Budget</option>
+              <option value="mid">₱₱ Mid-range</option>
+              <option value="premium">₱₱₱ Premium</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="maxPaxField" class="hidden">
+          <label class="field-label" for="max_pax">Max group size (pax)</label>
+          <input class="field-input" type="number" min="1" id="max_pax" name="max_pax" placeholder="e.g. 20" />
+          <p class="text-xs text-ink/50 mt-1">The most guests you can sleep at once — helps big groups searching for a place that fits them find you.</p>
+        </div>
+
+        <div>
+          <label class="field-label" for="amenities">Amenities (optional)</label>
+          <input class="field-input" type="text" id="amenities" name="amenities" placeholder="e.g. Free Wifi, Pool, Air Conditioning, Beach Access" />
+          <p class="text-xs text-ink/50 mt-1">Separate each one with a comma — these show as tags on your listing. If you're beachfront, include "Beachfront" here so guests can filter for it.</p>
+        </div>
+
+        <div>
+          <label class="field-label">Cover photo (optional)</label>
+          <div class="flex items-center gap-3">
+            <div id="coverPreviewWrap" class="w-20 h-20 rounded-xl bg-mist overflow-hidden flex items-center justify-center shrink-0 border-2 border-ink/10">
+              <img id="coverPreviewImg" class="hidden w-full h-full object-cover" alt="" />
+              <i data-lucide="image-off" id="coverPreviewIcon" class="w-6 h-6 text-ink/30"></i>
+            </div>
+            <div class="flex flex-col gap-2">
+              <label for="coverFileInput" class="inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-ocean bg-ocean/10 rounded-xl py-2.5 px-4 cursor-pointer w-fit">
+                <i data-lucide="upload" class="w-4 h-4"></i>
+                <span id="coverBtnLabel">Upload photo</span>
+              </label>
+              <input id="coverFileInput" type="file" accept="image/*" class="hidden" />
+            </div>
+          </div>
+          <p class="text-xs text-ink/50 mt-1">The main photo shown on your card and listing. Choose one straight from your phone's gallery or camera.</p>
+        </div>
+
+        <div>
+          <label class="field-label">More photos (optional, up to 4)</label>
+          <label for="galleryFileInput" class="inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-ocean bg-ocean/10 rounded-xl py-2.5 px-4 cursor-pointer w-fit">
+            <i data-lucide="upload" class="w-4 h-4"></i>
+            Upload photos
+          </label>
+          <input id="galleryFileInput" type="file" accept="image/*" multiple class="hidden" />
+          <div id="galleryPreviewGrid" class="flex gap-2 mt-2 flex-wrap"></div>
+          <p class="text-xs text-ink/50 mt-1">Cover photo + these = up to 5 total, shown as a swipeable gallery on your listing.</p>
+        </div>
+
+        <div>
+          <label class="field-label" for="facebook_url">Facebook page (optional)</label>
+          <input class="field-input" type="url" id="facebook_url" name="facebook_url" placeholder="https://facebook.com/yourbusiness" />
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-5">
+          <div>
+            <label class="field-label" for="website_url">Website (optional)</label>
+            <input class="field-input" type="url" id="website_url" name="website_url" placeholder="https://yourbusiness.com" />
+          </div>
+          <div>
+            <label class="field-label" for="instagram_url">Instagram (optional)</label>
+            <input class="field-input" type="url" id="instagram_url" name="instagram_url" placeholder="https://instagram.com/yourbusiness" />
+          </div>
+        </div>
+
+        <hr class="border-ink/10 my-1" />
+
+        <div>
+          <label class="field-label" for="owner_name">Your name *</label>
+          <input class="field-input" type="text" id="owner_name" name="owner_name" required />
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-5">
+          <div>
+            <label class="field-label" for="email">Email *</label>
+            <input class="field-input" type="email" id="email" name="email" required />
+          </div>
+          <div>
+            <label class="field-label" for="contact_number">Phone number *</label>
+            <input class="field-input" type="tel" id="contact_number" name="contact_number" required />
+          </div>
+        </div>
+
+        <div>
+          <label class="field-label" for="password">Create a dashboard password *</label>
+          <input class="field-input" type="password" id="password" name="password" required minlength="4" />
+          <p class="text-xs text-ink/50 mt-1">You'll use this with your email to log into your dashboard later.</p>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-gradient mt-2 w-full">
+          Submit for review
+        </button>
+
+        <p id="formError" class="hidden text-sm text-danger"></p>
+      </form>
+
+      <!-- Step 2: enter the code emailed to them -->
+      <div id="codeScreen" class="hidden text-center py-6">
+        <i data-lucide="mail-check" class="w-10 h-10 text-ocean mx-auto mb-3"></i>
+        <h2 class="font-bold text-xl mb-1">Check your email</h2>
+        <p class="text-ink/60 text-sm mb-4">We sent a 6-digit code to <span id="codeEmailDisplay" class="font-semibold"></span></p>
+        <input id="codeInput" type="text" inputmode="numeric" maxlength="6" placeholder="000000"
+          class="field-input text-center text-2xl tracking-[0.3em] max-w-[180px] mx-auto mb-3" />
+        <button id="verifyBtn" class="btn-gradient">Verify & submit</button>
+        <p id="codeError" class="hidden text-danger text-sm mt-3">Incorrect or expired code — try again.</p>
+        <p class="text-xs text-ink/40 mt-4">
+          <button id="resendBtn" type="button" class="underline">Resend code</button>
+        </p>
+      </div>
+
+      <!-- Success message, shown instead of the form -->
+      <div id="successMessage" class="hidden text-center py-10">
+        <i data-lucide="check-circle" class="w-12 h-12 text-success mx-auto mb-4"></i>
+        <h2 class="font-bold text-2xl mb-2">Thanks — you're in the queue!</h2>
+        <p class="text-ink/60 max-w-sm mx-auto">We'll review your listing and it'll go live once approved. No need to submit again.</p>
+        <a href="index.html" class="inline-block mt-6 text-ocean font-semibold underline">Back to home</a>
+      </div>
+
+    </div>
+  </section>
+
+  <script src="js/main.js"></script>
+  <script>
+    // Feature 12: Business Registration — posts to the Apps Script's doPost endpoint,
+    // which appends the submission to the "Businesses" sheet tab with status "pending".
+    const REGISTER_URL = 'https://script.google.com/macros/s/AKfycbx1doFh9X93nSzMbxtDFmOUWEDf8MoT7Csb8XiEmKnh7Zw33RDEDjN8N7WlSFTMS5gb/exec';
+
+    const form = document.getElementById('registerForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formError = document.getElementById('formError');
+    let pendingPayload = null;
+
+    // --- Direct photo upload: resize client-side, send as base64, the
+    // server saves it to Google Drive and returns a link. No pasted URLs. ---
+    let coverPhotoBase64 = null;
+    let galleryPhotosBase64 = []; // up to 4
+
+    function resizeImageFile(file, maxDimension = 1280, quality = 0.75) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            let { width, height } = img;
+            if (width > maxDimension || height > maxDimension) {
+              if (width > height) { height = Math.round(height * (maxDimension / width)); width = maxDimension; }
+              else { width = Math.round(width * (maxDimension / height)); height = maxDimension; }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.onerror = () => reject(new Error('Could not read that image'));
+          img.src = e.target.result;
+        };
+        reader.onerror = () => reject(new Error('Could not read that file'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    document.getElementById('coverFileInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        const dataUrl = await resizeImageFile(file);
+        coverPhotoBase64 = dataUrl.split(',')[1];
+        const img = document.getElementById('coverPreviewImg');
+        img.src = dataUrl;
+        img.classList.remove('hidden');
+        document.getElementById('coverPreviewIcon').classList.add('hidden');
+        document.getElementById('coverBtnLabel').textContent = 'Change photo';
+      } catch (err) {
+        console.error(err);
+      }
+      e.target.value = '';
+    });
+
+    document.getElementById('galleryFileInput').addEventListener('change', async (e) => {
+      const files = Array.from(e.target.files).slice(0, 4 - galleryPhotosBase64.length);
+      for (const file of files) {
+        try {
+          const dataUrl = await resizeImageFile(file);
+          galleryPhotosBase64.push(dataUrl.split(',')[1]);
+          renderGalleryPreview(dataUrl);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+      e.target.value = '';
+    });
+
+    function renderGalleryPreview(dataUrl) {
+      const grid = document.getElementById('galleryPreviewGrid');
+      const index = galleryPhotosBase64.length - 1;
+      const wrap = document.createElement('div');
+      wrap.className = 'relative w-16 h-16 rounded-lg overflow-hidden border-2 border-ink/10';
+      wrap.innerHTML = `
+        <img src="${dataUrl}" class="w-full h-full object-cover" alt="" />
+        <button type="button" data-index="${index}" class="gallery-remove-btn absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-black/60 text-white flex items-center justify-center text-xs leading-none">×</button>
+      `;
+      grid.appendChild(wrap);
+      wrap.querySelector('.gallery-remove-btn').addEventListener('click', (ev) => {
+        const idx = parseInt(ev.target.dataset.index, 10);
+        galleryPhotosBase64[idx] = null; // keep indices stable, filter out on submit
+        wrap.remove();
+      });
+    }
+
+    // Group size only makes sense for a place to stay — hide it for
+    // restaurants/cafes/surf schools/activities so the form doesn't ask
+    // an irrelevant question.
+    document.getElementById('category').addEventListener('change', (e) => {
+      document.getElementById('maxPaxField').classList.toggle('hidden', e.target.value !== 'resorts');
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending code…';
+
+      pendingPayload = {
+        business_name: document.getElementById('business_name').value.trim(),
+        category: document.getElementById('category').value,
+        description: document.getElementById('description').value.trim(),
+        price_range: document.getElementById('price_range').value.trim(),
+        price_tier: document.getElementById('price_tier').value,
+        amenities: document.getElementById('amenities').value.trim(),
+        max_pax: document.getElementById('max_pax').value.trim(),
+        facebook_url: document.getElementById('facebook_url').value.trim(),
+        website_url: document.getElementById('website_url').value.trim(),
+        instagram_url: document.getElementById('instagram_url').value.trim(),
+        owner_name: document.getElementById('owner_name').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        contact_number: document.getElementById('contact_number').value.trim(),
+        password: document.getElementById('password').value
+      };
+
+      AppProgress.start();
+      try {
+        const result = await AppBackend.postJSON(REGISTER_URL, { action: 'send_code', email: pendingPayload.email });
+        if (!result.success) throw new Error(result.error || 'Could not send code');
+
+        AppProgress.done();
+        form.classList.add('hidden');
+        document.getElementById('codeEmailDisplay').textContent = pendingPayload.email;
+        document.getElementById('codeScreen').classList.remove('hidden');
+        lucide.createIcons();
+
+      } catch (err) {
+        console.error('Send code failed:', err);
+        AppProgress.done();
+        if (err.message === 'ALREADY_REGISTERED') {
+          formError.innerHTML = 'This email is already registered. Please <a href="dashboard.html" class="underline font-semibold">log in to your dashboard</a> to update your listing instead.';
+        } else {
+          formError.textContent = err.message || "Couldn't send a verification code. Try again.";
+        }
+        formError.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit for review';
+      }
+    });
+
+    document.getElementById('verifyBtn').addEventListener('click', async () => {
+      const code = document.getElementById('codeInput').value.trim();
+      const codeError = document.getElementById('codeError');
+      const verifyBtn = document.getElementById('verifyBtn');
+      codeError.classList.add('hidden');
+      verifyBtn.disabled = true;
+      const originalVerifyText = verifyBtn.textContent;
+      verifyBtn.textContent = 'Verifying…';
+      AppProgress.start();
+
+      try {
+        const result = await AppBackend.postJSON(REGISTER_URL, Object.assign({
+          action: 'register',
+          code,
+          photo_base64: coverPhotoBase64 || undefined,
+          photo_base64_list: galleryPhotosBase64.filter(Boolean),
+          photo_mime_type: 'image/jpeg'
+        }, pendingPayload));
+        if (!result.success) throw new Error(result.error || 'Incorrect code');
+
+        AppProgress.done();
+        document.getElementById('codeScreen').classList.add('hidden');
+        document.getElementById('successMessage').classList.remove('hidden');
+        lucide.createIcons();
+
+      } catch (err) {
+        AppProgress.done();
+        if (err.message === 'ALREADY_REGISTERED') {
+          codeError.innerHTML = 'This email is already registered. Please <a href="dashboard.html" class="underline font-semibold">log in to your dashboard</a> to update your listing instead.';
+        } else {
+          codeError.textContent = err.message || 'Incorrect or expired code — try again.';
+        }
+        codeError.classList.remove('hidden');
+        verifyBtn.disabled = false;
+        verifyBtn.textContent = originalVerifyText;
+      }
+    });
+
+    document.getElementById('resendBtn').addEventListener('click', async () => {
+      const resendBtn = document.getElementById('resendBtn');
+      resendBtn.disabled = true;
+      const originalResendText = resendBtn.textContent;
+      resendBtn.textContent = 'Resending…';
+      AppProgress.start();
+      await fetch(REGISTER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'send_code', email: pendingPayload.email })
+      });
+      AppProgress.done();
+      resendBtn.disabled = false;
+      resendBtn.textContent = originalResendText;
+      document.getElementById('codeError').classList.add('hidden');
+    });
+  </script>
+</body>
+</html>

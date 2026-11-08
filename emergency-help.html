@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Emergency Help — Liwliwa Connect">
+<meta property="og:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta property="og:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<meta property="og:url" content="https://liwliwaconnect.netlify.app/emergency-help.html">
+<meta property="og:site_name" content="Liwliwa Connect">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Emergency Help — Liwliwa Connect">
+<meta name="twitter:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta name="twitter:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<title>Emergency Help — Liwliwa Connect</title>
+<meta name="description" content="Emergency contacts for Liwliwa, San Felipe, Zambales — police, clinic, rescue, and towing." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css" />
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#F0605F">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Liwliwa">
+<meta name="mobile-web-app-capable" content="yes">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ocean: '#1668E3',
+          oceanDeep: '#0B2A4A',
+          turquoise: '#17B8A6',
+          sunset: '#FF7A45',
+          mist: '#F5F7FA',
+          ink: '#141C24',
+          success: '#2FB380',
+          danger: '#F0605F',
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+<style>
+  .contact-card { display: flex; align-items: center; gap: 0.9rem; }
+  .contact-icon {
+    width: 3rem; height: 3rem; border-radius: 999px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .call-btn {
+    display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+    padding: 0.6rem 1rem; border-radius: 999px; font-weight: 700; font-size: 0.85rem;
+    background: #2FB380; color: #fff; white-space: nowrap;
+  }
+  .call-btn.needs-info { background: rgba(20,28,36,0.08); color: rgba(20,28,36,0.4); }
+</style>
+</head>
+<body class="bg-mist text-ink font-sans antialiased">
+
+  <!-- HEADER -->
+  <section class="px-6 pt-[max(1.75rem,env(safe-area-inset-top))] pb-6 text-white"
+            style="background: linear-gradient(135deg, #F0605F, #7A1E1E);">
+    <a href="guest-home.html" class="inline-flex items-center gap-1.5 text-white/70 text-sm mb-4">
+      <i data-lucide="chevron-left" class="w-4 h-4"></i> Back
+    </a>
+    <p class="uppercase tracking-[0.2em] text-xs font-semibold text-white/70 mb-1">Stay safe</p>
+    <h1 class="font-extrabold text-2xl sm:text-3xl mb-3">Emergency Help</h1>
+    <p class="text-white/80 text-sm leading-relaxed">Save these numbers before you head out. In a life-threatening
+      emergency, call <b>911</b> first — it works nationwide and connects you to police, fire, or medical
+      responders wherever you are in the Philippines.</p>
+  </section>
+
+  <!-- 911 HERO BUTTON -->
+  <div class="px-6 -mt-1 pt-5">
+    <a href="tel:911" class="flex items-center justify-between gap-3 rounded-2xl p-5 text-white shadow-[0_8px_24px_-8px_rgba(240,96,95,0.5)]"
+       style="background: linear-gradient(135deg, #F0605F, #C23B3A);">
+      <span class="flex items-center gap-3">
+        <span class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+          <i data-lucide="phone-call" class="w-6 h-6"></i>
+        </span>
+        <span>
+          <span class="block font-extrabold text-lg leading-tight">Call 911</span>
+          <span class="block text-white/80 text-xs mt-0.5">National emergency hotline — police, fire, medical</span>
+        </span>
+      </span>
+      <i data-lucide="chevron-right" class="w-4 h-4 text-white/70 shrink-0"></i>
+    </a>
+  </div>
+
+  <!-- LOCAL CONTACTS -->
+<section class="px-6 pt-6 pb-4">
+<h2 class="font-bold text-lg mb-1">Local Contacts — San Felipe</h2>
+<p class="text-ink/50 text-xs mb-4">Quick access to local emergency services and government offices.</p>
+<div class="space-y-3">
+<div class="contact-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+<span class="contact-icon bg-ocean/10 text-ocean"><i data-lucide="building-2" class="w-5 h-5"></i></span>
+<div class="flex-1"><p class="font-semibold text-sm">Office of the Mayor</p><p class="text-xs text-ink/50">09695409138</p></div>
+<div class="flex gap-2"><a href="tel:09695409138" class="call-btn">Call</a><a href="https://maps.google.com/?q=San+Felipe+Municipal+Hall+Zambales" class="call-btn" style="background:#1668E3">Map</a></div></div><div class="contact-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+<span class="contact-icon bg-ocean/10 text-ocean"><i data-lucide="life-buoy" class="w-5 h-5"></i></span>
+<div class="flex-1"><p class="font-semibold text-sm">MDRRMO / Rescue</p><p class="text-xs text-ink/50">09291838441</p></div>
+<div class="flex gap-2"><a href="tel:09291838441" class="call-btn">Call</a><a href="https://maps.google.com/?q=San+Felipe+MDRRMO+Zambales" class="call-btn" style="background:#1668E3">Map</a></div></div><div class="contact-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+<span class="contact-icon bg-ocean/10 text-ocean"><i data-lucide="stethoscope" class="w-5 h-5"></i></span>
+<div class="flex-1"><p class="font-semibold text-sm">Rural Health Unit</p><p class="text-xs text-ink/50">09317938035</p></div>
+<div class="flex gap-2"><a href="tel:09317938035" class="call-btn">Call</a><a href="https://maps.google.com/?q=San+Felipe+Rural+Health+Unit+Zambales" class="call-btn" style="background:#1668E3">Map</a></div></div><div class="contact-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+<span class="contact-icon bg-ocean/10 text-ocean"><i data-lucide="shield" class="w-5 h-5"></i></span>
+<div class="flex-1"><p class="font-semibold text-sm">Municipal Police Station</p><p class="text-xs text-ink/50">09985985509</p></div>
+<div class="flex gap-2"><a href="tel:09985985509" class="call-btn">Call</a><a href="https://maps.google.com/?q=San+Felipe+Municipal+Police+Station+Zambales" class="call-btn" style="background:#1668E3">Map</a></div></div><div class="contact-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+<span class="contact-icon bg-ocean/10 text-ocean"><i data-lucide="flame" class="w-5 h-5"></i></span>
+<div class="flex-1"><p class="font-semibold text-sm">Bureau of Fire Protection</p><p class="text-xs text-ink/50">09464512121</p></div>
+<div class="flex gap-2"><a href="tel:09464512121" class="call-btn">Call</a><a href="https://maps.google.com/?q=Bureau+of+Fire+Protection+San+Felipe+Zambales" class="call-btn" style="background:#1668E3">Map</a></div></div><div class="contact-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+<span class="contact-icon bg-ocean/10 text-ocean"><i data-lucide="anchor" class="w-5 h-5"></i></span>
+<div class="flex-1"><p class="font-semibold text-sm">Philippine Coast Guard</p><p class="text-xs text-ink/50">09274574031</p></div>
+<div class="flex gap-2"><a href="tel:09274574031" class="call-btn">Call</a><a href="https://maps.google.com/?q=Philippine+Coast+Guard+San+Felipe+Zambales" class="call-btn" style="background:#1668E3">Map</a></div></div><div class="contact-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+<span class="contact-icon bg-ocean/10 text-ocean"><i data-lucide="traffic-cone" class="w-5 h-5"></i></span>
+<div class="flex-1"><p class="font-semibold text-sm">Traffic Management Group</p><p class="text-xs text-ink/50">09164204345</p></div>
+<div class="flex gap-2"><a href="tel:09164204345" class="call-btn">Call</a><a href="https://maps.google.com/?q=Traffic+Management+Office+San+Felipe+Zambales" class="call-btn" style="background:#1668E3">Map</a></div></div><div class="contact-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+<span class="contact-icon bg-ocean/10 text-ocean"><i data-lucide="heart-handshake" class="w-5 h-5"></i></span>
+<div class="flex-1"><p class="font-semibold text-sm">Municipal Social Welfare and Development</p><p class="text-xs text-ink/50">09499950694</p></div>
+<div class="flex gap-2"><a href="tel:09499950694" class="call-btn">Call</a><a href="https://maps.google.com/?q=MSWD+San+Felipe+Zambales" class="call-btn" style="background:#1668E3">Map</a></div></div><div class="contact-card bg-white rounded-2xl p-4 shadow-[0_2px_8px_-2px_rgba(20,28,36,0.06)]">
+<span class="contact-icon bg-ocean/10 text-ocean"><i data-lucide="house" class="w-5 h-5"></i></span>
+<div class="flex-1"><p class="font-semibold text-sm">Brgy. Sto. Niño</p><p class="text-xs text-ink/50">09984205352</p></div>
+<div class="flex gap-2"><a href="tel:09984205352" class="call-btn">Call</a><a href="https://maps.google.com/?q=Barangay+Sto.+Niño+San+Felipe+Zambales" class="call-btn" style="background:#1668E3">Map</a></div></div></div></section>
+<div class="px-6 pt-2">
+    <a href="map.html" class="flex items-center justify-between bg-oceanDeep text-white rounded-2xl p-4">
+      <span class="flex items-center gap-3 text-sm font-semibold">
+        <i data-lucide="map-pin" class="w-4 h-4"></i> See your location on the map
+      </span>
+      <i data-lucide="chevron-right" class="w-4 h-4 text-white/60"></i>
+    </a>
+  </div>
+
+  <div class="app-bottom-spacer-v2"></div>
+
+  <script src="js/main.js"></script>
+  <script>
+    if (window.lucide) lucide.createIcons();
+  </script>
+
+  <div class="floating-nav-wrap">
+    <nav class="floating-nav">
+      <a href="guest-home.html" class="floating-nav-item">
+        <i data-lucide="home"></i>
+        <span>Home</span>
+      </a>
+      <a href="map.html" class="floating-nav-item">
+        <i data-lucide="compass"></i>
+        <span>Explore</span>
+      </a>
+      <a href="events.html" class="floating-nav-item">
+        <i data-lucide="calendar"></i>
+        <span>Events</span>
+      </a>
+      <a href="favorites.html" class="floating-nav-item">
+        <i data-lucide="heart"></i>
+        <span>Saved</span>
+      </a>
+      <a href="more.html" class="floating-nav-item active">
+        <i data-lucide="menu"></i>
+        <span>More</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

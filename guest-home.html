@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Explore Liwliwa — Liwliwa Connect">
+<meta property="og:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta property="og:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<meta property="og:url" content="https://liwliwaconnect.netlify.app/guest-home.html">
+<meta property="og:site_name" content="Liwliwa Connect">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Explore Liwliwa — Liwliwa Connect">
+<meta name="twitter:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta name="twitter:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<title>Explore Liwliwa — Liwliwa Connect</title>
+<meta name="description" content="Search resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://wsrv.nl"> <!-- image optimization proxy, see js/main.js AppImage -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css" />
+
+<!-- Makes the site installable to the home screen, opening full-view with no
+     browser address bar or nav bar, like a native app. -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1668E3">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Liwliwa">
+<meta name="mobile-web-app-capable" content="yes">
+
+<script>
+  // New "Mobile App V2" palette — see css/style.css "MOBILE APP V2" section.
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ocean: '#1668E3',
+          oceanDeep: '#0B2A4A',
+          turquoise: '#17B8A6',
+          sunset: '#FF7A45',
+          mist: '#F5F7FA',
+          ink: '#141C24',
+          success: '#2FB380',
+          danger: '#F0605F',
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+</head>
+<body class="bg-mist text-ink font-sans antialiased">
+
+  <!-- HEADER / GREETING + SEARCH — photo hero block, rounded filled search bar -->
+  <section class="relative overflow-hidden px-6 pt-[max(1.25rem,env(safe-area-inset-top))] pb-5 text-white"
+            style="background-image:url('images/hero-category.webp'); background-size:cover; background-position:center;">
+    <div class="absolute inset-0 bg-gradient-to-b from-oceanDeep/55 via-oceanDeep/45 to-oceanDeep/90"></div>
+    <div class="relative z-10">
+    <p id="greetingText" class="animate-in font-semibold text-lg tracking-tight mb-1">Good day 👋</p>
+    <p class="animate-in animate-in-delay-1 text-white/70 text-sm mb-4 flex items-center gap-1.5">
+      <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>Liwliwa, San Felipe, Zambales
+    </p>
+
+    <label for="searchInput" class="sr-only">Search Liwliwa</label>
+    <div class="animate-in animate-in-delay-2 relative">
+      <i data-lucide="search" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-ink/40"></i>
+      <input id="searchInput" type="text" placeholder="Discover Liwliwa — resorts, food, halo-halo…" autocomplete="off"
+        class="w-full bg-white text-ink placeholder:text-ink/40 rounded-full py-3.5 pl-12 pr-4 outline-none focus-visible:ring-2 focus-visible:ring-sunset shadow-[0_8px_24px_-8px_rgba(11,42,74,0.4)]" />
+    </div>
+
+    <!-- Search results appear here, replacing the hint text while searching -->
+    <div id="searchResults" class="hidden mt-4 bg-white text-ink rounded-2xl overflow-hidden divide-y divide-ink/10 shadow-lg"></div>
+    <p id="searchHint" class="hidden text-white/60 text-xs mt-3">Search across every directory at once.</p>
+    </div>
+  </section>
+
+  <!-- PROMO TICKER — auto-scrolling strip of every active promo across
+       every business/vendor (Premium perk, see AppPremium.activePromo).
+       Hidden entirely if nothing's active right now. Track content is
+       rendered twice back-to-back (see renderPromoTicker below) so the
+       CSS animation can loop by translating exactly -50% with no visible
+       jump. Tapping any promo goes straight to that business. -->
+  <div id="promoTickerWrap" class="hidden overflow-hidden py-2" style="background: linear-gradient(135deg, #FFD166, #B8860B);">
+    <div id="promoTickerTrack" class="promo-ticker-track flex whitespace-nowrap w-max"></div>
+  </div>
+
+  <!-- LIVE BEACH CONDITIONS — compact horizontal card row (weather, temp,
+       waves, surf condition, sunrise, sunset). Hides itself if the weather
+       fetch fails so a network hiccup never leaves broken cards on screen. -->
+  <section id="conditionsSection" class="hidden px-0 pt-5 pb-1">
+    <h2 class="font-bold text-lg mb-3 px-6">Live beach conditions</h2>
+    <div id="conditionsGrid" class="hscroll gap-2.5 px-6 pb-1"></div>
+  </section>
+
+  <!-- HAPPENING TODAY (NEW) — horizontal carousel of rich event cards.
+       Falls back to an elegant empty state if nothing is scheduled today.
+       Data comes from js/events.js (placeholder until a real events
+       backend exists — see that file's header comment). -->
+  <section id="happeningTodaySection" class="hidden pt-5 pb-1">
+    <div class="px-6 flex items-center justify-between mb-3">
+      <div>
+        <h2 class="font-bold text-lg">Happening Today</h2>
+        <p class="text-ink/45 text-xs">Live music, markets, and more around Liwliwa</p>
+      </div>
+      <a href="events.html" class="text-xs font-semibold text-ocean shrink-0">See all</a>
+    </div>
+    <div id="happeningTodayRow" class="hscroll gap-3 pb-2" style="scroll-padding-left: 1.5rem;"></div>
+  </section>
+
+  <div id="happeningTodayEmpty" class="hidden px-6 pt-5 pb-1">
+    <div class="card-app p-6 text-center">
+      <div class="mx-auto mb-3 w-12 h-12 rounded-full bg-ocean/10 flex items-center justify-center">
+        <i data-lucide="calendar" class="w-6 h-6 text-ocean/50"></i>
+      </div>
+      <p class="font-bold text-sm mb-1">Nothing scheduled for today</p>
+      <p class="text-ink/50 text-xs mb-4">Check out what's coming up this week instead.</p>
+      <a href="events.html" class="chip inline-flex">See all events</a>
+    </div>
+  </div>
+
+  <!-- FEATURED TODAY (Premium Placement) — one large hero card, rotated
+       daily among real featured=TRUE listings so the spot itself changes
+       day to day (see pickFeaturedToday() below). This uses real listing
+       data, unlike Premium Partners below — there's no paid-placement flag
+       in the sheet yet, so this just spotlights an existing "featured"
+       listing rather than claiming anyone paid for the slot. -->
+  <div id="featuredTodayWrap" class="hidden px-6 pt-5 pb-1"></div>
+
+  <!-- CATEGORIES + FEATURED — hidden while actively searching -->
+  <div id="browseSections">
+
+  <!-- EXPLORE CATEGORIES — large tappable photo cards (JS below sets each
+       tile's background to a real photo from that category's top-rated
+       listing, once data loads; the inline gradient here is just the
+       fallback shown before that, or if a category has no photo yet). -->
+  <section id="exploreCategories" class="pt-6 pb-2 px-6">
+    <div class="flex items-center gap-2 mb-3">
+      <span class="w-8 h-8 rounded-full bg-ocean/10 flex items-center justify-center shrink-0">
+        <i data-lucide="compass" class="w-4.5 h-4.5 text-ocean"></i>
+      </span>
+      <h2 class="font-extrabold text-xl">Explore Liwliwa</h2>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <a href="resorts.html" data-category="resorts" class="category-card skel" data-fallback="linear-gradient(135deg, #1668E3, #0B2A4A)">
+        <span class="category-card-icon"><i data-lucide="tree-palm" class="w-5 h-5"></i></span><span>Resorts</span>
+      </a>
+      <a href="restaurants.html" data-category="restaurants" class="category-card skel" data-fallback="linear-gradient(135deg, #FF7A45, #C2410C)">
+        <span class="category-card-icon"><i data-lucide="utensils" class="w-5 h-5"></i></span><span>Restaurants</span>
+      </a>
+      <a href="cafes.html" data-category="cafes" class="category-card skel" data-fallback="linear-gradient(135deg, #8B5E34, #4A3220)">
+        <span class="category-card-icon"><i data-lucide="coffee" class="w-5 h-5"></i></span><span>Cafés</span>
+      </a>
+      <a href="surf-schools.html" data-category="surfschools" class="category-card skel" data-fallback="linear-gradient(135deg, #17B8A6, #0B4A4A)">
+        <span class="category-card-icon"><i data-lucide="waves" class="w-5 h-5"></i></span><span>Surf Schools</span>
+      </a>
+      <a href="activities.html" data-category="activities" class="category-card skel col-span-2" data-fallback="linear-gradient(135deg, #2FB380, #0B2A4A)" style="aspect-ratio: 2.2 / 1;">
+        <span class="category-card-icon"><i data-lucide="compass" class="w-5 h-5"></i></span><span>Activities</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- LOCAL VENDORS — pulled out of the grid above into its own full-width,
+       higher-visibility banner so guests can't miss it (previously just one
+       equal-weight tile among six, easy to skip past). Photo/fallback
+       handled by loadLocalVendorBanner() below, same pattern as the other
+       category tiles (skeleton while loading, gradient fallback if no
+       vendor photo is found yet). -->
+  <section class="px-6 pt-1 pb-2">
+    <a href="local.html" id="localVendorsBanner" class="skel relative flex items-center justify-between gap-3 rounded-2xl p-4 text-white overflow-hidden"
+       data-fallback="linear-gradient(135deg, #F0605F, #7A1F3D)" style="min-height: 5.5rem;">
+      <div class="absolute inset-0" style="background: linear-gradient(to right, rgba(122,31,61,0.88) 0%, rgba(122,31,61,0.55) 60%, rgba(122,31,61,0.25) 100%);"></div>
+      <span class="relative z-10 flex items-center gap-3">
+        <span class="w-11 h-11 rounded-full bg-white/20 backdrop-blur flex items-center justify-center shrink-0">
+          <i data-lucide="store" class="w-5 h-5"></i>
+        </span>
+        <span>
+          <span class="block font-extrabold text-base">Local Vendors</span>
+          <span class="block text-white/80 text-xs mt-0.5">Stalls, food carts &amp; small shops nearby</span>
+        </span>
+      </span>
+      <i data-lucide="chevron-right" class="relative z-10 w-5 h-5 text-white/80 shrink-0"></i>
+    </a>
+  </section>
+
+  <!-- PREMIUM PARTNERS — real listings with is_premium=TRUE set in their
+       sheet row (any category). Hidden entirely until at least one
+       business is flagged. See renderPremiumPartners() below for how to
+       mark a business as premium (just a sheet column, no code changes). -->
+  <section id="premiumPartnersSection" class="pt-6 pb-4 hidden premium-partners-panel">
+    <div class="px-6 flex items-center gap-2 mb-1">
+      <span class="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style="background: linear-gradient(135deg, #FFD166, #B8860B);">
+        <i data-lucide="crown" class="w-3.5 h-3.5 text-white"></i>
+      </span>
+      <div>
+        <h2 class="font-bold text-lg leading-tight">Premium Partners</h2>
+        <p class="text-[11px] text-ink/45 leading-tight">Trusted businesses in Liwliwa</p>
+      </div>
+    </div>
+    <div id="premiumPartnersRow" class="hscroll gap-3 pb-2 pt-2" style="scroll-padding-left: 1.5rem;"></div>
+  </section>
+
+  <!-- HIDDEN GEMS (NEW) — non-"featured" listings with strong ratings but
+       fewer reviews, i.e. the spots regulars know about that don't get the
+       homepage's main "Featured" spotlight. Computed client-side from the
+       same allListings fetch used for search, so no new backend endpoint
+       is needed. Whole block (heading + row) stays hidden until at least
+       one qualifying listing is found. -->
+  <div id="hiddenGemsWrap" class="hidden">
+    <div class="px-6 pt-4">
+      <h2 class="font-bold text-lg">Hidden Gems</h2>
+      <p class="text-ink/45 text-xs">Local favorites tourists often miss</p>
+    </div>
+    <div id="hiddenGemsRow" class="hscroll gap-3 pb-2 pt-3" style="scroll-padding-left: 1.5rem;"></div>
+  </div>
+
+  <!-- GETTING HERE CTA — first-time guests' #1 question: how do I reach Liwliwa. -->
+  <section class="px-6 pt-4 pb-2">
+    <a href="getting-here.html" class="flex items-center justify-between gap-3 rounded-2xl p-4 text-white"
+       style="background: linear-gradient(135deg, #17B8A6, #0B2A4A);">
+      <span class="flex items-center gap-3">
+        <span class="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center shrink-0">
+          <i data-lucide="bus" class="w-5 h-5"></i>
+        </span>
+        <span>
+          <span class="block font-bold text-sm">First time here?</span>
+          <span class="block text-white/75 text-xs mt-0.5">How to reach Liwliwa by bus or car</span>
+        </span>
+      </span>
+      <i data-lucide="chevron-right" class="w-4 h-4 text-white/70 shrink-0"></i>
+    </a>
+  </section>
+
+  <!-- QUICK HELP — Emergency, Beach Guide, Essentials, Parking. Consolidated
+       from the previous two 2-card sections into a single 2x2 grid so
+       first-time guests find safety/practical info in one place. Moved
+       below discovery content — practical/reference info, not what should
+       greet a returning visitor first. -->
+  <section class="px-6 pt-2 pb-2">
+    <h2 class="font-bold text-lg mb-3">Quick help</h2>
+    <div class="grid grid-cols-2 gap-3">
+      <a href="emergency-help.html" class="card-app p-3 flex items-center gap-2.5">
+        <span class="w-8 h-8 rounded-full bg-danger/10 text-danger flex items-center justify-center shrink-0">
+          <i data-lucide="shield-alert" class="w-4 h-4"></i>
+        </span>
+        <span class="font-bold text-sm">Emergency</span>
+      </a>
+      <a href="beach-etiquette.html" class="card-app p-3 flex items-center gap-2.5">
+        <span class="w-8 h-8 rounded-full bg-turquoise/10 text-turquoise flex items-center justify-center shrink-0">
+          <i data-lucide="leaf" class="w-4 h-4"></i>
+        </span>
+        <span class="font-bold text-sm">Beach Guide</span>
+      </a>
+      <a href="nearby-essentials.html" class="card-app p-3 flex items-center gap-2.5">
+        <span class="w-8 h-8 rounded-full bg-ocean/10 text-ocean flex items-center justify-center shrink-0">
+          <i data-lucide="landmark" class="w-4 h-4"></i>
+        </span>
+        <span class="font-bold text-sm">Essentials</span>
+      </a>
+      <a href="parking-guide.html" class="card-app p-3 flex items-center gap-2.5">
+        <span class="w-8 h-8 rounded-full bg-sunset/10 text-sunset flex items-center justify-center shrink-0">
+          <i data-lucide="parking-circle" class="w-4 h-4"></i>
+        </span>
+        <span class="font-bold text-sm">Parking</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- FEATURED BY CATEGORY — one horizontal-scrolling row per directory
+       (Resorts, Restaurants, Cafés, Surf Schools, Activities), each showing
+       that category's featured listings. Cards use the same compact style
+       as local.html's vendor cards. -->
+  <div class="px-6 pt-4">
+    <h2 class="font-bold text-lg">Featured</h2>
+    <p class="text-ink/45 text-xs">Handpicked spots worth checking out</p>
+  </div>
+  <div id="featuredByCategory"></div>
+
+  <!-- APP REVIEWS — social proof for guests, and for pitching prospective
+       business owners on the app's credibility. Backed by Reviews.gs
+       (type=app_reviews / action=submit_app_review). Only reviews an
+       admin has manually marked 'approved' in the AppReviews sheet ever
+       show here. -->
+  <section id="reviewsSection" class="px-6 pt-2 pb-2 hidden">
+    <h2 class="font-bold text-lg mb-3">What travelers say</h2>
+    <div class="card-app p-5">
+      <div id="reviewsFeaturedStars" class="flex gap-0.5 mb-3"></div>
+      <p id="reviewsFeaturedQuote" class="text-[15px] leading-snug text-ink/90 mb-4"></p>
+      <div class="flex items-center justify-between gap-3">
+        <p id="reviewsFeaturedAuthor" class="text-sm font-semibold text-ink/50 truncate"></p>
+        <button type="button" id="openReviewsListBtn" class="text-xs font-semibold text-ocean flex items-center gap-1 shrink-0">
+          <span id="reviewsReadAllLabel">Read all reviews</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+    </div>
+    <button type="button" id="openReviewFormBtn" onclick="document.getElementById('reviewFormOverlay').classList.remove('hidden')" class="chip mt-3">
+      <i data-lucide="star" class="w-3.5 h-3.5"></i>Leave a review
+    </button>
+  </section>
+
+  <!-- All-reviews bottom sheet — opened from "Read all N reviews" above. -->
+  <div id="reviewsListOverlay" class="fixed inset-0 bg-black/40 hidden" style="backdrop-filter: blur(2px); z-index: 950;">
+    <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-[1.75rem] p-6 pb-8 max-h-[80vh] flex flex-col">
+      <div class="flex items-center justify-between mb-4 shrink-0">
+        <h3 class="font-bold text-lg">All reviews</h3>
+        <button type="button" id="closeReviewsListBtn" class="w-8 h-8 rounded-full bg-ink/5 flex items-center justify-center">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div id="reviewsFullList" class="overflow-y-auto flex flex-col gap-3"></div>
+    </div>
+  </div>
+
+  <!-- Same "leave a review" entry point, shown even if there are no
+       approved reviews yet (reviewsSection stays hidden until there's at
+       least one, so this is the fallback so the button is never lost). -->
+  <section id="reviewsEmptyState" class="px-6 pt-2 pb-2 hidden">
+    <button type="button" id="openReviewFormBtnEmpty" onclick="document.getElementById('reviewFormOverlay').classList.remove('hidden')" class="card-app w-full p-4 flex items-center gap-3">
+      <span class="w-10 h-10 rounded-full bg-sunset/10 text-sunset flex items-center justify-center shrink-0">
+        <i data-lucide="star" class="w-5 h-5"></i>
+      </span>
+      <span class="text-left">
+        <span class="block font-bold text-sm">Enjoying Liwliwa Connect?</span>
+        <span class="block text-ink/50 text-xs">Be the first to leave a review</span>
+      </span>
+    </button>
+  </section>
+
+  <!-- GUESTS-EXPLORED STAT — moved down here to the very bottom of the
+       scrollable content, after everything else, instead of sitting up in
+       the search header. -->
+  <div class="px-6 pt-2 pb-6 flex justify-center">
+    <div id="siteStatsBanner" class="hidden text-xs text-ink/50 bg-ink/5 rounded-full px-4 py-2 w-fit"></div>
+  </div>
+
+  <!-- Review form — a simple bottom sheet, not a full modal library, to
+       match this project's "no heavy JS dependencies" approach elsewhere.
+       z-index raised above .floating-nav-wrap (z-index:900) — both sit
+       near the bottom of the screen, and the nav bar was rendering on top
+       of this sheet, making it look like tapping the button did nothing. -->
+  <div id="reviewFormOverlay" class="fixed inset-0 bg-black/40 hidden" style="backdrop-filter: blur(2px); z-index: 950;">
+    <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-[1.75rem] p-6 pb-8">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-lg">Rate Liwliwa Connect</h3>
+        <button type="button" id="closeReviewFormBtn" onclick="document.getElementById('reviewFormOverlay').classList.add('hidden')" class="w-8 h-8 rounded-full bg-ink/5 flex items-center justify-center">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div id="reviewStarPicker" class="flex gap-2 justify-center mb-4">
+        <!-- 5 star buttons injected by JS -->
+      </div>
+
+      <input id="reviewNameInput" type="text" placeholder="Your name (optional)" maxlength="60"
+        class="w-full px-4 py-3 rounded-2xl bg-ink/5 text-sm mb-3 outline-none focus:ring-2 focus:ring-ocean/30" />
+      <textarea id="reviewCommentInput" rows="3" maxlength="500" placeholder="What was your experience like? (optional)"
+        class="w-full px-4 py-3 rounded-2xl bg-ink/5 text-sm mb-4 outline-none focus:ring-2 focus:ring-ocean/30 resize-none"></textarea>
+
+      <button type="button" id="submitReviewBtn" class="btn-gradient w-full !py-3.5">
+        <i data-lucide="send" class="w-4 h-4"></i>Submit review
+      </button>
+      <p id="reviewFormMsg" class="text-center text-xs mt-3 hidden"></p>
+    </div>
+  </div>
+
+  </div>
+
+  <div class="app-bottom-spacer-v2"></div>
+
+  <script src="js/main.js"></script>
+  <script src="js/events.js"></script>
+  <script>
+    // ============================================================================
+    // 📸 EXPLORE LIWLIWA CARD PHOTOS — edit these anytime you want to change
+    // the photo on a category card (Resorts, Restaurants, Cafés, etc.)
+    //
+    // HOW TO CHANGE A PHOTO:
+    //   1. Find the row below for the category you want to change.
+    //   2. Paste your photo's URL between the quotes.
+    //      (Upload a photo to your images/ folder and use 'images/yourfile.jpg',
+    //      or paste any photo link from the web.)
+    //   3. Save and refresh the page — that's it.
+    //
+    // Leave a row as '' (empty quotes) to turn OFF the manual photo — the card
+    // will then go back to automatically using a photo from that category's
+    // best-rated real listing, or the plain color gradient if none exists yet.
+    // ============================================================================
+   const CATEGORY_CARD_PHOTOS = {
+      resorts:     'https://i.pinimg.com/736x/d5/d9/b4/d5d9b4f65a77c6e08bdbef670667ef6b.jpg',
+      restaurants: 'https://i.pinimg.com/736x/14/d3/64/14d36441360d08dc39e5908b18da7e20.jpg',
+      cafes:       'https://i.pinimg.com/736x/71/61/b2/7161b26a2ee491e02d3acc98fce622a4.jpg',
+      surfschools: 'https://i.pinimg.com/736x/2e/6b/55/2e6b55d97c08196535e965cf8fab0d51.jpg',
+      activities:  'https://i.pinimg.com/1200x/3f/89/de/3f89defe875c956eb01ffbe530b7122c.jpg',
+      local:       ''
+
+    };
+
+    // Feature 9: Search — fetches all 5 directories once (via the ?type=all endpoint built
+    // for Feature 8's map), then filters client-side as the user types. No new backend needed.
+    const ALL_DATA_URL = 'https://script.google.com/macros/s/AKfycbx1doFh9X93nSzMbxtDFmOUWEDf8MoT7Csb8XiEmKnh7Zw33RDEDjN8N7WlSFTMS5gb/exec?type=all';
+    // Local Vendors have a different schema (vendor_name, not name), so they're
+    // fetched separately and merged in at search time — see ensureDataLoaded below.
+    const LOCAL_VENDORS_API_URL = 'https://script.google.com/macros/s/AKfycbx1doFh9X93nSzMbxtDFmOUWEDf8MoT7Csb8XiEmKnh7Zw33RDEDjN8N7WlSFTMS5gb/exec?type=localvendors';
+    const VENDOR_CATEGORY_LABELS = {
+      halohalo: 'Halo-Halo', tindahan: 'Tindahan', fishvendor: 'Fish Vendor',
+      streetfood: 'Street Food', crafts: 'Crafts', popup: 'Pop-up Stall'
+    };
+
+    // CATEGORY_LABELS/CATEGORY_PAGES now live in js/main.js as window.CATEGORIES
+    // (single source of truth, also used by the 5 directory pages and business.html).
+
+    let allListings = null; // cached after first fetch
+    let allVendors = null;  // local vendors, cached separately (different schema)
+    let fetchFailed = false;
+
+    function escapeHtml(value) {
+      const div = document.createElement('div');
+      div.textContent = String(value ?? '');
+      return div.innerHTML;
+    }
+
+    async function ensureDataLoaded() {
+      if ((allListings || fetchFailed) && allVendors !== null) return;
+      AppProgress.start();
+      try {
+        const [listingsRes, vendorsRes] = await Promise.all([
+          fetch(ALL_DATA_URL),
+          fetch(LOCAL_VENDORS_API_URL).catch(() => null)
+        ]);
+        if (!listingsRes.ok) throw new Error('Bad response');
+        allListings = await listingsRes.json();
+        allVendors = (vendorsRes && vendorsRes.ok) ? await vendorsRes.json() : [];
+        // Guards against a stale/undeployed backend accidentally falling
+        // back to a directory sheet for this endpoint.
+        allVendors = Array.isArray(allVendors) ? allVendors.filter(v => v.vendor_name) : [];
+      } catch (err) {
+        console.error('Search: failed to load listings', err);
+        fetchFailed = true;
+        if (allVendors === null) allVendors = [];
+      } finally {
+        AppProgress.done();
+      }
+    }
+
+    // Turns a search query into a group-size number, if it looks like one:
+    // a bare number ("10"), "10 pax/guests/people/persons", or "for 10" /
+    // "group of 10" / "pax 10". Returns null for anything else, so normal
+    // text searches are completely unaffected.
+    function extractPaxQuery(rawQuery) {
+      const trimmed = rawQuery.trim();
+      if (/^\d+$/.test(trimmed)) return parseInt(trimmed, 10);
+      const m = trimmed.match(/(\d+)\s*(?:pax|guests?|people|persons?)\b/i)
+        || trimmed.match(/\b(?:pax|for|group of)\s*(\d+)/i);
+      return m ? parseInt(m[1], 10) : null;
+    }
+
+    function renderResults(query) {
+      const resultsEl = document.getElementById('searchResults');
+      const hintEl = document.getElementById('searchHint');
+      const browseEl = document.getElementById('browseSections');
+
+      if (!query) {
+        resultsEl.classList.add('hidden');
+        resultsEl.innerHTML = '';
+        hintEl.textContent = 'Search across every directory at once.';
+        browseEl.classList.remove('hidden');
+        return;
+      }
+
+      browseEl.classList.add('hidden');
+
+      if (fetchFailed) {
+        resultsEl.classList.remove('hidden');
+        resultsEl.innerHTML = `<div class="p-4 text-sm text-ink/60">Couldn't load listings right now — try again in a moment.</div>`;
+        return;
+      }
+
+      if (!allListings) {
+        resultsEl.classList.remove('hidden');
+        resultsEl.innerHTML = `
+          <div class="p-4">
+            <div class="skel h-14 rounded-xl mb-2"></div>
+            <div class="skel h-14 rounded-xl mb-2"></div>
+            <div class="skel h-14 rounded-xl"></div>
+          </div>`;
+        return;
+      }
+
+      // Group-size search: "10", "10 pax", "for 10 guests", "group of 10",
+      // "pax 10" — all read as "resorts that can fit at least this many
+      // people", matched against max_pax. This is IN ADDITION to the plain
+      // text match below (a query can hit both, e.g. a business literally
+      // named "10th Avenue Café" still matches on name too), so it never
+      // narrows results, only adds resorts that qualify by capacity.
+      const paxQuery = extractPaxQuery(query);
+
+      const q = query.toLowerCase();
+      const matches = (allListings || []).filter(item => {
+        const name = String(item.name || '').toLowerCase();
+        const desc = String(item.description || '').toLowerCase();
+        const amenities = String(item.amenities || '').toLowerCase();
+        if (name.includes(q) || desc.includes(q) || amenities.includes(q)) return true;
+        if (paxQuery !== null && item.max_pax) {
+          const cap = parseInt(item.max_pax, 10);
+          if (!isNaN(cap) && cap >= paxQuery) return true;
+        }
+        return false;
+      });
+
+      const vendorMatches = (allVendors || []).filter(vendor => {
+        const name = String(vendor.vendor_name || '').toLowerCase();
+        const desc = String(vendor.description || '').toLowerCase();
+        const catKey = String(vendor.category || '').toLowerCase();
+        const catLabel = (VENDOR_CATEGORY_LABELS[catKey] || '').toLowerCase();
+        // Matches the raw category key too (e.g. "halohalo"), not just the
+        // display label ("Halo-Halo"), so "halohalo" and "halo-halo" both work.
+        return name.includes(q) || desc.includes(q) || catKey.includes(q.replace(/[\s-]/g, '')) || catLabel.includes(q);
+      });
+
+      const combined = [...matches, ...vendorMatches].slice(0, 8);
+
+      if (combined.length === 0) {
+        resultsEl.classList.remove('hidden');
+        resultsEl.innerHTML = `<div class="p-4 text-sm text-ink/60">No results for "${escapeHtml(query)}".</div>`;
+        return;
+      }
+
+      resultsEl.classList.remove('hidden');
+      resultsEl.innerHTML = combined.map(item => {
+        // Local vendors (identified by having vendor_name instead of name)
+        // render as their own row type, since they use a different schema
+        // and link to local.html rather than business.html.
+        if (item.vendor_name !== undefined) {
+          const catKey = String(item.category || '').toLowerCase();
+          const label = VENDOR_CATEGORY_LABELS[catKey] || 'Local Vendor';
+          return `
+          <a href="local.html?name=${encodeURIComponent(item.vendor_name || '')}" class="flex items-center justify-between gap-3 p-4 hover:bg-ink/5 transition-colors">
+            <div>
+              <p class="font-semibold text-sm">${escapeHtml(item.emoji || '')} ${escapeHtml(item.vendor_name || 'Unnamed')}</p>
+              ${item.description ? `<p class="text-xs text-ink/50 mt-0.5">${escapeHtml(item.description)}</p>` : ''}
+            </div>
+            <span class="text-xs shrink-0 bg-sunset/10 text-sunset px-2 py-1 rounded-full font-medium">${escapeHtml(label)}</span>
+          </a>
+        `;
+        }
+
+        const nameMatched = String(item.name || '').toLowerCase().includes(q);
+        const descMatched = String(item.description || '').toLowerCase().includes(q);
+        let matchedAmenity = '';
+        if (!nameMatched && !descMatched && item.amenities) {
+          matchedAmenity = String(item.amenities).split(',').map(s => s.trim()).find(a => a.toLowerCase().includes(q)) || '';
+        }
+        const matchedPax = (!nameMatched && !descMatched && !matchedAmenity && paxQuery !== null && item.max_pax
+          && parseInt(item.max_pax, 10) >= paxQuery) ? parseInt(item.max_pax, 10) : null;
+        return `
+        <a href="business.html?id=${encodeURIComponent(item.id || '')}" class="flex items-center justify-between gap-3 p-4 hover:bg-ink/5 transition-colors">
+          <div>
+            <p class="font-semibold text-sm">${escapeHtml(item.name || 'Unnamed')}</p>
+            ${item.description ? `<p class="text-xs text-ink/50 mt-0.5">${escapeHtml(item.description)}</p>` : ''}
+            ${matchedAmenity ? `<p class="text-xs text-turquoise mt-0.5">Has: ${escapeHtml(matchedAmenity)}</p>` : ''}
+            ${matchedPax ? `<p class="text-xs text-turquoise mt-0.5">Fits up to ${matchedPax} guests</p>` : ''}
+          </div>
+          <span class="text-xs shrink-0 bg-ocean/10 text-ocean px-2 py-1 rounded-full font-medium">${window.CATEGORIES[item.category]?.label || ''}</span>
+        </a>
+      `;
+      }).join('');
+    }
+
+    // Compact card for the per-category rows — same visual language as
+    // local.html's vendor cards (square photo, name, rating, link out),
+    // sized to sit in a horizontal-scrolling row rather than a full list.
+    function renderCompactCard(item, isFirst, isLast) {
+      const hasPhoto = item.photo_url && String(item.photo_url).trim() !== '';
+      const businessId = item.id || '';
+      const photoBlock = hasPhoto
+        ? AppImage.cardImg(item.photo_url, item.name || 'Photo', { className: 'w-full aspect-square object-cover', onError: 'this.remove()' })
+        : `<div class="w-full aspect-square bg-ocean/10 flex items-center justify-center"><i data-lucide="image" class="w-6 h-6 text-ocean/30"></i></div>`;
+      const isFav = window.AppFavorites.isFavorited(businessId);
+      const ratingBadge = window.AppRating.badge(item);
+
+      return `
+        <a href="business.html?id=${encodeURIComponent(businessId)}"
+           class="card-app shrink-0 w-36 flex flex-col ${isFirst ? 'ml-6' : ''} ${isLast ? 'mr-6' : ''}">
+          <div class="relative">
+            ${photoBlock}
+            <button type="button" onclick="event.preventDefault(); event.stopPropagation(); const fav = AppFavorites.toggle('${businessId}'); this.classList.toggle('is-favorited', fav);"
+              class="favorite-btn absolute top-2 right-2 ${isFav ? 'is-favorited' : ''}" style="width:1.75rem;height:1.75rem;">
+              <i data-lucide="heart" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+          <div class="p-2.5 flex flex-col gap-1">
+            <h3 class="font-bold text-xs leading-tight line-clamp-2">${escapeHtml(item.name || 'Unnamed')}</h3>
+            ${ratingBadge || (item.price_range ? `<p class="text-[11px] font-semibold text-ink/60">${escapeHtml(item.price_range)}</p>` : '')}
+          </div>
+        </a>
+      `;
+    }
+
+    // One horizontal-scrolling row per directory: Resorts, Restaurants,
+    // Cafés, Surf Schools, Activities — in that order. A category with no
+    // featured listings is skipped entirely rather than showing empty.
+    function renderFeaturedByCategory(listings) {
+      const container = document.getElementById('featuredByCategory');
+      const order = ['resorts', 'restaurants', 'cafes', 'surfschools', 'activities'];
+
+      const sectionsHtml = order.map((catKey) => {
+        const items = listings
+          .filter((item) => item.category === catKey && window.AppFeatured.isActive(item))
+          .slice(0, 10);
+        if (items.length === 0) return '';
+
+        const meta = window.CATEGORIES[catKey] || { label: catKey, labelPlural: catKey, page: '#' };
+        const headingLabel = items.length === 1 ? meta.label : (meta.labelPlural || meta.label);
+        const cardsHtml = items.map((item, i) => renderCompactCard(item, i === 0, i === items.length - 1)).join('');
+
+        return `
+          <section class="pt-4 pb-2">
+            <div class="flex items-center justify-between px-6 mb-3">
+              <h2 class="font-bold text-lg">${escapeHtml(headingLabel)}</h2>
+              <a href="${meta.page}" class="text-xs font-semibold text-ocean">See all</a>
+            </div>
+            <div class="hscroll gap-3 pb-2" style="scroll-padding-left: 1.5rem;">${cardsHtml}</div>
+          </section>
+        `;
+      }).join('');
+
+      container.innerHTML = sectionsHtml;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Explore Categories: swap each tile's flat gradient for a real photo
+    // from that category's best-rated listing (featured first, else
+    // highest google_rating). Falls back silently to the gradient already
+    // set inline in the HTML if a category has no usable photo.
+    function renderCategoryCardPhotos(listings) {
+      const cards = document.querySelectorAll('#exploreCategories .category-card[data-category]');
+      cards.forEach((card) => {
+        const cat = card.dataset.category;
+        // Manual override takes priority — see CATEGORY_CARD_PHOTOS at top of file.
+        if (CATEGORY_CARD_PHOTOS[cat]) {
+          card.style.backgroundImage = `url('${CATEGORY_CARD_PHOTOS[cat]}')`;
+          card.classList.remove('skel');
+          return;
+        }
+        const candidates = listings.filter((item) => item.category === cat && item.photo_url);
+        if (candidates.length === 0) {
+          // No usable photo for this category yet — reveal the original
+          // gradient (stored in data-fallback) rather than leaving the
+          // tile stuck on the loading shimmer forever.
+          card.style.backgroundImage = card.dataset.fallback;
+          card.classList.remove('skel');
+          return;
+        }
+        candidates.sort((a, b) => {
+          const aFeat = window.AppFeatured.isActive(a) ? 1 : 0;
+          const bFeat = window.AppFeatured.isActive(b) ? 1 : 0;
+          if (aFeat !== bFeat) return bFeat - aFeat;
+          return (parseFloat(b.google_rating) || 0) - (parseFloat(a.google_rating) || 0);
+        });
+        const url = window.AppImage.optimizedUrl(candidates[0].photo_url, 400);
+        card.style.backgroundImage = `url('${url}')`;
+        card.classList.remove('skel');
+      });
+    }
+
+    // Local Vendors banner (its own section now, not part of the category
+    // grid). Reuses `allVendors` from ensureDataLoaded() below — this used
+    // to fire its own separate fetch to the exact same endpoint, meaning
+    // every homepage load made two identical requests back-to-back. Now
+    // it's just a render step off data already in memory.
+    function renderLocalVendorBanner(vendors) {
+      const banner = document.getElementById('localVendorsBanner');
+      if (!banner) return;
+      // Manual override takes priority — see CATEGORY_CARD_PHOTOS at top of file.
+      if (CATEGORY_CARD_PHOTOS.local) {
+        banner.style.backgroundImage = `url('${CATEGORY_CARD_PHOTOS.local}')`;
+        banner.style.backgroundSize = 'cover';
+        banner.style.backgroundPosition = 'center';
+        banner.classList.remove('skel');
+        return;
+      }
+      const withPhoto = (vendors || []).find((v) => v.photo_url);
+      if (!withPhoto) { banner.style.backgroundImage = banner.dataset.fallback; banner.classList.remove('skel'); return; }
+      banner.style.backgroundImage = `url('${window.AppImage.optimizedUrl(withPhoto.photo_url, 600)}')`;
+      banner.style.backgroundSize = 'cover';
+      banner.style.backgroundPosition = 'center';
+      banner.classList.remove('skel');
+    }
+
+    // Promo ticker — one continuous scrolling strip of every active promo
+    // across every business AND local vendor (Premium perk, see
+    // AppPremium.activePromo in main.js). Hidden entirely if nothing's
+    // active right now, so a quiet day never leaves an empty gold bar
+    // sitting on the page.
+    function renderPromoTicker(listings, vendors) {
+      const wrap = document.getElementById('promoTickerWrap');
+      const track = document.getElementById('promoTickerTrack');
+      if (!wrap || !track) return;
+
+      const items = [];
+      (listings || []).forEach((item) => {
+        const promo = window.AppPremium.activePromo(item);
+        if (promo) items.push({ name: item.name || '', promo, href: `business.html?id=${encodeURIComponent(item.id || '')}` });
+      });
+      (vendors || []).forEach((v) => {
+        const promo = window.AppPremium.activePromo(v);
+        // Vendors have no individual detail page — send these to the
+        // Local Vendors directory itself rather than a dead link.
+        if (promo) items.push({ name: v.vendor_name || '', promo, href: 'local.html' });
+      });
+
+      if (items.length === 0) {
+        wrap.classList.add('hidden');
+        return;
+      }
+
+      const itemHtml = (it) => `
+        <a href="${it.href}" class="inline-flex items-center gap-1.5 text-xs font-bold text-white px-4 shrink-0">
+          <i data-lucide="megaphone" class="w-3.5 h-3.5 shrink-0"></i>${escapeHtml(it.name)}: ${escapeHtml(it.promo)}
+        </a>`;
+      const dot = '<span class="text-white/50 px-1 shrink-0">•</span>';
+
+      // Rendered twice back-to-back so the CSS animation (main.css'
+      // .promo-ticker-track) can loop by translating exactly -50%, with
+      // no visible jump or reset at the end of a cycle.
+      const oneRound = items.map(itemHtml).join(dot);
+      track.innerHTML = oneRound + dot + oneRound;
+
+      wrap.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+
+      // Speed scales with actual rendered width (~60px/sec) so it feels
+      // the same regardless of how many promos are active — a single
+      // short promo isn't a blink-and-you-missed-it whip-past, and twenty
+      // promos don't crawl by at a snail's pace.
+      requestAnimationFrame(() => {
+        const oneRoundWidth = track.scrollWidth / 2;
+        const duration = Math.max(oneRoundWidth / 60, 8);
+        track.style.animationDuration = `${duration}s`;
+      });
+    }
+
+    // Featured Today: rotates daily (by days-since-epoch, so it's stable
+    // all day and changes at midnight) among the paid Featured pool
+    // (window.AppFeatured — capped at AppFeatured.MAX_SLOTS, auto-expires
+    // via featured_until) that also have a photo. Tapping the card goes to
+    // the business page itself — no separate action buttons here by design.
+    //
+    // TO SELL A FEATURED SLOT: open the business's sheet tab, set
+    // featured = TRUE, and optionally featured_until = an end date. Only
+    // the first AppFeatured.MAX_SLOTS businesses flagged TRUE (in sheet
+    // order) actually rotate — that cap is what makes this a scarce,
+    // sellable placement rather than something free to turn on.
+    function renderFeaturedToday(listings) {
+      const wrap = document.getElementById('featuredTodayWrap');
+      const candidates = window.AppFeatured.activeCandidates(listings).filter((item) => item.photo_url);
+      if (candidates.length === 0) return;
+
+      const dayIndex = Math.floor(Date.now() / 86400000);
+      const item = candidates[dayIndex % candidates.length];
+      const businessId = item.id || '';
+      const ratingBadge = window.AppRating.badge(item);
+      const meta = window.CATEGORIES[item.category] || { label: item.category };
+
+      wrap.innerHTML = `
+        <p class="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider mb-2" style="color:#FF7A45;">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>Today's Pick
+        </p>
+        <div class="featured-glow-frame p-[3px] rounded-[1.9rem]">
+          <a href="business.html?id=${encodeURIComponent(businessId)}" class="block relative rounded-[1.75rem] overflow-hidden">
+            ${window.AppImage.cardImg(item.photo_url, item.name || 'Featured business', { className: 'w-full h-56 object-cover', onError: 'this.remove()' })}
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
+            <span class="absolute top-3 left-3 text-[11px] font-bold text-white px-2.5 py-1 rounded-full flex items-center gap-1"
+                  style="background: linear-gradient(135deg, #FF7A45, #7A1F3D);">
+              <i data-lucide="star" class="w-3 h-3"></i>Featured Today
+            </span>
+            <div class="absolute bottom-0 left-0 right-0 p-4 text-white">
+              <p class="text-[11px] font-semibold text-white/70 uppercase tracking-wide mb-0.5">${escapeHtml(meta.label || '')}</p>
+              <h3 class="font-extrabold text-lg leading-tight mb-1">${escapeHtml(item.name || 'Featured business')}</h3>
+              ${ratingBadge ? `<div class="text-white [&_span]:text-white [&_svg]:text-sunset">${ratingBadge}</div>` : ''}
+            </div>
+          </a>
+        </div>
+      `;
+      wrap.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Premium Partners: real listings flagged is_premium=TRUE in the sheet
+    // (any category), sorted by rating. Links to the real business page,
+    // shows the real rating badge — no more fictional example cards.
+    // Whole section stays hidden if no listing is flagged premium yet.
+    //
+    // TO MARK A BUSINESS AS PREMIUM: open its sheet tab (Resorts,
+    // Restaurants, Cafes, SurfSchools, or Activities) in Google Sheets, add
+    // a column called "is_premium" if it doesn't exist yet, and type TRUE
+    // in that business's row. That's it — no code changes needed, same as
+    // how the "featured" column already works.
+    function renderPremiumPartners(listings) {
+      const section = document.getElementById('premiumPartnersSection');
+      const row = document.getElementById('premiumPartnersRow');
+
+      const partners = listings
+        .filter((item) => window.AppPremium.isActive(item))
+        .sort((a, b) => (parseFloat(b.google_rating) || 0) - (parseFloat(a.google_rating) || 0))
+        .slice(0, 10);
+
+      if (partners.length === 0) {
+        section.classList.add('hidden');
+        return;
+      }
+
+      row.innerHTML = partners.map((p, i) => {
+        const businessId = p.id || '';
+        const ratingBadge = window.AppRating.badge(p);
+        const meta = window.CATEGORIES[p.category] || { label: p.category };
+        return `
+        <a href="business.html?id=${encodeURIComponent(businessId)}"
+           class="card-app premium-partner-card shrink-0 w-64 flex flex-col ${i === 0 ? 'ml-6' : ''} ${i === partners.length - 1 ? 'mr-6' : ''}">
+          <div class="relative">
+            ${window.AppImage.cardImg(p.photo_url, p.name || 'Premium partner', { className: 'w-full h-32 object-cover', onError: 'this.remove()' })}
+            <span class="absolute top-2 left-2 text-[10px] font-bold text-white px-2 py-0.5 rounded-full flex items-center gap-1" style="background: linear-gradient(135deg, #FFD166, #B8860B);">
+              <i data-lucide="crown" class="w-2.5 h-2.5"></i>Premium
+            </span>
+          </div>
+          <div class="p-3 flex flex-col gap-2">
+            <div>
+              <h3 class="font-bold text-sm leading-tight">${escapeHtml(p.name || '')}</h3>
+              <p class="text-[11px] text-ink/45">${escapeHtml(meta.label || p.category || '')}</p>
+            </div>
+            ${ratingBadge || ''}
+            ${window.AppPremium.activePromo(p) ? `<p class="text-[11px] font-bold text-sunset flex items-center gap-1 truncate"><i data-lucide="megaphone" class="w-3 h-3 shrink-0"></i><span class="truncate">${escapeHtml(window.AppPremium.activePromo(p))}</span></p>` : ''}
+          </div>
+        </a>
+      `;
+      }).join('');
+      section.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Hidden Gems: non-featured listings with a strong rating (>= 4.4) but
+    // fewer than 60 Google reviews, i.e. well-liked spots that haven't been
+    // manually flagged "featured" yet. Sorted by rating, capped at 10.
+    // Whole block stays hidden if nothing qualifies.
+    function renderHiddenGems(listings) {
+      const wrap = document.getElementById('hiddenGemsWrap');
+      const row = document.getElementById('hiddenGemsRow');
+
+      const gems = listings
+        .filter((item) => {
+          if (window.AppFeatured.isActive(item)) return false;
+          const rating = parseFloat(item.google_rating);
+          const count = parseInt(item.google_reviews_count, 10);
+          return !isNaN(rating) && rating >= 4.4 && (isNaN(count) || count < 60);
+        })
+        .sort((a, b) => parseFloat(b.google_rating) - parseFloat(a.google_rating))
+        .slice(0, 10);
+
+      if (gems.length === 0) {
+        wrap.classList.add('hidden');
+        return;
+      }
+
+      row.innerHTML = gems.map((item, i) => renderCompactCard(item, i === 0, i === gems.length - 1)).join('');
+      wrap.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    const searchInput = document.getElementById('searchInput');
+    let debounceTimer = null;
+
+    // Show a shimmer placeholder row immediately, so it doesn't look frozen
+    // while the first fetch is still in flight.
+    const featuredByCategoryEl = document.getElementById('featuredByCategory');
+    featuredByCategoryEl.innerHTML = `
+      <section class="pt-4 pb-2">
+        <div class="px-6 mb-3"><div class="skel h-5 w-24 rounded"></div></div>
+        <div class="hscroll gap-3 pb-2" style="scroll-padding-left: 1.5rem;">
+          ${[0, 1, 2].map((i) => `<div class="shrink-0 w-36 aspect-square rounded-[1.5rem] skel ${i === 0 ? 'ml-6' : ''}"></div>`).join('')}
+        </div>
+      </section>`;
+
+    // Load featured listings as soon as the page opens (not just when searching).
+    ensureDataLoaded().then(() => {
+      renderLocalVendorBanner(allVendors);
+      renderPromoTicker(allListings || [], allVendors || []);
+      if (allListings) {
+        renderFeaturedByCategory(allListings);
+        renderHiddenGems(allListings);
+        renderFeaturedToday(allListings);
+        renderCategoryCardPhotos(allListings);
+        renderPremiumPartners(allListings);
+      } else {
+        featuredByCategoryEl.innerHTML = '';
+        // Data failed to load entirely — fall back to each tile's original
+        // gradient rather than leaving them stuck on the loading shimmer.
+        document.querySelectorAll('#exploreCategories .category-card.skel').forEach((card) => {
+          card.style.backgroundImage = card.dataset.fallback;
+          card.classList.remove('skel');
+        });
+      }
+    });
+
+    // Time-of-day greeting for the hero header.
+    (function setGreeting() {
+      const hour = new Date().getHours();
+      const greeting = hour < 12 ? 'Good morning ☀️' : hour < 18 ? 'Good afternoon 🌤️' : 'Good evening 🌙';
+      document.getElementById('greetingText').textContent = greeting;
+    })();
+
+    // Happening Today carousel — see js/events.js for the data source.
+    window.EventsApp.ready.then(function renderHappeningToday() {
+      const section = document.getElementById('happeningTodaySection');
+      const emptyState = document.getElementById('happeningTodayEmpty');
+      const row = document.getElementById('happeningTodayRow');
+
+      const todaysEvents = window.EventsApp.all().filter(window.EventsApp.isToday);
+
+      if (todaysEvents.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      row.innerHTML = todaysEvents
+        .map((ev, i) => window.EventsApp.renderCard(ev, { compact: true, isFirst: i === 0, isLast: i === todaysEvents.length - 1 }))
+        .join('');
+      window.EventsApp.wireCardActions(row);
+      section.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    });
+
+    window.AppSiteStats.renderBanner(document.getElementById('siteStatsBanner'), { range: '30d', label: 'this month' });
+
+    // ---------------------------------------------------------------
+    // App reviews — load approved reviews, render the "leave a review"
+    // form. Backed by Reviews.gs (type=app_reviews / submit_app_review).
+    // Wrapped in try/catch so a problem here can't silently break any
+    // other feature on this page, and vice versa.
+    // ---------------------------------------------------------------
+    try {
+    const REVIEWS_API_URL = ALL_DATA_URL.split('?')[0]; // same Web App, different query string per call
+
+    function starsHtml(rating, size = 'w-3.5 h-3.5') {
+      let html = '';
+      for (let i = 1; i <= 5; i++) {
+        html += `<i data-lucide="star" class="${size} ${i <= Math.round(rating) ? 'text-sunset' : 'text-ink/15'}" style="fill:${i <= Math.round(rating) ? 'currentColor' : 'none'}"></i>`;
+      }
+      return html;
+    }
+
+    async function loadReviews() {
+      try {
+        const res = await fetch(`${REVIEWS_API_URL}?type=app_reviews&limit=10`);
+        const data = await res.json();
+        const sectionEl = document.getElementById('reviewsSection');
+        const emptyEl = document.getElementById('reviewsEmptyState');
+
+        if (!data || !data.totalReviews) {
+          sectionEl.classList.add('hidden');
+          emptyEl.classList.remove('hidden');
+          return;
+        }
+
+        // One strong quote beats several tiny partial cards — feature the
+        // first review that actually has a comment (falls back to the very
+        // first review if none do).
+        const featured = data.reviews.find(r => r.comment && r.comment.trim()) || data.reviews[0];
+
+        document.getElementById('reviewsFeaturedStars').innerHTML = starsHtml(featured.rating);
+        document.getElementById('reviewsFeaturedQuote').textContent = featured.comment
+          ? `“${featured.comment}”`
+          : 'Great experience overall!';
+        document.getElementById('reviewsFeaturedAuthor').textContent = featured.name || 'A guest';
+        document.getElementById('reviewsReadAllLabel').textContent =
+          `Read all ${data.totalReviews} review${data.totalReviews === 1 ? '' : 's'}`;
+
+        // Full list only renders into the bottom sheet, opened on demand.
+        document.getElementById('reviewsFullList').innerHTML = data.reviews.map(r => `
+          <div class="card-app p-4">
+            <div class="flex gap-0.5 mb-2">${starsHtml(r.rating)}</div>
+            ${r.comment ? `<p class="text-sm text-ink/80 leading-snug mb-2">${escapeHtml(r.comment)}</p>` : ''}
+            <p class="text-xs font-semibold text-ink/50">${escapeHtml(r.name || 'A guest')}</p>
+          </div>
+        `).join('');
+
+        sectionEl.classList.remove('hidden');
+        emptyEl.classList.add('hidden');
+        if (window.lucide) lucide.createIcons();
+      } catch (e) {
+        // Reviews are a nice-to-have banner, not core functionality —
+        // fail silently rather than show an error on the homepage.
+      }
+    }
+    loadReviews();
+
+    // --- "Read all reviews" bottom sheet ---
+    const reviewsListOverlay = document.getElementById('reviewsListOverlay');
+    document.getElementById('openReviewsListBtn').addEventListener('click', () => reviewsListOverlay.classList.remove('hidden'));
+    document.getElementById('closeReviewsListBtn').addEventListener('click', () => reviewsListOverlay.classList.add('hidden'));
+    reviewsListOverlay.addEventListener('click', (e) => { if (e.target === reviewsListOverlay) reviewsListOverlay.classList.add('hidden'); });
+
+    // --- Leave-a-review form ---
+    // Opening/closing also has a guaranteed inline onclick= on the buttons
+    // themselves (see the HTML above) as a fallback that works even if
+    // this script block never runs at all — this addEventListener wiring
+    // is what additionally resets the star picker and clears old input
+    // each time the form opens.
+    let selectedRating = 0;
+    const overlay = document.getElementById('reviewFormOverlay');
+    const starPicker = document.getElementById('reviewStarPicker');
+
+    starPicker.innerHTML = [1, 2, 3, 4, 5].map((n) => `
+      <button type="button" data-star="${n}" class="star-pick-btn w-10 h-10 flex items-center justify-center">
+        <i data-lucide="star" class="w-7 h-7 text-ink/15"></i>
+      </button>
+    `).join('');
+    if (window.lucide) lucide.createIcons();
+
+    function renderStarPicker() {
+      starPicker.querySelectorAll('.star-pick-btn').forEach((btn) => {
+        const n = parseInt(btn.dataset.star, 10);
+        // Lucide replaces the original <i data-lucide="star"> tag with an
+        // actual <svg> element right after creation — querying just 'i'
+        // stops finding anything the moment that swap happens, which is
+        // why star taps registered (selectedRating still updated) but
+        // never visually repainted yellow.
+        const icon = btn.querySelector('svg, i');
+        icon.classList.toggle('text-sunset', n <= selectedRating);
+        icon.classList.toggle('text-ink/15', n > selectedRating);
+        icon.style.fill = n <= selectedRating ? 'currentColor' : 'none';
+      });
+    }
+    starPicker.addEventListener('click', (e) => {
+      const btn = e.target.closest('.star-pick-btn');
+      if (!btn) return;
+      selectedRating = parseInt(btn.dataset.star, 10);
+      renderStarPicker();
+    });
+
+    function openReviewForm() {
+      selectedRating = 0;
+      renderStarPicker();
+      document.getElementById('reviewNameInput').value = '';
+      document.getElementById('reviewCommentInput').value = '';
+      document.getElementById('reviewFormMsg').classList.add('hidden');
+      overlay.classList.remove('hidden');
+    }
+    function closeReviewForm() { overlay.classList.add('hidden'); }
+
+    document.getElementById('openReviewFormBtn').addEventListener('click', openReviewForm);
+    document.getElementById('openReviewFormBtnEmpty').addEventListener('click', openReviewForm);
+    document.getElementById('closeReviewFormBtn').addEventListener('click', closeReviewForm);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeReviewForm(); });
+
+    document.getElementById('submitReviewBtn').addEventListener('click', async () => {
+      const msgEl = document.getElementById('reviewFormMsg');
+      const btn = document.getElementById('submitReviewBtn');
+
+      if (!selectedRating) {
+        msgEl.textContent = 'Please choose a star rating first.';
+        msgEl.classList.remove('hidden');
+        msgEl.classList.add('text-danger');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Submitting…';
+      try {
+        const data = await AppBackend.postJSON(REVIEWS_API_URL, {
+          action: 'submit_app_review',
+          rating: selectedRating,
+          name: document.getElementById('reviewNameInput').value.trim(),
+          comment: document.getElementById('reviewCommentInput').value.trim(),
+          guestId: window.AppAnalytics.getGuestId()
+        });
+        if (!data.success) throw new Error(data.error || 'Something went wrong.');
+
+        msgEl.textContent = 'Thanks for your review! It\u2019ll appear here once approved.';
+        msgEl.classList.remove('hidden', 'text-danger');
+        setTimeout(closeReviewForm, 1800);
+      } catch (err) {
+        msgEl.textContent = err.message || 'Could not submit — please try again.';
+        msgEl.classList.remove('hidden');
+        msgEl.classList.add('text-danger');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i>Submit review';
+        if (window.lucide) lucide.createIcons();
+      }
+    });
+    } catch (reviewsSetupErr) {
+      console.error('Reviews section failed to initialize:', reviewsSetupErr);
+      // The inline onclick= fallbacks on the buttons still work even if
+      // this whole block failed, so the form can still open/close either way.
+    }
+
+    // ---------------------------------------------------------------
+    // Live conditions ticker — Liwliwa, San Felipe, Zambales coordinates.
+    // Open-Meteo: free, no API key, CORS-friendly, so this can be called
+    // straight from the browser with no backend involved. Two endpoints:
+    // the regular forecast API (temperature + sunset) and the separate
+    // Marine API (wave height) — Open-Meteo splits marine data out because
+    // it comes from different ocean models than land weather.
+    // ---------------------------------------------------------------
+    (async function loadConditionsGrid() {
+      const LAT = 16.6116, LNG = 120.2833;
+      const WEATHER_ICONS = {
+        0: { icon: 'sun', label: 'Clear' }, 1: { icon: 'sun', label: 'Mostly clear' },
+        2: { icon: 'cloud-sun', label: 'Partly cloudy' }, 3: { icon: 'cloud', label: 'Overcast' },
+        45: { icon: 'cloud-fog', label: 'Foggy' }, 48: { icon: 'cloud-fog', label: 'Foggy' },
+        51: { icon: 'cloud-drizzle', label: 'Drizzle' }, 53: { icon: 'cloud-drizzle', label: 'Drizzle' }, 55: { icon: 'cloud-drizzle', label: 'Drizzle' },
+        61: { icon: 'cloud-rain', label: 'Rain' }, 63: { icon: 'cloud-rain', label: 'Rain' }, 65: { icon: 'cloud-rain', label: 'Heavy rain' },
+        80: { icon: 'cloud-rain-wind', label: 'Showers' }, 81: { icon: 'cloud-rain-wind', label: 'Showers' }, 82: { icon: 'cloud-rain-wind', label: 'Heavy showers' },
+        95: { icon: 'cloud-lightning', label: 'Thunderstorm' }, 96: { icon: 'cloud-lightning', label: 'Thunderstorm' }, 99: { icon: 'cloud-lightning', label: 'Thunderstorm' }
+      };
+      // Open-Meteo has no tide endpoint, so tide cards are intentionally
+      // left out rather than showing fabricated numbers — real tide data
+      // would need a dedicated marine/tide API, a separate task.
+      function surfCondition(waveM) {
+        if (waveM < 0.3) return { label: 'Flat', icon: 'waves' };
+        if (waveM < 0.6) return { label: 'Small', icon: 'waves' };
+        if (waveM < 1.2) return { label: 'Fun size', icon: 'waves' };
+        if (waveM < 2.0) return { label: 'Overhead', icon: 'waves' };
+        return { label: 'Big — caution', icon: 'triangle-alert' };
+      }
+      function card(icon, value, label) {
+        return `<div class="card-app shrink-0 w-24 flex flex-col items-center justify-center gap-1 py-3 text-center">
+          <i data-lucide="${icon}" class="w-5 h-5 text-ocean"></i>
+          <p class="font-bold text-sm leading-tight">${value}</p>
+          <p class="text-[10px] text-ink/45 font-semibold uppercase tracking-wide leading-tight">${label}</p>
+        </div>`;
+      }
+
+      try {
+        const [weatherRes, marineRes] = await Promise.all([
+          fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LNG}&current=temperature_2m,weather_code&daily=sunrise,sunset&timezone=auto`),
+          fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${LAT}&longitude=${LNG}&current=wave_height&timezone=auto`)
+        ]);
+        const weather = await weatherRes.json();
+        const marine = await marineRes.json();
+
+        const temp = weather?.current?.temperature_2m;
+        const code = weather?.current?.weather_code;
+        const sunriseIso = weather?.daily?.sunrise?.[0];
+        const sunsetIso = weather?.daily?.sunset?.[0];
+        const waveHeight = marine?.current?.wave_height;
+
+        const cards = [];
+        if (temp !== undefined && code !== undefined) {
+          const w = WEATHER_ICONS[code] || { icon: 'sun', label: 'Clear' };
+          cards.push(card(w.icon, w.label, 'Weather'));
+          cards.push(card('thermometer', `${Math.round(temp)}°C`, 'Temp'));
+        }
+        if (waveHeight !== undefined && waveHeight !== null) {
+          cards.push(card('waves', `${waveHeight.toFixed(1)}m`, 'Waves'));
+          const surf = surfCondition(waveHeight);
+          cards.push(card(surf.icon, surf.label, 'Surf'));
+        }
+        if (sunriseIso) {
+          const t = new Date(sunriseIso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+          cards.push(card('sunrise', t, 'Sunrise'));
+        }
+        if (sunsetIso) {
+          const t = new Date(sunsetIso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+          cards.push(card('sunset', t, 'Sunset'));
+        }
+
+        if (cards.length === 0) return; // nothing usable came back — stay hidden
+
+        document.getElementById('conditionsGrid').innerHTML = cards.join('');
+        document.getElementById('conditionsSection').classList.remove('hidden');
+        if (window.lucide) lucide.createIcons();
+      } catch (e) {
+        // silent — stays hidden on any failure, same as before
+      }
+    })();
+
+    // If arriving from the home page's search shortcut (?focus=1), jump straight
+    // into the keyboard/search state — no need to tap the search box again.
+    if (new URLSearchParams(window.location.search).get('focus') === '1') {
+      searchInput.focus();
+    }
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.trim();
+      clearTimeout(debounceTimer);
+
+      if (!query) {
+        renderResults('');
+        return;
+      }
+
+      debounceTimer = setTimeout(async () => {
+        await ensureDataLoaded();
+        renderResults(query);
+      }, 250);
+    });
+
+    if (window.lucide) lucide.createIcons();
+  </script>
+
+  <div class="floating-nav-wrap">
+    <nav class="floating-nav">
+      <a href="guest-home.html" class="floating-nav-item active">
+        <i data-lucide="home"></i>
+        <span>Home</span>
+      </a>
+      <a href="map.html" class="floating-nav-item">
+        <i data-lucide="compass"></i>
+        <span>Explore</span>
+      </a>
+      <a href="events.html" class="floating-nav-item">
+        <i data-lucide="calendar"></i>
+        <span>Events</span>
+      </a>
+      <a href="favorites.html" class="floating-nav-item">
+        <i data-lucide="heart"></i>
+        <span>Saved</span>
+      </a>
+      <a href="more.html" class="floating-nav-item">
+        <i data-lucide="menu"></i>
+        <span>More</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

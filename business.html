@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Business — Liwliwa Connect">
+<meta property="og:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta property="og:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<meta property="og:url" content="https://liwliwaconnect.netlify.app/business.html">
+<meta property="og:site_name" content="Liwliwa Connect">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Business — Liwliwa Connect">
+<meta name="twitter:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta name="twitter:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<title>Business — Liwliwa Connect</title>
+<meta name="description" content="Business details on Liwliwa Connect." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://wsrv.nl"> <!-- image optimization proxy, see js/main.js AppImage -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css" />
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1668E3">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Liwliwa">
+<meta name="mobile-web-app-capable" content="yes">
+
+<script>
+  // "Mobile App V2" palette — see css/style.css "MOBILE APP V2" section.
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ocean: '#1668E3',
+          oceanDeep: '#0B2A4A',
+          turquoise: '#17B8A6',
+          sunset: '#FF7A45',
+          mist: '#F5F7FA',
+          ink: '#141C24',
+          success: '#2FB380',
+          danger: '#F0605F',
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+</head>
+<body class="bg-mist text-ink font-sans antialiased">
+
+  <div class="px-6 pt-[max(1.25rem,env(safe-area-inset-top))] max-w-2xl mx-auto">
+    <a id="backLink" href="guest-home.html" class="inline-flex items-center gap-1.5 text-sm font-semibold text-ocean">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      Back to <span id="backLabel">Liwliwa</span>
+    </a>
+  </div>
+
+  <section class="px-6 py-5 max-w-2xl mx-auto">
+
+    <!-- Loading state -->
+    <div id="loadingState">
+      <div class="skel w-full h-64 sm:h-80 rounded-[1.5rem] mb-5"></div>
+      <div class="skel skel-line mb-3" style="width:60%; height:1.5rem;"></div>
+      <div class="skel skel-line mb-2" style="width:90%;"></div>
+      <div class="skel skel-line mb-5" style="width:75%;"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="skel h-12 rounded-full"></div>
+        <div class="skel h-12 rounded-full"></div>
+      </div>
+    </div>
+
+    <!-- Not found / error state -->
+    <div id="notFoundState" class="hidden text-center py-10">
+      <div class="mx-auto mb-4 w-14 h-14 flex items-center justify-center rounded-full bg-ocean/10">
+        <i data-lucide="search-x" class="w-7 h-7 text-ocean/50"></i>
+      </div>
+      <p class="font-bold text-lg mb-1">Couldn't find this business</p>
+      <p class="text-sm text-ink/60 mb-5">It may have been removed, or the link isn't quite right.</p>
+      <a href="guest-home.html" class="btn-gradient">Back to Liwliwa Connect</a>
+    </div>
+
+    <!-- Business content -->
+    <div id="bizContent" class="hidden">
+      <div id="heroPhoto" class="relative mb-5"></div>
+
+      <div class="flex items-center gap-2 mb-2">
+        <span id="bizCategory" class="text-xs font-semibold bg-ocean/10 text-ocean px-2.5 py-1 rounded-full"></span>
+        <span id="bizTier" class="hidden text-xs font-semibold bg-sunset/15 text-sunset px-2.5 py-1 rounded-full"></span>
+      </div>
+
+      <h1 id="bizName" class="font-extrabold text-2xl sm:text-3xl mb-2"></h1>
+      <div id="bizRating"></div>
+      <p id="bizPrice" class="hidden text-sm font-semibold text-ink/70 mb-3"></p>
+      <p id="bizMaxPax" class="hidden text-sm font-semibold text-ocean mb-3 items-center gap-1.5"><i data-lucide="users" class="w-4 h-4"></i><span></span></p>
+      <div id="bizPromo" class="hidden rounded-2xl bg-gradient-to-r from-sunset/15 to-sunset/5 border border-sunset/30 px-4 py-3 mb-4 items-center gap-2.5">
+        <i data-lucide="megaphone" class="w-5 h-5 text-sunset shrink-0"></i>
+        <p id="bizPromoText" class="text-sm font-semibold text-ink/80"></p>
+      </div>
+      <p id="bizDescription" class="hidden text-ink/60 mb-6 leading-relaxed"></p>
+
+      <div id="bizAmenities" class="hidden mb-6">
+        <h2 class="font-bold text-sm uppercase tracking-wide text-ink/50 mb-2.5">Amenities</h2>
+        <div id="bizAmenitiesList"></div>
+      </div>
+
+      <div id="bizActions" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+
+      <!-- Booking Requests — see Bookings.gs. This is a REQUEST, not an
+           instant confirmed reservation: the owner follows up by phone to
+           actually confirm, same as they would with a call today. -->
+      <div class="mt-4">
+        <button type="button" id="showBookingFormBtn" class="w-full flex items-center justify-center gap-2 bg-turquoise/10 text-turquoise font-semibold py-3.5 rounded-full">
+          <i data-lucide="calendar-check" class="w-4 h-4"></i>Request to Book
+        </button>
+
+        <form id="bookingForm" class="hidden mt-3 bg-white border border-ink/10 rounded-2xl p-4 flex flex-col gap-3">
+          <p class="text-xs text-ink/50 -mt-1 mb-1">This sends a request — the business will contact you to confirm.</p>
+          <div>
+            <label class="text-xs font-semibold text-ink/60 block mb-1">Your name</label>
+            <input id="bookingGuestName" required class="w-full border border-ink/15 rounded-xl px-3 py-2.5 text-sm" placeholder="Juan Dela Cruz" />
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-ink/60 block mb-1">Contact number</label>
+            <input id="bookingGuestContact" required type="tel" class="w-full border border-ink/15 rounded-xl px-3 py-2.5 text-sm" placeholder="09xxxxxxxxx" />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs font-semibold text-ink/60 block mb-1">Preferred date</label>
+              <input id="bookingDate" required type="date" class="w-full border border-ink/15 rounded-xl px-3 py-2.5 text-sm" />
+            </div>
+            <div>
+              <label class="text-xs font-semibold text-ink/60 block mb-1">Party size</label>
+              <input id="bookingPartySize" type="number" min="1" class="w-full border border-ink/15 rounded-xl px-3 py-2.5 text-sm" placeholder="Optional" />
+            </div>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-ink/60 block mb-1">Notes (optional)</label>
+            <textarea id="bookingNotes" rows="2" class="w-full border border-ink/15 rounded-xl px-3 py-2.5 text-sm" placeholder="Any special requests"></textarea>
+          </div>
+          <p id="bookingError" class="hidden text-xs font-semibold text-danger"></p>
+          <button type="submit" id="bookingSubmitBtn" class="btn-gradient !py-3">Send Request</button>
+        </form>
+
+        <div id="bookingSuccess" class="hidden mt-3 bg-turquoise/10 border border-turquoise/25 rounded-2xl p-4 text-center">
+          <i data-lucide="check-circle" class="w-6 h-6 text-turquoise mx-auto mb-1.5"></i>
+          <p class="font-semibold text-sm">Request sent!</p>
+          <p class="text-xs text-ink/60 mt-0.5">They'll contact you to confirm the details.</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="app-bottom-spacer-v2"></div>
+
+  <script src="js/main.js"></script>
+  <script>
+    // Business profile page — Feature 18 (Business Analytics System) support.
+    // Loaded by id (?id=category_row, e.g. business.html?id=resorts_14) from a
+    // directory card, guest-home's featured cards/search, or a shared link.
+    // See docs/API.md "Analytics" section for the businessId format and the
+    // required Code.gs patch (public listings need to expose `id` — until
+    // that's applied, this page will show "Couldn't find this business" for
+    // every id, since none exist yet).
+    const BASE_URL = 'https://script.google.com/macros/s/AKfycbx1doFh9X93nSzMbxtDFmOUWEDf8MoT7Csb8XiEmKnh7Zw33RDEDjN8N7WlSFTMS5gb/exec';
+    const TIER_LABELS = { budget: '₱ Budget', mid: '₱₱ Mid-range', premium: '₱₱₱ Premium' };
+
+    const params = new URLSearchParams(window.location.search);
+    const businessId = params.get('id') || '';
+    const category = businessId.split('_')[0];
+    const catInfo = window.CATEGORIES[category];
+
+    function escapeHtml(value) {
+      const div = document.createElement('div');
+      div.textContent = String(value ?? '');
+      return div.innerHTML;
+    }
+
+    function showNotFound() {
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('notFoundState').classList.remove('hidden');
+    }
+
+    async function loadBusiness() {
+      if (!businessId || !catInfo) { showNotFound(); return; }
+
+      document.getElementById('backLink').href = catInfo.page;
+      document.getElementById('backLabel').textContent = catInfo.labelPlural || (catInfo.label + 's');
+
+      AppProgress.start();
+      try {
+        const res = await fetch(`${BASE_URL}?type=${category}&_=${Date.now()}`);
+        const list = await res.json();
+        AppProgress.done();
+
+        if (!Array.isArray(list)) { showNotFound(); return; }
+        const item = list.find((b) => b.id === businessId);
+        if (!item) { showNotFound(); return; }
+
+        renderBusiness(item);
+
+        // Automatic VIEW — fires the moment the profile has actually
+        // loaded, with no button tap required. This is the one and only
+        // place VIEW gets logged, so it fires exactly once per visit
+        // whether someone tapped a card, followed a shared link, opened a
+        // bookmark, or hit Back/Forward to get here.
+        AppAnalytics.track(businessId, 'VIEW');
+      } catch (err) {
+        AppProgress.done();
+        showNotFound();
+      }
+    }
+
+    function renderBusiness(item) {
+      document.getElementById('loadingState').classList.add('hidden');
+      document.title = `${item.name || 'Business'} — Liwliwa Connect`;
+
+      const hero = document.getElementById('heroPhoto');
+      item.__businessId = businessId; // lets AppGallery tag PHOTO_VIEW events without re-plumbing it through every call
+      const photos = window.AppGallery.renderHero(hero, item, item.name || 'Photo');
+
+      const isFav = window.AppFavorites.isFavorited(businessId);
+      const favBtn = document.createElement('button');
+      favBtn.type = 'button';
+      favBtn.className = `favorite-btn absolute top-3 right-3 ${isFav ? 'is-favorited' : ''}`;
+      favBtn.innerHTML = '<i data-lucide="heart" class="w-4 h-4"></i>';
+      favBtn.addEventListener('click', () => {
+        const fav = AppFavorites.toggle(businessId);
+        favBtn.classList.toggle('is-favorited', fav);
+      });
+      hero.appendChild(favBtn);
+
+      document.getElementById('bizName').textContent = item.name || 'Unnamed business';
+      document.getElementById('bizCategory').textContent = catInfo.label;
+
+      const tierKey = String(item.price_tier || '').toLowerCase();
+      const tierEl = document.getElementById('bizTier');
+      if (TIER_LABELS[tierKey]) {
+        tierEl.textContent = TIER_LABELS[tierKey];
+        tierEl.classList.remove('hidden');
+      }
+
+      document.getElementById('bizRating').innerHTML = window.AppRating.block(item);
+
+      const priceEl = document.getElementById('bizPrice');
+      if (item.price_range) {
+        priceEl.textContent = item.price_range;
+        priceEl.classList.remove('hidden');
+      }
+
+      if (item.max_pax) {
+        const paxEl = document.getElementById('bizMaxPax');
+        paxEl.querySelector('span').textContent = 'Fits up to ' + item.max_pax + ' guests';
+        paxEl.classList.remove('hidden');
+        paxEl.classList.add('flex');
+      }
+
+      const promoText = window.AppPremium.activePromo(item);
+      if (promoText) {
+        document.getElementById('bizPromoText').textContent = promoText;
+        const promoEl = document.getElementById('bizPromo');
+        promoEl.classList.remove('hidden');
+        promoEl.classList.add('flex');
+      }
+
+      const descEl = document.getElementById('bizDescription');
+      if (item.description) {
+        descEl.textContent = item.description;
+        descEl.classList.remove('hidden');
+      }
+
+      const amenitiesChips = window.AppAmenities.fullChips(item.amenities);
+      if (amenitiesChips) {
+        document.getElementById('bizAmenitiesList').innerHTML = amenitiesChips;
+        document.getElementById('bizAmenities').classList.remove('hidden');
+      }
+
+      renderActions(item);
+
+      // Booking Requests is a Premium-only perk (same tier as Analytics
+      // and Promotions) — the whole section, including the "Request to
+      // Book" button, simply doesn't exist for a free listing rather than
+      // showing a disabled/grayed-out version of it.
+      if (!window.AppPremium.isActive(item)) {
+        document.getElementById('showBookingFormBtn').classList.add('hidden');
+        document.getElementById('bookingForm').classList.add('hidden');
+        document.getElementById('bookingSuccess').classList.add('hidden');
+      }
+
+      document.getElementById('bizContent').classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Action button style, shared by every button below — Call is the
+    // primary (gradient) action, everything else is a secondary (light) one.
+    function actionBtn({ tag, href, id, icon, label, onclick }) {
+      const cls = 'flex items-center justify-center gap-2 bg-white border border-ink/10 text-ink font-semibold py-3.5 rounded-full shadow-sm';
+      const idAttr = id ? `id="${id}"` : '';
+      const clickAttr = onclick ? `onclick="${onclick}"` : '';
+      if (tag === 'button') {
+        return `<button ${idAttr} ${clickAttr} class="${cls}"><i data-lucide="${icon}" class="w-4 h-4"></i>${label}</button>`;
+      }
+      return `<a ${idAttr} href="${href}" target="_blank" rel="noopener" ${clickAttr} class="${cls}"><i data-lucide="${icon}" class="w-4 h-4"></i>${label}</a>`;
+    }
+
+    function renderActions(item) {
+      const actions = [];
+
+      // Call opens the dialer directly (not target="_blank") and must never
+      // be delayed by analytics — AppAnalytics.track() is fire-and-forget by
+      // design, so the tel: link opens immediately regardless of whether the
+      // tracking call succeeds, fails, or is still in flight.
+      if (item.contact_number) {
+        actions.push(`<a href="tel:${escapeHtml(item.contact_number)}" onclick="AppAnalytics.track('${businessId}','CALL')" class="btn-gradient !py-3.5"><i data-lucide="phone" class="w-4 h-4"></i>Call</a>`);
+      }
+
+      const lat = parseFloat(item.latitude);
+      const lng = parseFloat(item.longitude);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        actions.push(actionBtn({
+          tag: 'a', href: `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
+          icon: 'navigation', label: 'Directions', onclick: `AppAnalytics.track('${businessId}','DIRECTION')`
+        }));
+      }
+
+      if (item.website_url) {
+        actions.push(actionBtn({
+          tag: 'a', href: escapeHtml(item.website_url),
+          icon: 'globe', label: 'Website', onclick: `AppAnalytics.track('${businessId}','WEBSITE')`
+        }));
+      }
+
+      if (item.facebook_url) {
+        actions.push(actionBtn({
+          tag: 'a', href: escapeHtml(item.facebook_url),
+          icon: 'external-link', label: 'Facebook', onclick: `AppAnalytics.track('${businessId}','FACEBOOK')`
+        }));
+      }
+
+      if (item.instagram_url) {
+        actions.push(actionBtn({
+          tag: 'a', href: escapeHtml(item.instagram_url),
+          icon: 'instagram', label: 'Instagram', onclick: `AppAnalytics.track('${businessId}','INSTAGRAM')`
+        }));
+      }
+
+      // Share is always available — the page itself is the shareable thing,
+      // no extra data needed from the listing.
+      actions.push(actionBtn({ tag: 'button', id: 'shareBtn', icon: 'share-2', label: 'Share' }));
+
+      document.getElementById('bizActions').innerHTML = actions.join('');
+
+      const shareBtn = document.getElementById('shareBtn');
+      shareBtn.addEventListener('click', async () => {
+        AppAnalytics.track(businessId, 'SHARE');
+        const shareData = {
+          title: item.name || 'Liwliwa Connect',
+          text: `Check out ${item.name || 'this business'} on Liwliwa Connect`,
+          url: window.location.href
+        };
+
+        // Native share sheet (mobile browsers, some desktop browsers).
+        // If this exists, try it and stop — a caught error here almost
+        // always just means the user closed the share sheet, which isn't
+        // a bug and shouldn't fall through to anything else.
+        if (navigator.share) {
+          try {
+            await navigator.share(shareData);
+          } catch (e) {
+            // dismissed / cancelled — nothing to do
+          }
+          return;
+        }
+
+        // No native share support (most desktop browsers): copy the link.
+        // THE BUG: this used to be wrapped in the same try/catch as
+        // navigator.share above, with every failure silently swallowed.
+        // If clipboard access was blocked (permissions, non-HTTPS,
+        // insecure context) the button would appear to do nothing at
+        // all. Now, if the clipboard write itself fails, we fall back to
+        // a prompt() so there's always some visible result from tapping
+        // the button.
+        try {
+          if (!navigator.clipboard || !navigator.clipboard.writeText) {
+            throw new Error('Clipboard API unavailable');
+          }
+          await navigator.clipboard.writeText(shareData.url);
+          const original = shareBtn.innerHTML;
+          shareBtn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>Link copied';
+          lucide.createIcons();
+          setTimeout(() => { shareBtn.innerHTML = original; lucide.createIcons(); }, 2000);
+        } catch (e) {
+          window.prompt('Copy this link to share:', shareData.url);
+        }
+      });
+    }
+
+    // Booking Requests — see Bookings.gs. Wired once at page load (not
+    // inside renderActions, since these elements are static HTML, not
+    // generated per-listing) rather than per business, since the form
+    // itself doesn't change based on which business this is — only the
+    // businessId sent on submit does.
+    document.getElementById('showBookingFormBtn').addEventListener('click', () => {
+      document.getElementById('bookingForm').classList.toggle('hidden');
+    });
+
+    document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('bookingSubmitBtn');
+      const errorEl = document.getElementById('bookingError');
+      errorEl.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+
+      const payload = {
+        action: 'submit_booking',
+        business_id: businessId,
+        guest_name: document.getElementById('bookingGuestName').value.trim(),
+        guest_contact: document.getElementById('bookingGuestContact').value.trim(),
+        preferred_date: document.getElementById('bookingDate').value,
+        party_size: document.getElementById('bookingPartySize').value.trim(),
+        notes: document.getElementById('bookingNotes').value.trim()
+      };
+
+      try {
+        const data = await window.AppBackend.postJSON(BASE_URL, payload);
+        if (!data || !data.success) throw new Error((data && data.error) || 'Something went wrong');
+        document.getElementById('bookingForm').classList.add('hidden');
+        document.getElementById('showBookingFormBtn').classList.add('hidden');
+        document.getElementById('bookingSuccess').classList.remove('hidden');
+        if (window.lucide) lucide.createIcons();
+      } catch (err) {
+        errorEl.textContent = err.message || "Couldn't send your request — please try again, or call/message them directly.";
+        errorEl.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Request';
+      }
+    });
+
+    loadBusiness();
+  </script>
+
+  <div class="floating-nav-wrap">
+    <nav class="floating-nav">
+      <a href="guest-home.html" class="floating-nav-item">
+        <i data-lucide="home"></i>
+        <span>Home</span>
+      </a>
+      <a href="map.html" class="floating-nav-item active">
+        <i data-lucide="compass"></i>
+        <span>Explore</span>
+      </a>
+      <a href="events.html" class="floating-nav-item">
+        <i data-lucide="calendar"></i>
+        <span>Events</span>
+      </a>
+      <a href="favorites.html" class="floating-nav-item">
+        <i data-lucide="heart"></i>
+        <span>Saved</span>
+      </a>
+      <a href="more.html" class="floating-nav-item">
+        <i data-lucide="menu"></i>
+        <span>More</span>
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

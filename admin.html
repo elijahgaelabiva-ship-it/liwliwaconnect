@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Admin — Liwliwa Connect">
+<meta property="og:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta property="og:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<meta property="og:url" content="https://liwliwaconnect.netlify.app/admin.html">
+<meta property="og:site_name" content="Liwliwa Connect">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Admin — Liwliwa Connect">
+<meta name="twitter:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta name="twitter:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<title>Admin — Liwliwa Connect</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+<link rel="manifest" href="manifest-admin.json">
+<meta name="theme-color" content="#0B2A4A">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Liwliwa Admin">
+<script>
+  // "Mobile App V2" palette — see css/style.css "MOBILE APP V2" section.
+  tailwind.config = { theme: { extend: {
+    colors: {
+      ocean: '#1668E3', oceanDeep: '#0B2A4A', turquoise: '#17B8A6', sunset: '#FF7A45',
+      mist: '#F5F7FA', ink: '#141C24', success: '#2FB380', danger: '#F0605F'
+    },
+    fontFamily: { sans: ['Inter', 'sans-serif'] }
+  }}}
+</script>
+</head>
+<body class="bg-mist text-ink font-sans antialiased">
+
+  <div id="loginScreen" class="min-h-screen flex items-center justify-center px-6">
+    <div class="max-w-sm w-full">
+      <h1 class="font-extrabold text-2xl mb-4 text-center">Admin Login</h1>
+      <input id="passwordInput" type="password" placeholder="Password"
+        class="w-full bg-white border border-ink/10 rounded-xl px-4 py-3 mb-3 outline-none focus:ring-2 focus:ring-ocean/30" />
+      <button id="loginBtn" class="btn-gradient w-full">Log in</button>
+      <p id="loginError" class="hidden text-danger text-sm mt-2 text-center">Incorrect password.</p>
+    </div>
+  </div>
+
+  <div id="adminScreen" class="hidden">
+    <header class="px-6 py-5 text-white" style="background: linear-gradient(135deg, #1668E3, #0B2A4A);">
+      <h1 class="font-extrabold text-2xl">Pending Businesses</h1>
+    </header>
+    <div id="list" class="px-6 py-6 max-w-3xl mx-auto flex flex-col gap-4"></div>
+
+    <header class="px-6 py-5 mt-6 text-white" style="background: linear-gradient(135deg, #1668E3, #0B2A4A);">
+      <h1 class="font-extrabold text-2xl">Pending Listing Edits</h1>
+    </header>
+    <div id="editList" class="px-6 py-6 max-w-3xl mx-auto flex flex-col gap-4"></div>
+
+    <header class="px-6 py-5 mt-6 text-white" style="background: linear-gradient(135deg, #1668E3, #0B2A4A);">
+      <h1 class="font-extrabold text-2xl">Pending Events</h1>
+    </header>
+    <div id="eventList" class="px-6 py-6 max-w-3xl mx-auto flex flex-col gap-4"></div>
+
+    <header class="px-6 py-5 mt-6 text-white" style="background: linear-gradient(135deg, #F0605F, #7A1F3D);">
+      <h1 class="font-extrabold text-2xl">Pending Vendors</h1>
+      <p class="text-sm text-white/80 mt-1">Local Vendor registrations awaiting review.</p>
+    </header>
+    <div id="vendorList" class="px-6 py-6 max-w-3xl mx-auto flex flex-col gap-4"></div>
+
+    <header class="px-6 py-5 mt-6 text-white" style="background: linear-gradient(135deg, #FF7A45, #7A1F3D);">
+      <h1 class="font-extrabold text-2xl flex items-center gap-2"><i data-lucide="crown" class="w-6 h-6"></i>Monetization</h1>
+      <p class="text-sm text-white/80 mt-1">Every Premium, Featured, or Sponsored placement — soonest-expiring first.</p>
+    </header>
+    <div id="monetizationList" class="px-6 py-6 max-w-3xl mx-auto flex flex-col gap-3"></div>
+
+    <header class="px-6 py-5 mt-6 text-white" style="background: linear-gradient(135deg, #1668E3, #0B2A4A);">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <h1 class="font-extrabold text-2xl">Analytics</h1>
+        <div class="flex gap-1" id="analyticsRangeBtns">
+          <button class="range-btn text-xs px-2.5 py-1 rounded-full bg-white text-ocean" data-range="today">Today</button>
+          <button class="range-btn text-xs px-2.5 py-1 rounded-full bg-white/20 text-white" data-range="7d">7D</button>
+          <button class="range-btn text-xs px-2.5 py-1 rounded-full bg-white/20 text-white" data-range="30d">30D</button>
+          <button class="range-btn text-xs px-2.5 py-1 rounded-full bg-white/20 text-white" data-range="all">All</button>
+        </div>
+      </div>
+    </header>
+    <div class="px-6 py-6 max-w-3xl mx-auto">
+      <div id="analyticsCards" class="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-6"></div>
+
+      <div class="card-app p-5 mb-4">
+        <p class="text-sm font-semibold text-ink/70 mb-3">Views by day</p>
+        <div id="analyticsDailyChart"></div>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-4">
+        <div class="card-app p-5">
+          <p class="text-sm font-semibold text-ink/70 mb-3">Top viewed</p>
+          <div id="topViewedList" class="flex flex-col gap-2 text-sm"></div>
+        </div>
+        <div class="card-app p-5">
+          <p class="text-sm font-semibold text-ink/70 mb-3">Most clicked</p>
+          <div id="mostClickedList" class="flex flex-col gap-2 text-sm"></div>
+        </div>
+        <div class="card-app p-5">
+          <p class="text-sm font-semibold text-ink/70 mb-3">Most shared</p>
+          <div id="mostSharedList" class="flex flex-col gap-2 text-sm"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    const BASE_URL = 'https://script.google.com/macros/s/AKfycbx1doFh9X93nSzMbxtDFmOUWEDf8MoT7Csb8XiEmKnh7Zw33RDEDjN8N7WlSFTMS5gb/exec';
+    let password = '';
+
+    function escapeHtml(v) { const d = document.createElement('div'); d.textContent = String(v ?? ''); return d.innerHTML; }
+
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      password = document.getElementById('passwordInput').value;
+      const res = await fetch(`${BASE_URL}?type=businesses&password=${encodeURIComponent(password)}`);
+      const data = await res.json();
+      if (data.error) {
+        document.getElementById('loginError').classList.remove('hidden');
+        return;
+      }
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('adminScreen').classList.remove('hidden');
+      renderList(data.filter(b => b.status === 'pending'));
+
+      const editsRes = await fetch(`${BASE_URL}?type=pending_edits&password=${encodeURIComponent(password)}`);
+      const edits = await editsRes.json();
+      renderEditList(Array.isArray(edits) ? edits : []);
+
+      const eventsRes = await fetch(`${BASE_URL}?type=pending_events&password=${encodeURIComponent(password)}`);
+      const pendingEvents = await eventsRes.json();
+      renderEventList(Array.isArray(pendingEvents) ? pendingEvents : []);
+
+      const vendorsRes = await fetch(`${BASE_URL}?type=pending_vendors&password=${encodeURIComponent(password)}`);
+      const pendingVendors = await vendorsRes.json();
+      renderVendorList(Array.isArray(pendingVendors) ? pendingVendors.filter(v => v.status === 'pending') : []);
+
+      loadMonetization();
+      loadAnalytics('today');
+    });
+
+    let currentRange = 'today';
+
+    document.getElementById('analyticsRangeBtns').addEventListener('click', (evt) => {
+      const btn = evt.target.closest('.range-btn');
+      if (!btn) return;
+      document.querySelectorAll('#analyticsRangeBtns .range-btn').forEach(b => {
+        b.classList.remove('bg-white', 'text-ocean');
+        b.classList.add('bg-white/20', 'text-white');
+      });
+      btn.classList.remove('bg-white/20', 'text-white');
+      btn.classList.add('bg-white', 'text-ocean');
+      loadAnalytics(btn.dataset.range);
+    });
+
+    function renderLeaderboard(container, items, emptyLabel) {
+      if (!items || items.length === 0) {
+        container.innerHTML = `<p class="text-ink/40 text-xs">${emptyLabel}</p>`;
+        return;
+      }
+      container.innerHTML = items.map((item, i) => `
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-ink/70 truncate">${i + 1}. ${escapeHtml(item.name)}</span>
+          <span class="font-semibold text-ocean whitespace-nowrap">${item.count.toLocaleString()}</span>
+        </div>
+      `).join('');
+    }
+
+    async function loadAnalytics(range) {
+      currentRange = range;
+      const cardsEl = document.getElementById('analyticsCards');
+      const chartEl = document.getElementById('analyticsDailyChart');
+      AppAnalyticsCards.render(cardsEl, {});
+      chartEl.innerHTML = '<p class="text-xs text-ink/40 py-8 text-center">Loading…</p>';
+
+      try {
+        const res = await fetch(`${BASE_URL}?type=analytics_summary&range=${range}&password=${encodeURIComponent(password)}`);
+        const data = await res.json();
+        if (data.error) {
+          chartEl.innerHTML = '<p class="text-xs text-ink/40 py-8 text-center">Analytics unavailable.</p>';
+          return;
+        }
+
+        AppAnalyticsCards.render(cardsEl, data.counts);
+
+        const daily = Object.keys(data.dailySeries || {})
+          .sort()
+          .slice(-30)
+          .map(day => ({ label: day.slice(5), value: data.dailySeries[day] }));
+        AppChart.bar(chartEl, daily);
+
+        renderLeaderboard(document.getElementById('topViewedList'), data.topViewed, 'No views yet.');
+        renderLeaderboard(document.getElementById('mostClickedList'), data.mostClicked, 'No clicks yet.');
+        renderLeaderboard(document.getElementById('mostSharedList'), data.mostShared, 'No shares yet.');
+      } catch (err) {
+        // Analytics is informational only — a failed load never blocks the
+        // pending-approvals queues above, which are the admin's main job here.
+        chartEl.innerHTML = '<p class="text-xs text-ink/40 py-8 text-center">Analytics unavailable.</p>';
+      }
+    }
+
+    async function loadMonetization() {
+      const container = document.getElementById('monetizationList');
+      container.innerHTML = '<p class="text-ink/40 text-sm py-4">Loading…</p>';
+      try {
+        const res = await fetch(`${BASE_URL}?type=monetization_summary&password=${encodeURIComponent(password)}`);
+        const data = await res.json();
+        if (data.error) {
+          container.innerHTML = '<p class="text-ink/40 text-sm py-4">Could not load monetization data.</p>';
+          return;
+        }
+        renderMonetization(data.businesses || [], data.events || []);
+      } catch (err) {
+        container.innerHTML = '<p class="text-ink/40 text-sm py-4">Could not load monetization data.</p>';
+      }
+    }
+
+    const CATEGORY_LABELS_ADMIN = { resorts: 'Resort', restaurants: 'Restaurant', cafes: 'Café', surfschools: 'Surf School', activities: 'Activity' };
+
+    // Flattens businesses (which can be Premium and/or Featured at once)
+    // and sponsored events into one list of { label, type, sub, expires }
+    // rows, then sorts so the most urgent thing to deal with is always at
+    // the top: already-expired first (still flagged TRUE in the sheet but
+    // past its date — needs a decision), then soonest-upcoming, then
+    // no-end-date placements last (nothing to chase, so least urgent).
+    function renderMonetization(businesses, events) {
+      const container = document.getElementById('monetizationList');
+      const rows = [];
+
+      businesses.forEach((b) => {
+        const sub = `${CATEGORY_LABELS_ADMIN[b.category] || b.category} · row ${b.row}`;
+        if (b.is_premium) rows.push({ label: b.name || '(unnamed)', type: 'Premium', sub, expires: b.premium_expires });
+        if (b.featured) rows.push({ label: b.name || '(unnamed)', type: 'Featured', sub, expires: b.featured_until });
+      });
+      events.forEach((e) => {
+        rows.push({ label: e.title || '(untitled)', type: 'Sponsored', sub: `Event · row ${e.row}`, expires: e.sponsored_until });
+      });
+
+      if (rows.length === 0) {
+        container.innerHTML = '<p class="text-ink/50">Nothing Premium, Featured, or Sponsored right now.</p>';
+        return;
+      }
+
+      const TYPE_STYLE = {
+        Premium: 'bg-sunset/15 text-sunset',
+        Featured: 'bg-ocean/15 text-ocean',
+        Sponsored: 'bg-turquoise/15 text-turquoise'
+      };
+
+      const now = Date.now();
+      rows.forEach((r) => {
+        const exp = r.expires ? new Date(r.expires) : null;
+        r.daysLeft = (exp && !isNaN(exp.getTime())) ? Math.ceil((exp.getTime() - now) / 86400000) : Infinity;
+        r.expDate = (exp && !isNaN(exp.getTime())) ? exp : null;
+      });
+      rows.sort((a, b) => a.daysLeft - b.daysLeft);
+
+      container.innerHTML = rows.map((r) => {
+        let statusHtml;
+        if (r.daysLeft === Infinity) {
+          statusHtml = `<span class="text-xs font-semibold text-ink/40">No end date</span>`;
+        } else if (r.daysLeft < 0) {
+          statusHtml = `<span class="text-xs font-bold text-danger">Expired ${Math.abs(r.daysLeft)}d ago</span>`;
+        } else if (r.daysLeft === 0) {
+          statusHtml = `<span class="text-xs font-bold text-danger">Expires today</span>`;
+        } else if (r.daysLeft <= 7) {
+          statusHtml = `<span class="text-xs font-bold text-sunset">${r.daysLeft}d left</span>`;
+        } else {
+          statusHtml = `<span class="text-xs font-semibold text-ink/50">${r.daysLeft}d left</span>`;
+        }
+        return `
+          <div class="card-app p-4 flex items-center justify-between gap-3">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full ${TYPE_STYLE[r.type]}">${r.type}</span>
+                <h3 class="font-bold text-sm truncate">${escapeHtml(r.label)}</h3>
+              </div>
+              <p class="text-xs text-ink/45 mt-0.5">${escapeHtml(r.sub)}</p>
+            </div>
+            <div class="text-right shrink-0">${statusHtml}</div>
+          </div>
+        `;
+      }).join('');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function renderList(items) {
+      const list = document.getElementById('list');
+      if (items.length === 0) {
+        list.innerHTML = `<p class="text-ink/50">No pending submissions.</p>`;
+        return;
+      }
+      list.innerHTML = items.map(b => `
+        <div class="card-app p-5" data-row="${b.row}">
+          <h3 class="font-bold text-lg">${escapeHtml(b.business_name)}</h3>
+          <p class="text-xs text-ocean font-semibold mb-1">${escapeHtml(b.category)}</p>
+          <p class="text-sm text-ink/70 mb-2">${escapeHtml(b.description)}</p>
+          <p class="text-xs text-ink/50">${escapeHtml(b.owner_name)} · ${escapeHtml(b.email)} · ${escapeHtml(b.contact_number)}</p>
+          <div class="flex gap-3 mt-3">
+            <button class="approveBtn bg-ocean text-white text-sm font-semibold px-4 py-2 rounded-full" data-row="${b.row}">Approve</button>
+            <button class="rejectBtn border border-danger text-danger text-sm font-semibold px-4 py-2 rounded-full" data-row="${b.row}">Reject</button>
+          </div>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.approveBtn').forEach(btn => btn.addEventListener('click', () => act(btn.dataset.row, 'approve')));
+      document.querySelectorAll('.rejectBtn').forEach(btn => btn.addEventListener('click', () => act(btn.dataset.row, 'reject')));
+    }
+
+    async function act(row, action) {
+      const res = await fetch(BASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action, row: parseInt(row), password })
+      });
+      const result = await res.json();
+      if (!result.success) {
+        // Previously this response was never checked, so a failed
+        // approve/reject (e.g. category didn't match a directory tab)
+        // still removed the card here and looked like it had worked.
+        alert('Could not ' + action + ' this business:\n\n' + (result.error || 'Unknown error'));
+        return;
+      }
+      document.querySelector(`[data-row="${row}"]`).remove();
+    }
+
+    const FIELD_LABELS = {
+      description: 'Description', price_range: 'Price range', price_tier: 'Price tier',
+      contact_number: 'Contact number', facebook_url: 'Facebook URL', photo_url: 'Photo URL',
+      website_url: 'Website URL', instagram_url: 'Instagram URL',
+      latitude: 'Latitude', longitude: 'Longitude'
+    };
+
+    function renderEditList(items) {
+      const list = document.getElementById('editList');
+      if (items.length === 0) {
+        list.innerHTML = `<p class="text-ink/50">No pending edits.</p>`;
+        return;
+      }
+      list.innerHTML = items.map(edit => {
+        let fields = {};
+        try { fields = JSON.parse(edit.fields_json || '{}'); } catch (e) {}
+        const changesHtml = Object.keys(fields).map(key => `
+          <p class="text-sm"><span class="font-semibold">${escapeHtml(FIELD_LABELS[key] || key)}:</span> ${escapeHtml(fields[key])}</p>
+        `).join('');
+
+        return `
+          <div class="card-app p-5" data-edit-row="${edit.editRow}">
+            <h3 class="font-bold text-lg">${escapeHtml(edit.listing_name)}</h3>
+            <p class="text-xs text-ocean font-semibold mb-2">${escapeHtml(edit.category)} · proposed changes:</p>
+            ${changesHtml}
+            <div class="flex gap-3 mt-3">
+              <button class="approveEditBtn bg-ocean text-white text-sm font-semibold px-4 py-2 rounded-full" data-edit-row="${edit.editRow}">Approve</button>
+              <button class="rejectEditBtn border border-danger text-danger text-sm font-semibold px-4 py-2 rounded-full" data-edit-row="${edit.editRow}">Reject</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.querySelectorAll('.approveEditBtn').forEach(btn => btn.addEventListener('click', () => actOnEdit(btn.dataset.editRow, 'approve_edit')));
+      document.querySelectorAll('.rejectEditBtn').forEach(btn => btn.addEventListener('click', () => actOnEdit(btn.dataset.editRow, 'reject_edit')));
+    }
+
+    async function actOnEdit(editRow, action) {
+      await fetch(BASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action, editRow: parseInt(editRow), password })
+      });
+      document.querySelector(`[data-edit-row="${editRow}"]`).remove();
+    }
+
+    function formatEventWhen(startIso) {
+      const d = new Date(startIso);
+      if (isNaN(d)) return startIso || '';
+      return d.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+    }
+
+    function renderEventList(items) {
+      const list = document.getElementById('eventList');
+      if (items.length === 0) {
+        list.innerHTML = `<p class="text-ink/50">No pending events.</p>`;
+        return;
+      }
+      list.innerHTML = items.map(ev => `
+        <div class="card-app p-5" data-event-row="${ev.row}">
+          <h3 class="font-bold text-lg">${escapeHtml(ev.title)}</h3>
+          <p class="text-xs text-ocean font-semibold mb-1">${escapeHtml(ev.category)} · ${formatEventWhen(ev.start_iso)}</p>
+          <p class="text-sm text-ink/70 mb-2">${escapeHtml(ev.description)}</p>
+          <p class="text-xs text-ink/50">${escapeHtml(ev.venue)}</p>
+          <p class="text-xs text-ink/50">Submitted by ${escapeHtml(ev.business_name)} · ${escapeHtml(ev.owner_email)}</p>
+          <div class="flex gap-3 mt-3">
+            <button class="approveEventBtn bg-ocean text-white text-sm font-semibold px-4 py-2 rounded-full" data-row="${ev.row}">Approve</button>
+            <button class="rejectEventBtn border border-danger text-danger text-sm font-semibold px-4 py-2 rounded-full" data-row="${ev.row}">Reject</button>
+          </div>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.approveEventBtn').forEach(btn => btn.addEventListener('click', () => actOnEvent(btn.dataset.row, 'approve_event')));
+      document.querySelectorAll('.rejectEventBtn').forEach(btn => btn.addEventListener('click', () => actOnEvent(btn.dataset.row, 'reject_event')));
+    }
+
+    async function actOnEvent(row, action) {
+      const res = await fetch(BASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action, row: parseInt(row), password })
+      });
+      const result = await res.json();
+      if (!result.success) {
+        alert('Could not ' + action.replace('_event', '') + ' this event:\n\n' + (result.error || 'Unknown error'));
+        return;
+      }
+      document.querySelector(`[data-event-row="${row}"]`).remove();
+    }
+    function renderVendorList(items) {
+      const list = document.getElementById('vendorList');
+      if (items.length === 0) {
+        list.innerHTML = `<p class="text-ink/50">No pending vendors.</p>`;
+        return;
+      }
+      const CATEGORY_LABELS = {
+        halohalo: 'Halo-Halo', tindahan: 'Tindahan', fishvendor: 'Fish Vendor',
+        streetfood: 'Street Food', crafts: 'Crafts', popup: 'Pop-up Stall'
+      };
+      list.innerHTML = items.map(v => `
+        <div class="card-app p-5" data-vendor-row="${v.row}">
+          <h3 class="font-bold text-lg">${escapeHtml(v.vendor_name)}</h3>
+          <p class="text-xs text-sunset font-semibold mb-1">${escapeHtml(CATEGORY_LABELS[v.category] || v.category)}</p>
+          ${v.description ? `<p class="text-sm text-ink/70 mb-2">${escapeHtml(v.description)}</p>` : ''}
+          ${v.hours_text ? `<p class="text-xs text-ink/50">${escapeHtml(v.hours_text)}</p>` : ''}
+          <p class="text-xs text-ink/50">📞 ${escapeHtml(v.contact_number)}</p>
+          <p class="text-xs text-ink/40 mt-1">
+            ${v.accepts_cash === 'TRUE' ? '💵 Cash ' : ''}${v.accepts_gcash === 'TRUE' ? '📱 GCash ' : ''}${v.family_owned === 'TRUE' ? '👨‍👩‍👧 Family-owned' : ''}
+          </p>
+          ${v.photo_url ? `<img src="${escapeHtml(v.photo_url)}" class="w-full h-32 object-cover rounded-xl mt-2" alt="" />` : ''}
+          <div class="vendorResultBox hidden mt-3 bg-turquoise/10 border border-turquoise/25 rounded-xl p-3 text-sm"></div>
+          <div class="vendorActionBtns flex gap-3 mt-3">
+            <button class="approveVendorBtn bg-ocean text-white text-sm font-semibold px-4 py-2 rounded-full" data-row="${v.row}">Approve</button>
+            <button class="rejectVendorBtn border border-danger text-danger text-sm font-semibold px-4 py-2 rounded-full" data-row="${v.row}">Reject</button>
+          </div>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.approveVendorBtn').forEach(btn => btn.addEventListener('click', () => actOnVendor(btn.dataset.row, 'approve_vendor')));
+      document.querySelectorAll('.rejectVendorBtn').forEach(btn => btn.addEventListener('click', () => actOnVendor(btn.dataset.row, 'reject_vendor')));
+    }
+
+    async function actOnVendor(row, action) {
+      const res = await fetch(BASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action, row: parseInt(row), password })
+      });
+      const result = await res.json();
+      if (!result.success) {
+        alert('Could not ' + action.replace('_vendor', '') + ' this vendor:\n\n' + (result.error || 'Unknown error'));
+        return;
+      }
+      const card = document.querySelector(`[data-vendor-row="${row}"]`);
+      if (action === 'approve_vendor' && result.pin) {
+        // The PIN only ever shows here, once — there's no email to send it
+        // to automatically, so the admin needs to actually see it to relay
+        // it to the vendor themselves (phone/Messenger/in person).
+        card.querySelector('.vendorActionBtns').remove();
+        const box = card.querySelector('.vendorResultBox');
+        box.classList.remove('hidden');
+        box.innerHTML = `✅ Approved — <strong>${escapeHtml(result.vendor_name)}</strong>'s login PIN is <strong class="text-lg">${escapeHtml(result.pin)}</strong>. Send this to them — it's the only way they can edit their stall later.`;
+      } else {
+        card.remove();
+      }
+    }
+  </script>
+</body>
+</html>

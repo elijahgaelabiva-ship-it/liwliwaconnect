@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="For Business Owners — Liwliwa Connect">
+<meta property="og:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta property="og:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<meta property="og:url" content="https://liwliwaconnect.netlify.app/for-business-owners.html">
+<meta property="og:site_name" content="Liwliwa Connect">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="For Business Owners — Liwliwa Connect">
+<meta name="twitter:description" content="Resorts, restaurants, cafés, surf schools, and activities in Liwliwa, Zambales — all in one place.">
+<meta name="twitter:image" content="https://liwliwaconnect.netlify.app/icons/icon-512.png">
+<title>For Business Owners — Liwliwa Connect</title>
+<meta name="description" content="List your resort, restaurant, café, surf school, or activity on Liwliwa Connect for free." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css" />
+
+<!-- Makes the site installable to the home screen, opening full-view with no
+     browser address bar or nav bar, like a native app. -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B2A4A">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Liwliwa">
+
+<script>
+  // "Mobile App V2" palette — see css/style.css "MOBILE APP V2" section.
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ocean: '#1668E3',
+          oceanDeep: '#0B2A4A',
+          turquoise: '#17B8A6',
+          sunset: '#FF7A45',
+          mist: '#F5F7FA',
+          ink: '#141C24',
+          success: '#2FB380',
+          danger: '#F0605F',
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] }
+      }
+    }
+  }
+</script>
+</head>
+<body class="text-white font-sans antialiased" style="background: linear-gradient(160deg, #0B2A4A, #1668E3);">
+
+  <!-- NAV -->
+  <header class="px-6 h-16 flex items-center justify-between max-w-6xl mx-auto">
+    <a href="index.html" class="font-semibold tracking-tight">
+      Liwliwa <span class="text-sunset">Connect</span>
+    </a>
+    <a href="index.html" class="text-sm font-medium text-white/80 hover:text-white transition-colors">Back home</a>
+  </header>
+
+  <!-- FOR BUSINESSES -->
+  <section class="px-6 py-12 sm:py-20">
+    <div class="max-w-2xl mx-auto">
+      <div>
+        <p class="animate-in uppercase tracking-[0.2em] text-xs font-semibold text-sunset mb-2">For business owners</p>
+        <h1 class="animate-in animate-in-delay-1 font-extrabold text-3xl sm:text-4xl mb-4">Own a business in Liwliwa?</h1>
+        <p class="animate-in animate-in-delay-2 text-white/70 mb-4 max-w-md">
+          Get listed for free, reach travelers actively searching for what you offer, and manage
+          your listing yourself — no tech skills required.
+        </p>
+        <div id="siteStatsBanner" class="hidden animate-in animate-in-delay-2 inline-flex items-center gap-2 text-sm font-semibold text-sunset bg-white/10 rounded-full px-4 py-2 mb-4 w-fit"></div>
+        <div class="space-y-3">
+          <a href="register.html" class="animate-in animate-in-delay-3 flex items-center justify-between gap-3 rounded-2xl px-5 py-4 transition-transform active:scale-[0.98] w-full sm:w-fit" style="background: linear-gradient(135deg, #1668E3, #17B8A6); box-shadow: 0 10px 24px -8px rgba(22, 104, 227, 0.5);">
+            <span class="flex items-center gap-3">
+              <span class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                <i data-lucide="store" class="w-4 h-4 text-white"></i>
+              </span>
+              <span class="font-semibold text-white">List your business</span>
+            </span>
+            <i data-lucide="arrow-right" class="w-4 h-4 text-white/80 shrink-0"></i>
+          </a>
+          <a href="dashboard.html" class="animate-in animate-in-delay-3 flex items-center justify-between gap-3 bg-white/10 hover:bg-white/15 border border-white/20 rounded-2xl px-5 py-4 transition-colors w-full sm:w-fit">
+            <span class="flex items-center gap-3">
+              <span class="w-9 h-9 rounded-full bg-sunset/20 flex items-center justify-center shrink-0">
+                <i data-lucide="log-in" class="w-4 h-4 text-sunset"></i>
+              </span>
+              <span class="font-semibold text-white">Already listed? Log in</span>
+            </span>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-white/60 shrink-0"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="px-6 py-8 text-white/50 border-t border-white/10">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between gap-2 text-sm">
+      <p>© 2026 Liwliwa Connect · Built for San Felipe, Zambales</p>
+      <p>Site by the community, for the community.</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    if (window.lucide) lucide.createIcons();
+    window.AppSiteStats.renderBanner(document.getElementById('siteStatsBanner'), { range: '30d', label: 'in the last 30 days' });
+  </script>
+</body>
+</html>
